@@ -3,4 +3,4 @@
 # For now, we have to CD to the unidev directory and start there, then we can CD back
 cwd=$(pwd)
 cd ~/dev/unidev
-nix-shell --command "cd ${cwd}; return"
+nix-shell --arg cwd $(cwd)

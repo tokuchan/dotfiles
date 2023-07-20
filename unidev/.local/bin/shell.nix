@@ -1,4 +1,6 @@
-{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/d0f2758381caca8b4fb4a6cac61721cc9de06bd9.tar.gz") {} }:
+{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/d0f2758381caca8b4fb4a6cac61721cc9de06bd9.tar.gz") {}
+, cwd ? /home/seans
+}:
 
 pkgs.mkShell {
   packages = [
@@ -26,7 +28,7 @@ pkgs.mkShell {
 
   shellHook = ''
     export SHELL_TYPE="$SHELL_TYPE Unidev "
-    exec fish
+    exec fish -c "cd ${cwd}"
   '';
 
   EDITOR = "nvim";
