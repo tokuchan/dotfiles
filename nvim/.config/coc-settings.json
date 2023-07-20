@@ -1,0 +1,31 @@
+{
+	"python.formatting.provider": "black",
+	"python.formatting.blackPath": "/Users/sspillane/.local/bin/black",
+	"python.linting.mypyEnabled": true,
+	"python.linting.mypyPath": "/Users/sspillane/.local/bin/mypy",
+	"python.sortImports.path": "/Users/sspillane/.local/bin/isort",
+	"coc.preferences.formatOnSaveFiletypes": ["python"],
+	"languageserver": {
+	    "ccls": {
+	        "command": "ccls",
+	        "filetypes": [
+	            "c",
+	            "cpp",
+	            "objc",
+	            "objcpp"
+	        ],
+	        "rootPatterns": [
+	            ".ccls",
+	            "compile_commands.json",
+	            ".vim/",
+	            ".git/",
+	            ".hg/"
+	        ],
+	        "initializationOptions": {
+	            "cache": {
+	                "directory": "/tmp/ccls"
+	            }
+	        }
+	    }
+	}
+}
