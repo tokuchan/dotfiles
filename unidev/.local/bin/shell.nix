@@ -28,7 +28,7 @@ pkgs.mkShell {
 
   shellHook = ''
     export SHELL_TYPE="$SHELL_TYPE Unidev "
-    exec fish -c "cd ${cwd}"
+    exec fish -C "cd ${cwd}"
   '';
 
   EDITOR = "nvim";
