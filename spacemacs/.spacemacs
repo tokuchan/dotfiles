@@ -674,7 +674,7 @@ nil : Otherwise, return nil and run next lineup function."
 
   ;; Set up Fira ligatures
   (use-package fira-code-mode
-    :custom (fira-code-mode-disabled-ligatures '("<="))
+    :custom (fira-code-mode-disabled-ligatures '("<=" "x" "[]" "::" ">>"))
     :hook prog-mode)
 
   (add-hook 'git-commit-mode-hook (lambda () (setq fill-column 72)))
