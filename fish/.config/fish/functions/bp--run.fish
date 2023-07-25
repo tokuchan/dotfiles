@@ -7,6 +7,6 @@ echo "Run a command inside the specified container.
 -h / --help  Display this help.
 "
 else
-podman run -ti --entrypoint bash -v (pwd):(pwd) $_flag_container -c "cd "(pwd)" && $argv"
+podman run -ti --entrypoint bash -v /home/seans/dev/bellport-stow:/home/seans/dev/bellport-stow -v (pwd):(pwd) $_flag_container -c "cd "(pwd)" && $argv"
 end
 end
