@@ -1,0 +1,81 @@
+#!/bin/bash
+##!/usr/bin/env nix-shell
+##! nix-shell -p bash podman
+##! nix-shell -i bash
+declare -a stack;
+
+function push () {
+  stack=($@ ${stack[@]})
+}
+
+function pop () {
+  if [ ${#stack[@]} -eq 0 ]
+  then
+    unset stack[@]
+  else
+    unset stack[0]
+  fi
+  stack=("${stack[@]}")
+}
+
+declare -A options
+
+options[image]=gcc13
+options[root]=on
+
+for arg in $*
+do
+  case ${arg} in
+    on)
+      options[${stack}]=on; pop
+    ;;
+    off)
+      unset options[${stack}]; pop
+    ;;
+    set)
+      value=${stack}; pop
+      key=${stack}; pop
+      options[${key}]=${value};
+    ;;
+    *)
+      push ${arg}
+  esac
+done
+
+declare -a args
+for arg in ${stack[@]}
+do
+  args=(${arg} ${args[@]})
+done
+
+cwd=''
+if [ "${options[root]}" = "on" ]
+then
+  cwd=$(git rev-parse --show-toplevel)
+else
+  cwd=$(pwd)
+fi
+
+cmd="podman run \
+	-ti \
+	--entrypoint bash \
+	-v $(readlink -f $HOME):$(readlink -f $HOME) \
+	-v $(pwd):$(pwd) \
+       	'${options[image]}' \
+       	-c 'cd ${cwd} && ${args[@]}'"
+
+if [ "${options[report]}" = "on" ]
+then
+  echo options-key: ... "${!options[@]}"
+  echo options-val: ... "${options[@]}"
+  echo pwd: ........... $(pwd)
+  echo cwd: ........... ${cwd}
+  echo cmd: ........... ${cmd}
+fi
+
+if [ "${options[dry-run]}" = "on" ]
+then
+  echo "${cmd}"
+else
+  eval ${cmd}
+fi
