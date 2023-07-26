@@ -73,6 +73,29 @@ then
   echo cmd: ........... ${cmd}
 fi
 
+if [ "${options[help]}" = "on" ]
+then
+	cat <<EOF
+Usage: bp--run [options] command
+
+Options:
+  Options are specified using a forth-style syntax. To set a flag named "foo",
+  use "foo on". To clear foo, use "foo off". To set foo to bar, use "foo bar
+  set".
+
+  The following flags are recognized:
+
+  root ...... (default: on)  Run the command in the project root.
+  dry-run ... (default: off) Do not run the command, just print it.
+  help ...... (default: off) Show this help and exit without doing anything.
+
+  The following fields are recognized:
+
+  image (default: gcc13) Specify the build image to run the command within.
+EOF
+	exit
+fi
+
 if [ "${options[dry-run]}" = "on" ]
 then
   echo "${cmd}"
