@@ -54,6 +54,8 @@ This function should only modify configuration layer settings."
           lsp-file-watch-threshold 5000
           lsp-enable-file-watchers t
           lsp-modeline-code-actions-segments '(count icon)
+          lsp-ui-doc-enable t
+          lsp-use-lsp-ui t
           )
      ;; markdown
      multiple-cursors
@@ -82,9 +84,10 @@ This function should only modify configuration layer settings."
 
      ;; Additional layers for programming languages
      (c-c++ :variables
-            c-c++-backend 'lsp-ccls
+            c-c++-backend 'lsp-clangd
             ;;c-c++-backend 'lsp-clangd
-            c-c++-lsp-enable-semantic-highlighting t
+            c-c++-adopt-subprojects t
+            c-c++-lsp-enable-semantic-highlighting 'rainbow
             c-c++-default-mode-for-headers 'c++-mode)
 
      (python :variables
