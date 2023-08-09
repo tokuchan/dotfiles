@@ -674,8 +674,10 @@ nil : Otherwise, return nil and run next lineup function."
     (term-send-raw-string "\C-v"))
 
   ;; Set up Fira ligatures
+  ;; Don't forget to install the font: M-x fire-code-mode-install-fonts
   (use-package fira-code-mode
-    :custom (fira-code-mode-disabled-ligatures '("<=" "x" "[]" "::" ">>"))
+    :config (fira-code-mode-set-font)
+    :custom (fira-code-mode-disabled-ligatures '("x" "[]"))
     :hook prog-mode)
 
   (add-hook 'git-commit-mode-hook (lambda () (setq fill-column 72)))
