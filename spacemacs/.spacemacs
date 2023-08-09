@@ -42,6 +42,7 @@ This function should only modify configuration layer settings."
      ;; ----------------------------------------------------------------
      ;; auto-completion
      ;; better-defaults
+     asciidoc
      emacs-lisp
      git
      helm
