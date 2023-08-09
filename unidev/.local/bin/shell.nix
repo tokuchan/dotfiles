@@ -4,9 +4,13 @@
 
 pkgs.mkShell {
   packages = [
-    pkgs.autojump
     pkgs.asciidoctor-with-extensions
+    pkgs.autojump
     pkgs.bat
+    pkgs.black
+    pkgs.ccls
+    pkgs.doxygen_gui
+    pkgs.duckdb
     pkgs.emacs29
     pkgs.exa
     pkgs.figlet
@@ -18,17 +22,30 @@ pkgs.mkShell {
     pkgs.keychain
     pkgs.meld
     pkgs.neovim
+    pkgs.nodejs_20
+    pkgs.oath-toolkit
+    pkgs.parallel
+    pkgs.pass
+    pkgs.python311Packages.click
+    pkgs.python311Packages.ipython
+    pkgs.python311Packages.rich
+    pkgs.python311Packages.sh
     pkgs.qpdf
+    pkgs.racket
+    pkgs.rich-cli
     pkgs.ripgrep
+    pkgs.semgrep
     pkgs.sqlite
     pkgs.sshfs
     pkgs.stow
+    #pkgs.texlive.combined.scheme-full
     pkgs.xclip
+    pkgs.zbar
   ];
 
   shellHook = ''
     export SHELL_TYPE="$SHELL_TYPE Unidev "
-    exec fish -C "cd ${cwd}"
+    cd ${cwd} && exec fish
   '';
 
   EDITOR = "nvim";
