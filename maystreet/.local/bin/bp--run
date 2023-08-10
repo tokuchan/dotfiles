@@ -24,6 +24,7 @@ options[image]=gcc13
 options[root]=on
 options[nice]=10
 options[cpus]=4
+options[path]="build-debug/bin"
 
 for arg in $*
 do
@@ -69,8 +70,8 @@ cmd="podman run \
 	--mount type=bind,source=/tmp/,target=/tmp/ \
 	-v $(readlink -f $HOME):$(readlink -f $HOME) \
 	-v $(pwd):$(pwd) \
-       	'${options[image]}' \
-       	-c 'cd ${cwd} && nice -${options[nice]} ${args[@]}'"
+	'${options[image]}' \
+	-c 'cd ${cwd} && export PATH=${cwd}/${options[path]}:"'${PATH}'" && nice -${options[nice]} ${args[@]}'"
 
 if [ "${options[report]}" = "on" ]
 then
@@ -102,6 +103,7 @@ Options:
   image (default: gcc13) Specify the build image to run the command within.
   nice  (default: 10)    Specify the default nice level to run the command with.
   cpus  (default: 6)     Specify the number of CPUs to expose to the container.
+  path  (defautl: build-debug/bin) Specify the path to image-internal executables. Prepends the CWD automatically.
 EOF
 	exit
 fi
