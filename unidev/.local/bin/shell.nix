@@ -24,12 +24,13 @@ pkgs.mkShell {
     pkgs.neovim
     pkgs.nodejs_20
     pkgs.oath-toolkit
+    #pkgs.pass
+    #pkgs.passExtensions.otp
     pkgs.parallel
-    pkgs.pass
-    pkgs.python311Packages.click
-    pkgs.python311Packages.ipython
-    pkgs.python311Packages.rich
-    pkgs.python311Packages.sh
+    #pkgs.python311Packages.click
+    #pkgs.python311Packages.ipython
+    #pkgs.python311Packages.rich
+    #pkgs.python311Packages.sh
     pkgs.qpdf
     pkgs.racket
     pkgs.rich-cli
