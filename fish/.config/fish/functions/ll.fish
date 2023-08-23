@@ -1,3 +1,4 @@
-function ll --wraps='ls -lba' --description 'ls -lba'
-  la -lba $argv; 
+function ll --wraps='ls -lba' --wraps='ls -lba #' --wraps='ls -lba ' --description 'alias ll=ls -lba '
+  ls -lba  $argv
+        
 end
