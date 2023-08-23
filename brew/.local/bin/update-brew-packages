@@ -1,0 +1,137 @@
+#!/bin/bash
+# Update brew packages
+
+# Process command options and parameters
+declare -a stack;
+
+function push () {
+  stack=($@ ${stack[@]})
+}
+
+function pop () {
+  if [ ${#stack[@]} -eq 0 ]
+  then
+    unset stack[@]
+  else
+    unset stack[0]
+  fi
+  stack=("${stack[@]}")
+}
+
+declare -A options
+
+options[packages]='
+	asciidoctor 
+	autojump 
+	bat 
+	black 
+	ccls 
+	doxygen 
+	duckdb 
+	emacs 
+	exa 
+	figlet 
+	fish 
+	fzf 
+	git 
+	make 
+	jq 
+	jupyterlab
+	keychain 
+	neovim 
+	node 
+	pass 
+	pass-otp
+	python3 
+	parallel 
+	rich-cli 
+	ripgrep 
+	semgrep 
+	sqlite 
+	stow 
+	xclip 
+'
+
+for arg in $*
+do
+  case ${arg} in
+    on)
+      options[${stack}]=on; pop
+    ;;
+    off)
+      unset options[${stack}]; pop
+    ;;
+    set)
+      value=${stack}; pop
+      key=${stack}; pop
+      options[${key}]=${value};
+    ;;
+    *)
+      push ${arg}
+  esac
+done
+
+declare -a args
+for arg in ${stack[@]}
+do
+  args=(${arg} ${args[@]})
+done
+
+if [ "${options[report]}" = "on" ]
+then
+  echo options-key: ... "${!options[@]}"
+  echo options-val: ... "${options[@]}"
+  echo pwd: ........... $(pwd)
+  echo cwd: ........... ${cwd}
+  echo cmd: ........... ${cmd}
+  echo Packages
+  echo ========
+  echo
+  echo ${options[packages]}
+fi
+
+if [ "${options[help]}" = "on" ]
+then
+	cat <<EOF
+Usage: update-brew-packages [options]
+
+Options:
+  Options are specified using a forth-style syntax. To set a flag named "foo",
+  use "foo on". To clear foo, use "foo off". To set foo to bar, use "foo bar
+  set".
+
+  The following flags are recognized:
+
+  dry-run ... (default: off) Do not run the command, just print it.
+  verbose ... (default: off) Show more logging information.
+  help ...... (default: off) Show this help and exit without doing anything.
+
+  The following fields are recognized:
+
+EOF
+	exit
+fi
+
+opts=''
+
+if [ "${options[dry-run]}" = "on" ]
+then
+	opts="$opts --dry-run"
+fi
+
+if [ "${options[verbose]}" = "on" ]
+then
+	opts="$opts --verbose"
+fi
+
+cmd="brew install $opts"
+
+for p in ${options[packages]}
+do
+	if [ "${options[verbose]}" = "on" ]
+	then
+		echo ${cmd} $p
+	fi
+	
+	eval ${cmd} $p
+done
