@@ -16,7 +16,7 @@ end
 
 # Set up autojump
 if which autojump > /dev/null
-  source (which autojump | sed 's,bin.*$,,')/share/fish/vendor_conf.d/autojump.fish
+  source (which autojump | sed 's,bin.*$,,')/share/autojump/autojump.fish
 else
   echo "Autojump not installed"
 end
