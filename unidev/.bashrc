@@ -34,6 +34,11 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 
+histgrep()
+{
+	history | grep -v histgrep | fzf
+}
+
 # Gracefully handle exiting from tmux
 exit() {
 	if [[ -z $TMUX ]]; then
