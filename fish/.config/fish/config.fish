@@ -21,6 +21,13 @@ else
   echo "Autojump not installed"
 end
 
+# Set up pyenv
+set -gx PYENV_ROOT "$HOME/.pyenv"
+if not command -v pyenv >/dev/null
+  set -gx PATH "$PYENV_ROOT/bin" $PATH
+end
+pyenv init - | source
+
 # Tell subprograms to use bash
 set -x SHELL /bin/bash
 
