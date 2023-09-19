@@ -760,7 +760,7 @@ This function is called at the very end of Spacemacs initialization."
      (c++-mode . doxygen)
      (java-mode . javadoc)
      (pike-mode . autodoc)))
- '(company-idle-delay 0.02 t)
+ '(company-idle-delay 0.02)
  '(compilation-always-kill t)
  '(compilation-ask-about-save nil)
  '(compilation-auto-jump-to-first-error nil)
@@ -773,6 +773,7 @@ This function is called at the very end of Spacemacs initialization."
  '(display-line-numbers-type 'visual)
  '(evil-want-Y-yank-to-eol t)
  '(explicit-shell-file-name "/usr/bin/fish")
+ '(focus-follows-mouse t)
  '(git-gutter:diff-option "-w")
  '(hl-todo-keyword-faces
    '(("TODO" . "#dc752f")
@@ -797,6 +798,7 @@ This function is called at the very end of Spacemacs initialization."
  '(minimap-major-modes '(compilation-mode prog-mode))
  '(minimap-mode t)
  '(minimap-window-location 'right)
+ '(mouse-autoselect-window t)
  '(org-fontify-done-headline nil)
  '(org-fontify-todo-headline nil)
  '(package-selected-packages
