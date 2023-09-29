@@ -1,0 +1,77 @@
+[user]
+	name = sspillane
+	email = sspillane@maystreet.com
+
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+	interactive = auto
+	ui = true
+	pager = true
+
+[color "branch"]
+	current = blue reverse
+	local = blue
+	remote = green
+
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+
+[color "status"]
+	added = green
+	changed = magenta
+	untracked = cyan
+
+[core]
+	pager = less -FRSX
+	whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
+	autocrlf = input
+	quotepath = false
+	editor = vim -O
+
+[alias]
+	a = add
+	aliases = !$HOME/dev/config/aliases.py
+	br = branch -a
+	branches = branch -a
+	c = commit
+	co = checkout
+	cp = cherry-pick
+	df = diff
+	fix = "!f() { $EDITOR $(git diff --name-only); }; f"
+	fo = fetch origin
+	last = log -l HEAD
+	lg = log -p
+	pos = push --set-upstream origin
+	p = push --set-upstream
+	remotes = remote -v
+	rs = restore --staged
+	st = status
+	stashes = stash list
+	sw = switch
+	tags = tag
+	tree = log --all --graph --decorate --oneline --simplify-by-decoration
+	tg = tag
+	unstage = reset HEAD --
+	regen-aliases = "!for a in $($HOME/dev/config/aliases.py -f simple -D); do fish -c alias g$a='g $a'; done"
+	f = fuzzy-fetch
+	g = goto
+
+[pull]
+	rebase = false
+
+[mergetool "nvim"]
+	cmd = nvim -f -c \"Gdiffsplit!\" \"$MERGED\"
+
+[merge]
+	tool = vim
+	ff = no
+
+[mergetool]
+	prompt = false
+[init]
+	defaultBranch = master
