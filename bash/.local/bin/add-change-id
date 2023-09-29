@@ -1,0 +1,3 @@
+#!/bin/bash
+# Generate and print a Gerrit-style change ID
+date | sha256sum | cut -f1 -d' ' | sed -E -e 's,(^.{32}).*$,\1,;s,^,Change-Id: I,'

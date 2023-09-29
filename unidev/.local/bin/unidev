@@ -1,6 +1,0 @@
-#!/bin/bash
-# Start the unidev environment
-# For now, we have to CD to the unidev directory and start there, then we can CD back
-currentDirectory=$(pwd)
-#cd ~/.local/bin
-#nix-shell --arg cwd ${currentDirectory}
