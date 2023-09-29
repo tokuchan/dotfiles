@@ -22,7 +22,6 @@ declare -A options
 
 options[image]=gcc13
 options[root]=on
-options[nice]=10
 options[cpus]=4
 options[path]="build-debug/bin"
 
@@ -40,16 +39,27 @@ do
       key=${stack}; pop
       options[${key}]=${value};
     ;;
+    --help)
+      options[help]=on
+      pop
+    ;;
+    --)
+      break 2
+    ;;
     *)
       push ${arg}
   esac
+  shift
 done
+
+echo $*
 
 declare -a args
 for arg in ${stack[@]}
 do
   args=(${arg} ${args[@]})
 done
+args=(${args[@]} $@)
 
 cwd=''
 if [ "${options[root]}" = "on" ]
@@ -60,18 +70,20 @@ else
 fi
 
 cmd="podman run \
+	--userns keep-id \
 	--init \
 	--ulimit core=-1 \
 	--cpus=${options[cpus]} \
 	--cap-add=SYS_PTRACE \
 	--security-opt seccomp=unconfined \
 	-ti \
-	--entrypoint bash \
 	--mount type=bind,source=/tmp/,target=/tmp/ \
 	-v $(readlink -f $HOME):$(readlink -f $HOME) \
 	-v $(pwd):$(pwd) \
+	--workdir ${cwd} \
+	--env PATH="${cwd}/${options[path]}:${PATH}" \
 	'${options[image]}' \
-	-c 'cd ${cwd} && export PATH=${cwd}/${options[path]}:"'${PATH}'" && nice -${options[nice]} ${args[@]}'"
+	-c '${args[@]}'"
 
 if [ "${options[report]}" = "on" ]
 then
@@ -101,7 +113,6 @@ Options:
   The following fields are recognized:
 
   image (default: gcc13) Specify the build image to run the command within.
-  nice  (default: 10)    Specify the default nice level to run the command with.
   cpus  (default: 6)     Specify the number of CPUs to expose to the container.
   path  (defautl: build-debug/bin) Specify the path to image-internal executables. Prepends the CWD automatically.
 EOF
