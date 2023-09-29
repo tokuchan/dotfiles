@@ -1,3 +1,3 @@
-function gf --wraps='git fetch' --description 'alias gf=git fetch'
-  git fetch $argv; 
+function gf --wraps='git fetch'
+git-fuzzy-fetch $argv
 end

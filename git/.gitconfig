@@ -76,6 +76,7 @@
 	sl = "!f () { cd -- ${GIT_PREFIX:-.}; git stash list | grep \": {\" | cut -d':' -f1,3- | sed 's/^/{\"ref\":\"/;s/: {/\",/' | jq -s . | jq $*; }; f"
 	sr = "!f () { cd -- ${GIT_PREFIX:-.}; git sl | jq \".[] | select(.branch==$(git state .branch)) | select(.cwd==$(git state .cwd))\" | jq $*; }; f"
 	changed = log --pretty=format:'%Cred%h%x09%Creset%(trailers:key=Change-Id,valueonly,separator=%x2C)%x09%Cgreen%s%Creset'
+	f = fuzzy-fetch
 
 [pull]
 	rebase = false

@@ -31,34 +31,32 @@ This function should only modify configuration layer settings."
    dotspacemacs-configuration-layer-path '()
 
    ;; List of configuration layers to load.
-   dotspacemacs-configuration-layers
-   '(csv
-     rust
-     shell-scripts
+   dotspacemacs-configuration-layers '(
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
      ;; `M-m f e R' (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     ;; auto-completion
-     ;; better-defaults
+     auto-completion
+     better-defaults
+     csv
+     shell-scripts
      asciidoc
-     emacs-lisp
      git
      helm
      (lsp :variables
-          lsp-lens-enable t
+          lsp-lens-enable nil
           lsp-headerline-breadcrumb-enable t
+          lsp-headerline-breadcrumb-segments '(project file symbols)
           lsp-use-plists nil
           lsp-log-io nil
           lsp-file-watch-threshold 5000
-          lsp-enable-file-watchers t
+          lsp-enable-file-watchers nil
           lsp-modeline-code-actions-segments '(count icon)
-          lsp-ui-doc-enable t
-          lsp-use-lsp-ui t
+          lsp-ui-doc-enable nil
+          lsp-use-lsp-ui nil
           )
      ;; markdown
-     multiple-cursors
      ;;(org :variables
      ;;     ;; Bullets from Mayan numbers
      ;;     ;;org-superstar-headline-bullets-list '("𝋡","𝋢","𝋣","𝋤")
@@ -80,13 +78,14 @@ This function should only modify configuration layer settings."
      syntax-checking
      (version-control :variables
                       version-control-diff-side 'left)
-     treemacs
+     semantic
+     ;treemacs
 
      ;; Additional layers for programming languages
      (c-c++ :variables
             c-c++-backend 'lsp-clangd
-            ;;c-c++-backend 'lsp-clangd
-            c-c++-adopt-subprojects t
+            ;c-c++-adopt-subprojects t
+            c-c++-enable-clang-support t
             c-c++-lsp-enable-semantic-highlighting 'rainbow
             c-c++-default-mode-for-headers 'c++-mode)
 
@@ -98,10 +97,10 @@ This function should only modify configuration layer settings."
              docker-dockerfile-backend 'lsp)
 
      ;; Customize themes a little
-     (theming :variables
-      theming-modifications
-      '((spacemacs-dark (hl-line :background "000"))
-        (spacemacs-light (hl-line :background "ccc"))))
+     ;;(theming :variables
+     ;; theming-modifications
+     ;; '((spacemacs-dark (hl-line :background "000"))
+     ;;   (spacemacs-light (hl-line :background "ccc"))))
 
      cmake)
 
@@ -115,7 +114,7 @@ This function should only modify configuration layer settings."
    ;; `:location' property: '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
 
-   dotspacemacs-additional-packages '(nov fira-code-mode gerrit shell-pop org-pivotal)
+   dotspacemacs-additional-packages '(nov fira-code-mode gerrit shell-pop org-pivotal sqlite3 exec-path-from-shell)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -685,6 +684,25 @@ nil : Otherwise, return nil and run next lineup function."
 
   (add-hook 'git-commit-mode-hook (lambda () (setq fill-column 72)))
 
+  (setq comint-output-filter-functions
+        (remove 'ansi-color-process-output comint-output-filter-functions))
+
+  (add-hook 'shell-mode-hook
+            (lambda ()
+              ;; Forcibly set the shell to the system one
+              (setq explicit-shell-file-name "/usr/bin/fish")
+              (setq shell-file-name "fish")
+              ;; Disable font-locking in this buffer to improve performance
+              (font-lock-mode -1)
+              ;; Prevent font-locking from being re-enabledin this buffer
+              (make-local-variable 'font-lock-function)
+              (setq font-lock-function (lambda (_) nil))
+              (add-hook 'comint-preoutput-filter-functions 'xterm-color-filter nil t)))
+
+  ;; Set a few LSP-related variables
+  (setq xref-backend-functions (lsp--xref-backend))
+  (setq completion-at-point-functions (lsp-completion-at-point))
+
   ;; Automatically resume previous layout, based on the directory in which EMACS is started.
   (desktop-save-mode)
   (desktop-read)
@@ -712,7 +730,7 @@ This function is called at the very end of Spacemacs initialization."
      (c++-mode . doxygen)
      (java-mode . javadoc)
      (pike-mode . autodoc)))
- '(company-idle-delay 0.02)
+ '(company-idle-delay 0.02 t)
  '(compilation-always-kill t)
  '(compilation-ask-about-save nil)
  '(compilation-auto-jump-to-first-error nil)
@@ -724,8 +742,6 @@ This function is called at the very end of Spacemacs initialization."
  '(desktop-save-mode t)
  '(display-line-numbers-type 'visual)
  '(evil-want-Y-yank-to-eol t)
- '(exec-path
-   '("/home/seans/.local/bin" "/home/seans/bin" "/usr/local/sbin" "/usr/local/bin" "/usr/sbin" "/usr/bin" "/sbin" "/bin" "/usr/games" "/usr/local/games" "/snap/bin" "/data/archive/mst_tools/latest" "/Users/sspillane/.local/bin" "/home/seans/.pyenv/shims" "/home/seans/.pyenv/bin" "/usr/local/libexec/emacs/29.1.50/x86_64-pc-linux-gnu"))
  '(explicit-shell-file-name "/usr/bin/fish")
  '(git-gutter:diff-option "-w")
  '(hl-todo-keyword-faces
@@ -745,13 +761,16 @@ This function is called at the very end of Spacemacs initialization."
      ("XXX+" . "#dc752f")
      ("\\?\\?\\?+" . "#dc752f")))
  '(ispell-dictionary "american")
+ '(lsp-semgrep-scan-jobs 2)
+ '(lsp-semgrep-server-command
+   '("/home/seans/dotfiles/spacemacs/python-support/semgrep.sh" "lsp"))
  '(minimap-major-modes '(compilation-mode prog-mode))
  '(minimap-mode t)
  '(minimap-window-location 'right)
  '(org-fontify-done-headline nil)
  '(org-fontify-todo-headline nil)
  '(package-selected-packages
-   '(sqlite3 adoc-mode csv-mode fireplace cargo flycheck-rust racer ron-mode rust-mode toml-mode org-pivotal eshell-git-prompt gerrit shfmt reformatter insert-shebang helm-gtags ggtags flycheck-bashate fish-mode counsel-gtags counsel swiper ivy company-shell fira-code-mode symon-lingr ox-gfm org-re-reveal dockerfile-mode docker tablist json-mode docker-tramp aio json-snatcher minimap nov esxml kv unkillable-scratch persistent-scratch yasnippet-snippets xterm-color vterm treemacs-magit terminal-here smeargle shell-pop multi-term lsp-ui lsp-treemacs lsp-origami origami helm-lsp lsp-mode helm-ls-git helm-git-grep helm-company helm-c-yasnippet gitignore-templates git-timemachine git-modes git-messenger git-link fuzzy forge yaml markdown-mode magit ghub closql emacsql-sqlite emacsql treepy magit-section git-commit with-editor transient flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip eshell-z eshell-prompt-extras esh-help company auto-yasnippet yasnippet auto-dictionary ac-ispell auto-complete ws-butler writeroom-mode visual-fill-column winum volatile-highlights vi-tilde-fringe uuidgen undo-tree queue treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil treemacs cfrs pfuture posframe toc-org symon symbol-overlay string-inflection string-edit spaceline-all-the-icons memoize spaceline powerline restart-emacs request rainbow-delimiters quickrun popwin persp-mode password-generator paradox spinner overseer org-superstar open-junk-file nameless multi-line shut-up macrostep lorem-ipsum link-hint inspector info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt helm-xref helm-themes helm-swoop helm-purpose window-purpose imenu-list helm-projectile helm-org helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flycheck-package package-lint flycheck pkg-info epl flycheck-elsa flx-ido flx fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-terminal-cursor-changer evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-easymotion evil-collection annalist evil-cleverparens smartparens evil-args evil-anzu anzu eval-sexp-fu emr iedit clang-format projectile paredit list-utils elisp-slime-nav elisp-def f editorconfig dumb-jump s drag-stuff dired-quick-sort devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol ht dash auto-compile packed compat all-the-icons aggressive-indent ace-window ace-link ace-jump-helm-line helm avy popup helm-core which-key use-package pcre2el hydra lv hybrid-mode font-lock+ evil goto-chg dotenv-mode diminish bind-map bind-key async cmake-mode))
+   '(mwim srefactor stickyfunc-enhance unfill exec-path-from-shell sqlite3 adoc-mode csv-mode fireplace cargo flycheck-rust racer ron-mode rust-mode toml-mode org-pivotal eshell-git-prompt gerrit shfmt reformatter insert-shebang helm-gtags ggtags flycheck-bashate fish-mode counsel-gtags counsel swiper ivy company-shell fira-code-mode symon-lingr ox-gfm org-re-reveal dockerfile-mode docker tablist json-mode docker-tramp aio json-snatcher minimap nov esxml kv unkillable-scratch persistent-scratch yasnippet-snippets xterm-color vterm treemacs-magit terminal-here smeargle shell-pop multi-term lsp-ui lsp-treemacs lsp-origami origami helm-lsp lsp-mode helm-ls-git helm-git-grep helm-company helm-c-yasnippet gitignore-templates git-timemachine git-modes git-messenger git-link fuzzy forge yaml markdown-mode magit ghub closql emacsql-sqlite emacsql treepy magit-section git-commit with-editor transient flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip eshell-z eshell-prompt-extras esh-help company auto-yasnippet yasnippet auto-dictionary ac-ispell auto-complete ws-butler writeroom-mode visual-fill-column winum volatile-highlights vi-tilde-fringe uuidgen undo-tree queue treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil treemacs cfrs pfuture posframe toc-org symon symbol-overlay string-inflection string-edit spaceline-all-the-icons memoize spaceline powerline restart-emacs request rainbow-delimiters quickrun popwin persp-mode password-generator paradox spinner overseer org-superstar open-junk-file nameless multi-line shut-up macrostep lorem-ipsum link-hint inspector info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt helm-xref helm-themes helm-swoop helm-purpose window-purpose imenu-list helm-projectile helm-org helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flycheck-package package-lint flycheck pkg-info epl flycheck-elsa flx-ido flx fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-terminal-cursor-changer evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-easymotion evil-collection annalist evil-cleverparens smartparens evil-args evil-anzu anzu eval-sexp-fu emr iedit clang-format projectile paredit list-utils elisp-slime-nav elisp-def f editorconfig dumb-jump s drag-stuff dired-quick-sort devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol ht dash auto-compile packed compat all-the-icons aggressive-indent ace-window ace-link ace-jump-helm-line helm avy popup helm-core which-key use-package pcre2el hydra lv hybrid-mode font-lock+ evil goto-chg dotenv-mode diminish bind-map bind-key async cmake-mode))
  '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
  '(scroll-bar-mode 'right)
  '(shell-pop-full-span t)

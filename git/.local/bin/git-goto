@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# If a single parameter is passed, create a branch with that name.
+# If multiple parameters are passed, or a single parameter that starts with -, forward them to `git switch` as is.
+# Otherwise, prompt a branch and switch to it.
+
+if (( $# == 0 )); then
+    git switch $(git branch | sed -e's,..,,' | fzf)
+elif [[ $1 == '--help' ]]; then
+    cat <<"EOF"
+NAME
+	git-goto - Go to a branch, creating it if needed
+
+SYNOPSIS
+	git goto
+	git goto <new branch>
+	git goto [<options>]
+
+DESCRIPTION
+	Go to a desired branch. If there are no parameters, display a search menu of
+	available branches, then switch to that branch.
+
+	If a single branch name, which cannot start with a dash (-), is provided,
+	optionally create that branch and switch to it. The branch is created using
+	`git switch -tc <new branch>`.
+
+	If more than a single parameter, or a parameter with a leading dash (-) is
+	provided, directly forward the command line to `git switch`.
+
+OPTIONS
+	--help
+		Display this screen.
+
+EOF
+elif (( $# == 1 )) && [[ $1 != -* ]]; then
+    if git rev-parse --verify -q --end-of-options $*; then
+        exec git switch $@
+    else
+        exec git switch -tc $*
+    fi
+else
+    exec git switch $@
+fi
