@@ -2,6 +2,10 @@ if status is-interactive
     # Commands to run in interactive sessions can go here
 end
 
+# Clear PATH and set defaults
+#set -e PATH
+#set -gx PATH /home/seans/.local/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:/home/seans/.pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin
+
 # Set up variables for homebrew
 #set -gx HOMEBREW_PREFIX "/opt/homebrew";
 #set -gx HOMEBREW_CELLAR "/opt/homebrew/Cellar";
@@ -26,7 +30,7 @@ set -gx PYENV_ROOT "$HOME/.pyenv"
 if not command -v pyenv >/dev/null
   set -gx PATH "$PYENV_ROOT/bin" $PATH
 end
-pyenv init - | source
+pyenv init --no-rehash - | source
 
 # Tell subprograms to use bash
 set -x SHELL /bin/bash
@@ -35,12 +39,5 @@ set -x SHELL /bin/bash
 set PATH $PATH /Users/sspillane/.local/bin
 set PATH $PATH ~/.local/bin
 
-# Set up pyenv
-#status is-login; and pyenv init --path | source
-#status is-interactive; and pyenv init - | source
-
-# Ensure nvim plug is installed
-#nvim --headless +PlugInstall +qall
-
-#pyenv init - | source
-
+# Set the terminal to xterm256-color by default
+set -gx "TERM" "xterm-256color"
