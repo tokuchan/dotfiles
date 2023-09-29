@@ -1,0 +1,12 @@
+#!/bin/bash
+# Wrap git fetch with fuzz
+
+# If no parameters are provided, run the fuzzy magic, else forward to git fetch as normal.
+
+if (( $# == 0 )); then
+    ref=$(git remote | fzf --prompt="Fetch from where? >")
+    branch=$(git ls-remote --heads ${ref} | mlr --inidx --onidx label ref,path then cut -f path | sed 's,refs/heads/,,' | fzf -q master --prompt="Fetch what? >")
+    exec git fetch ${ref} ${branch}
+else
+    exec git fetch $@
+fi
