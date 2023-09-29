@@ -136,6 +136,6 @@ function fish_prompt
     set_color $retc
     echo -n '╰─>'
     set_color -o red
-    echo -n '$ '
+    echo -n 'λ '
     set_color normal
 end
