@@ -1,0 +1,294 @@
+#!/bin/bash
+#. = Profile a program or command
+#. Sean R. Spillane
+#. :source-highlighter: rouge
+#. :toc:
+
+#. == Introduction
+
+#. == Set up option parsing
+#. I use a simple, but unconventional option-parsing approach, based on the
+#. forth language syntax. Each option is specified by writing the name of the
+#. option, then--in the case of boolean options--setting the flag `on` or `off` as
+#. needed. In the case of options that take a value, I write the option, the
+#. value, and the keyword `set` to set it. For example:
+#. [,shell]
+#. ----
+#. flag1 on  flag2 off  option value set
+#. ----
+#. will set `flag1` to "on", unset `flag2`, and set `option` to "value". To
+#. support this parser, I need a couple of arrays I can use a stack and an option
+#. map. I'll describe them first. Then, I need to set defaults. Finally, I have
+#. to parse options and set.
+
+#. [,shell]
+#. Set up arrays
+#. ----
+declare -a args;
+declare -a stack;
+declare -A options;
+#. ----
+
+#. [,shell]
+#. .Set defaults
+#. ----
+options[log-level]=1
+options[operation]='sample'
+options[output]='profile'
+#. ----
+
+#. [,shell]
+#. .Define parser
+#. ----
+function push ()
+{
+    stack=($@ ${stack[@]})
+}
+
+function pop ()
+{
+    if [ ${#stack[@]} -eq 0 ]
+    then
+        unset stack[@]
+    else
+        unset stack[0]
+    fi
+    stack=("${stack[@]}")
+}
+
+function parseOptions ()
+{
+    for arg in $*
+    do
+        case ${arg} in
+            on)
+                options[${stack}]=on; pop
+            ;;
+            off)
+                unset options[${stack}]; pop
+            ;;
+            set)
+                value=${stack}; pop
+                key=${stack}; pop
+                options[${key}]=${value}
+            ;;
+            add)
+                value=${stack}; pop
+                key=${stack}; pop
+                options[${key}]=(${options[${key}[@]]} ${value})
+                ;;
+            --help)
+                options[help]=on; pop
+            ;;
+            --)
+                shift
+                break 2
+            ;;
+            *)
+                push ${arg}
+            ;;
+        esac
+        shift
+    done
+
+    for arg in ${stack[@]}
+    do
+        args=(${arg ${args[@]}})
+    done
+
+    for arg in $*
+    do
+        args=(${args} ${arg})
+    done
+
+    if [ -n "${args[*]}" ]
+    then
+        options[command]="${args[@]}"
+    fi
+}
+
+function reportOptions
+{
+  if [ "${options[report]}" = "on" ]
+  then
+    printf "Options set so far:\n"
+    for opt in ${!options[@]}
+    do
+      printf "%s ... %s\n" "${opt}" "${options[${opt}]}"
+    done
+  fi
+}
+
+function printHelp () {
+    cat << EOF
+Usage: profile [options] [-- <command>]
+
+Option Syntax:
+
+Options are specified using a simple forth-style syntax. Turn flag "foo" on
+with "foo on", off with "foo off", set foo to value "bar" with "foo bar
+set", and add "baz" to foo with "foo baz add".
+
+Options:
+
+  pid PIDs set
+    The PID of the process to monitor. If there is no process with that PID, no
+    output will be produced.
+
+  name NAME set
+    The name of the program to monitor. Any PIDs associated with NAME will be
+    fetched and monitored. It is an error if there are no programs running that
+    match NAME. If a <command> is specified, the first word of the command is
+    automatically used to set this value.
+
+  log-level LEVEL set
+    Set to 3 or higher to display more and more verbose logging.
+
+  output PATH set
+    Set the path to write profile data to. Default: "profile".
+
+  help on
+  --help
+    Display this screen.
+
+  report on
+    Dump all options to screen.
+EOF
+}
+#. ----
+
+#. == Logging
+#. Here I define a couple of little logging functions, so I can handle that more
+#. easily. All log messages are printed to stderr.
+
+#. [,shell]
+#. .Logging Functions
+#. ----
+function log ()
+{
+    level=$1
+    shift
+    echo "log-${level}: ${*}"
+}
+
+function logLevel ()
+{
+    level=$1; shift
+
+    if (( ${options[log-level]} >= ${level} ))
+    then
+        log "${level}" $@
+    fi
+}
+
+function log0 () { logLevel 0 $@; }
+function log1 () { logLevel 1 $@; }
+function log2 () { logLevel 2 $@; }
+function log3 () { logLevel 3 $@; }
+function log4 () { logLevel 4 $@; }
+function log5 () { logLevel 5 $@; }
+#. ----
+
+#. == PID Resolution
+#. I need a PID to be able to sample the stack. This function resolves the PID
+#. from the set of options. If you set both PID and name, the PID is overwritten
+#. by the one discovered from name. Finally, if you set a command, I'll use the
+#. first word of that command as the name, run the command, and profile it for
+#. you.
+#. [,shell]
+#. .Resolve PID
+#. ----
+function resolvePID
+{
+    log4 "Resolving PID"
+
+    if [ -n "${options[command]}" ]
+    then
+        log5 "Got a command: ${options[command]}"
+        command="${options[command]}"
+        options[name]=$(echo "${command}" | awk '{print $1}')
+
+        # We have to run the command in the background in order to get a PID.
+        eval "${command}&"
+    fi
+
+    if [ -n "${options[name]}" ]
+    then
+        log5 "Got a name: ${options[name]}"
+        options[pid]=$(pidof -sxo\%PPID "${options[name]}")
+    fi
+
+    if [ -z "${options[pid]}" ]
+    then
+        if [ -n "${options[command]}" ]
+        then
+            log1 "Warning: Command exited before I could sample its stack!"
+            exit 5;
+        else
+            log0 "Error: Missing either command, PID or program name.\n"
+            printHelp
+            exit 3
+        fi
+    fi
+
+    log5 "Got a PID: ${options[pid]}"
+}
+#. ----
+
+#. == Sample the Stack
+#. To generate the profile, I need to sample the stack repeatedly. This function
+#. accomplishes that.
+#. [,shell]
+#. .Sample Stack
+#. ----
+function sampleTheStack
+{
+    gdb -ex ""\
+	      -ex ""\
+	      -batch -p "${options[pid]}" 2> /dev/null >> "${options[output]}"
+}
+#. ----
+
+#. == Main Program
+#. [,shell]
+#. Main Program
+#. ----
+parseOptions $*
+
+log2 "Program Start"
+log3 "Report options"
+reportOptions
+
+log3 "Print help"
+if [ "${options[help]}" = "on" ]
+then
+    printHelp
+    exit 2
+fi
+
+log3 "Resolve PID"
+resolvePID
+
+if [ -n "${options[output]}" ]
+then
+    rm -f "${options[output]}"
+fi
+
+case "${options[operation]}" in
+    sample)
+        sampleTheStack
+        ;;
+    profile)
+        for i in $(seq 1 500)
+        do
+            sampleTheStack
+            sleep 0.1
+        done
+        ;;
+    *)
+        log0 "Error: invalid operation %s\n" "${options[operation]}"
+        exit 4
+        ;;
+esac
+log2 "Program complete"
+#. ----

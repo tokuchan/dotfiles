@@ -1,0 +1,7 @@
+#!/bin/bash
+# Try to run batcat if installed, else run cat
+if which batcat > /dev/null; then
+    exec batcat $@
+else
+    exec cat $@
+fi
