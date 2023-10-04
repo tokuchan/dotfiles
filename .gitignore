@@ -160,3 +160,6 @@ cython_debug/
 #.idea/
 
 nohup.out
+
+# Ignore fish_variables as they should be local
+fish/.config/fish/fish_variables
