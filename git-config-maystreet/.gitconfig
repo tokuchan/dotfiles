@@ -47,7 +47,8 @@
 	last = log -l HEAD
 	lg = log -p
 	pos = push --set-upstream origin
-	p = push --set-upstream
+	p = pull
+	pp = push
 	remotes = remote -v
 	rs = restore --staged
 	st = status
