@@ -49,6 +49,7 @@
 	lg = log
 	pos = push --set-upstream origin
 	p = pull
+	pp = push
 	remotes = remote -v
 	rs = restore --staged
 	st = status
