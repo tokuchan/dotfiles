@@ -20,23 +20,48 @@
 #. == Primary Targets
 #.. Default Target
 .PHONY: all
-all:
+all::
 
 #.. Clean Target
 .PHONY: clean
 clean::
 
-foo: bar
-	ls
+#. == Utilty Macros
+#.. Project Root
+top := $(shell git rev-parse --show-toplevel)
+
+#. == Submodules
+#. All submodules are installed in the `submodules` directory. Therefore, I
+#. just need to initialize and check them out.
+.PHONY: submodules
+submodules:
+	git submodule sync
+	git submodule init
+	git submodule update
+
+#. == Build Autojump Package
+#. This package is in a submodule, so I will need submodules to work with it.
+#. Otherwise, I just need to install it to the stowage directory. I will put it in
+#. unidev.
+.PHONY: autojump
+autojump: submodules
+	cd submodules/autojump && ./install.py -p $(top)/unidev/.local/
+
+all:: autojump
+clean::
+	rm -f $(top)/unidev/.local/bin/autojump
+	rm -f $(top)/unidev/.local/bin/autojump_argparse.py
+	rm -f $(top)/unidev/.local/bin/autojump_data.py
+	rm -f $(top)/unidev/.local/bin/autojump_match.py
+	rm -f $(top)/unidev/.local/bin/autojump_utils.py
+	rm -rf $(top)/unidev/.local/share/autojump/
+	rm -rf $(top)/unidev/.local/share/man/
 
 #. == Appendix: Processing this file to produce documentation
 #. This file is designed to be produced into documentation. To do so, run the
 #. following PERL script on the file, then pipe the results to `asciidoctor-pdf`.
 #. The target `doc` is provided, which will produce all documentation to the `doc`
 #. directory.
-
-foo: bar
-	ls
 
 #. === Weave Script
 #. [,perl]

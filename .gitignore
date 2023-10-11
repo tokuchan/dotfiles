@@ -163,3 +163,13 @@ nohup.out
 
 # Ignore fish_variables as they should be local
 fish/.config/fish/fish_variables
+
+# Ignore autojump package install
+unidev/.local/bin/autojump
+unidev/.local/bin/autojump_argparse.py
+unidev/.local/bin/autojump_data.py
+unidev/.local/bin/autojump_match.py
+unidev/.local/bin/autojump_utils.py
+unidev/.local/share/autojump/
+unidev/.local/share/man/
+
