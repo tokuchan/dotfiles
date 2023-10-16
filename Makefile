@@ -61,8 +61,13 @@ clean:: autojump-clean
 .PHONY: rust
 rust: export CARGO_HOME := $(shell readlink -f ./rust/.local/share/rust/cargo)
 rust: export RUSTUP_HOME := $(shell readlink -f ./rust/.local/share/rust/rustup)
+rust: rustup := $(CARGO_HOME)/bin/rustup
 rust: rust/.local/share/rust/rustup.sh
 	./rust/.local/share/rust/rustup.sh --no-modify-path -q -y --default-toolchain stable
+	mkdir -p rust/.local/share/bash-completion/completions
+	$(rustup) completions bash > rust/.local/share/bash-completion/completions/rustup
+	mkdir -p rust/.config/fish/completions
+	$(rustup) completions fish > rust/.config/fish/completions/rustup.fish
 
 .PHONY: rust-clean
 rust-clean:
