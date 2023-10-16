@@ -57,6 +57,21 @@ clean::
 	rm -rf $(top)/unidev/.local/share/autojump/
 	rm -rf $(top)/unidev/.local/share/man/
 
+#. == Build Rust Package
+#. This package requires I configure and run a special installer, which
+#. downloads and installs Rust from the official project pages. As usual, I will
+#. install it to a stowage directory.
+.PHONY: rust
+rust: export CARGO_HOME := $(shell readlink -f ./rust/.local/share/rust/cargo)
+rust: export RUSTUP_HOME := $(shell readlink -f ./rust/.local/share/rust/rustup)
+rust: rust/.local/share/rust/rustup.sh
+	./rust/.local/share/rust/rustup.sh --no-modify-path -q -y --default-toolchain stable
+
+all:: rust
+clean::
+	rm -rf rust/.local/share/rust/rustup
+	rm -rf rust/.local/share/rust/cargo
+
 #. == Appendix: Processing this file to produce documentation
 #. This file is designed to be produced into documentation. To do so, run the
 #. following PERL script on the file, then pipe the results to `asciidoctor-pdf`.
