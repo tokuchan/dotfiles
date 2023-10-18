@@ -1,3 +1,3 @@
-function ..
-cd ..
+function .. --description 'alias ..=cd ..'
+  cd .. $argv; 
 end
