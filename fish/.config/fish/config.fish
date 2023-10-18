@@ -1,6 +1,6 @@
 # Ensure that dotfiles packages are available to run
 set -gx PATH $PATH ~/.local/bin
-set -gx MANPATH $MANPATH ~/.local/man
+set -gx MANPATH $MANPATH ~/.local/man:
 
 # Tell subprograms to use bash
 set -x SHELL /bin/bash
