@@ -5,7 +5,7 @@
 # Otherwise, prompt a branch and switch to it.
 
 if (( $# == 0 )); then
-    git switch $(git branch | sed -e's,..,,' | fzf)
+    git switch $(git branch | sed -e's,..,,' | fzf --preview='git changes {}')
 elif [[ $1 == '--help' ]]; then
     cat <<"EOF"
 NAME
