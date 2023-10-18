@@ -1,0 +1,2 @@
+#!/bin/bash
+git stash list | sed -n -E 's/^(stash@\{.\}): .*\{/{ "stash-id": "\1", /p' | mlr --ijson --opprint cat
