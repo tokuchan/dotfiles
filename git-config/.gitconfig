@@ -38,7 +38,7 @@
 	branches = branch -a
 	changes = "log --pretty='format:%(trailers:key=Change-Id,valueonly,separator=%x2C) %C(dim green) %<(12,trunc)%ar %C(bold magenta)%h%Creset %C(green)%<(24,trunc)%an %C(italic #ff8800)%s' --graph"
 	logs = "log --no-merges --max-count=15 --pretty='format:%C(dim green) %<(12,trunc)%ar %C(bold magenta)%h%Creset %C(green)%<(24,trunc)%an %C(italic #ff8800)%s' --graph"
-	patches = "log --no-merges --max-count=15 --pretty='format:%C(dim green) %<(12,trunc)%ar %C(bold magenta)%h%Creset %C(green)%<(24,trunc)%an %C(italic #ff8800)%s' --graph patches...master"
+	patches = "log --no-merges --max-count=15 --pretty='format:%(trailers:key=Change-Id,valueonly,separator=%x2C) %C(dim green) %<(12,trunc)%ar %C(bold magenta)%h%Creset %C(green)%<(24,trunc)%an %C(italic #ff8800)%s' --graph patches...master"
 	last = "log --pretty='format:%C(dim green) %<(12,trunc)%ar %C(bold magenta)%h%Creset %C(green)%<(24,trunc)%an %C(italic #ff8800)%s' --max-count=1"
 	ready = diff --cached
 	remotes = remote -v
