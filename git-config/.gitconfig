@@ -36,8 +36,10 @@
 [alias]
 	aliases = !$HOME/.local/bin/aliases.py
 	branches = branch -a
-	changes = log --pretty=format:'%Cred%h%x09%Creset%(trailers:key=Change-Id,valueonly,separator=%x2C)%x09%Cgreen%s%Creset'
-	patches = log --oneline patches...master
+	changes = "log --pretty='format:%(trailers:key=Change-Id,valueonly,separator=%x2C) %C(dim green) %<(12,trunc)%ar %C(bold magenta)%h%Creset %C(green)%<(24,trunc)%an %C(italic #ff8800)%s' --graph"
+	logs = "log --no-merges --max-count=15 --pretty='format:%C(dim green) %<(12,trunc)%ar %C(bold magenta)%h%Creset %C(green)%<(24,trunc)%an %C(italic #ff8800)%s' --graph"
+	patches = "log --no-merges --max-count=15 --pretty='format:%C(dim green) %<(12,trunc)%ar %C(bold magenta)%h%Creset %C(green)%<(24,trunc)%an %C(italic #ff8800)%s' --graph patches...master"
+	last = "log --pretty='format:%C(dim green) %<(12,trunc)%ar %C(bold magenta)%h%Creset %C(green)%<(24,trunc)%an %C(italic #ff8800)%s' --max-count=1"
 	remotes = remote -v
 	stashes = stash list
 	stashes = stash list
@@ -45,7 +47,6 @@
 
 	do = "!f () { cd $(git rev-parse --show-toplevel); $*; }; f"
 	fix = "!f() { $EDITOR $(git diff --name-only); }; f"
-	last = log -l HEAD
 	save = "!f () { cd -- ${GIT_PREFIX:-.}; git stash push -m\"$(git state)\" $@; }; f"
 	tree = log --all --graph --decorate --oneline --simplify-by-decoration
 	unstage = reset HEAD --
@@ -57,7 +58,6 @@
 	cp = cherry-pick
 	df = diff
 	fo = fetch origin
-	log-pretty = "log --no-merges --max-count=15 --pretty=\"format:%C(dim green) %<(12,trunc)%ar %C(bold magenta)%h%Creset %C(green)%<(24,trunc)%an %C(italic\n#ff8800)%s\" --graph"
 	lg = log
 	pos = push --set-upstream origin
 	p = pull
