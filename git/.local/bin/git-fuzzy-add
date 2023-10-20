@@ -2,7 +2,12 @@
 # If there are no parameters, give the user options, and then add -e the results.
 # Otherwise, if there are parameters, pass them directly to add.
 if (( $# == 0 )); then
-	git add -e -- $(git status --porcelain | sed -n -e 's,^ M,,p' | fzf -m --preview='echo {} | sed -e"s,^.* ,," | xargs git diff' | sed -e's,^.* ,,')
+	targets=$(git status --porcelain | sed -n -e 's,^ M,,p' | fzf -m --preview='git do readlink -f $(echo {} | sed -e"s,^.* ,,") | xargs git diff' | sed -e's,^.* ,,')
+	if [ -n "${targets}" ]; then
+		git do git add -e -- ${targets}
+	else
+		echo Skipping actual add since nothing was selected.
+	fi
 else
-	git add $@
+	git do git add $@
 fi
