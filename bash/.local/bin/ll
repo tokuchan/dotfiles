@@ -2,7 +2,7 @@
 # Smart wrapper for ls.
 
 if command -v lsd && (( $(command lsd >/dev/null 2>&1; echo $?) == 0 )); then
-  lsd -al1GgL --group-dirs=first --header --hyperlink=always --date=+%y-%m-%dT%H:%M:%S $@
+  lsd -alGg --group-dirs=first --header --hyperlink=always --date=+%y-%m-%dT%H:%M:%S $@
 elif command -v exa && (( $(command exa >/dev/null 2>&1; echo $?) == 0 )); then
   exa -lbah --icons --colour-scale $@
 else
