@@ -1,0 +1,10 @@
+#!/bin/bash
+# Smart wrapper for ls.
+
+if command -v lsd; then
+  lsd -al1GgL --group-dirs=first --header --hyperlink=always --date=+%y-%m-%dT%H:%M:%S $@
+elif command -v exa; then
+  exa -lbah --icons --colour-scale $@
+else
+  ls -a --author -F --full-time --group-directories-first -h --hyperlink=always -l -L -r --time-style=full-iso -t -v $@
+fi

@@ -1,0 +1,19 @@
+#!/bin/bash
+# Universal "look" tool. Given a path or (eventually) a URL, tries to do the sane thing to show it to you.
+
+path=${1:-.}
+shift
+
+if [[ -d $path ]]; then
+  exec ll $path
+else
+  if command -v batcat; then
+    exec batcat $path
+  elif command -v less; then
+    exec less $path
+  elif command -v more; then
+    exec more $path
+  else
+    exec cat $path
+  fi
+fi
