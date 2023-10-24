@@ -7,13 +7,19 @@ shift
 if [[ -d $path ]]; then
   exec ll $path
 else
-  if command -v batcat; then
-    exec batcat $path
-  elif command -v less; then
-    exec less $path
-  elif command -v more; then
-    exec more $path
+  fileType=$(file -bLZ --mime-type $path)
+  re='^text/'
+  if [[ "${fileType}" =~ $re ]]; then
+    if command -v batcat; then
+      exec batcat $path
+    elif command -v less; then
+      exec less $path
+    elif command -v more; then
+      exec more $path
+    else
+      exec cat $path
+    fi
   else
-    exec cat $path
+    xdg-open $path
   fi
 fi
