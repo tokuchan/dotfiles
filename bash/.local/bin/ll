@@ -1,9 +1,9 @@
 #!/bin/bash
 # Smart wrapper for ls.
 
-if command -v lsd; then
+if command -v lsd && (( $(command lsd >/dev/null 2>&1; echo $?) == 0 )); then
   lsd -al1GgL --group-dirs=first --header --hyperlink=always --date=+%y-%m-%dT%H:%M:%S $@
-elif command -v exa; then
+elif command -v exa && (( $(command exa >/dev/null 2>&1; echo $?) == 0 )); then
   exa -lbah --icons --colour-scale $@
 else
   ls -a --author -F --full-time --group-directories-first -h --hyperlink=always -l -L -r --time-style=full-iso -t -v $@
