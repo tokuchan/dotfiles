@@ -703,6 +703,12 @@ nil : Otherwise, return nil and run next lineup function."
   (setq xref-backend-functions (lsp--xref-backend))
   (setq completion-at-point-functions (lsp-completion-at-point))
 
+  ;; Set up key bindings to make HJKL switch windows in normal mode
+  (evil-define-key 'normal 'global "K" 'evil-window-up)
+  (evil-define-key 'normal 'global "J" 'evil-window-down)
+  (evil-define-key 'normal 'global "H" 'evil-window-left)
+  (evil-define-key 'normal 'global "L" 'evil-window-right)
+
   ;; Automatically resume previous layout, based on the directory in which EMACS is started.
   (desktop-save-mode)
   (desktop-read)
