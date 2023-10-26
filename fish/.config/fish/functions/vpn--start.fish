@@ -16,10 +16,11 @@ function vpn--start
     if sudo resolvectl dns tun0 10.98.16.41 10.98.16.42 2> /dev/null
         echo -e '\rTest ping'
         ping -c1 gerrit.corp.maystreet.com
-        break
+        return 0
     end
     echo -n .
     sleep 2
   end
-  echo -e '\rDone'
+  echo -e "\rFailed\n"
+  return 1
 end
