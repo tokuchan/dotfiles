@@ -22,3 +22,9 @@ then
 	alias cat=batcat
 	alias less=batcat
 fi
+
+# Aliases for ripgrep
+if [ -n "$(which rg 2> /dev/null)" ]
+then
+	alias rgf='rg --files | rg'
+fi
