@@ -10,11 +10,11 @@ else
   fileType=$(file -bLZ --mime-type $path)
   re='^text/'
   if [[ "${fileType}" =~ $re ]]; then
-    if command -v batcat; then
+    if command -v batcat 2>&1 > /dev/null; then
       exec batcat $path
-    elif command -v less; then
+    elif command -v less 2>&1 > /dev/null; then
       exec less $path
-    elif command -v more; then
+    elif command -v more 2>&1 > /dev/null; then
       exec more $path
     else
       exec cat $path
