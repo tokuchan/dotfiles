@@ -116,6 +116,12 @@ Options:
   cpus  (default: 6)     Specify the number of CPUs to expose to the container.
   path  (defautl: build-debug/bin) Specify the path to image-internal executables. Prepends the CWD automatically.
 EOF
+
+echo
+echo Available Images
+echo
+docker images --format=json | jq -r '.[].Names | select( . != null )[]'
+
 	exit
 fi
 
