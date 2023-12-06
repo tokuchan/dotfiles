@@ -624,6 +624,13 @@ before packages are loaded."
   (setq read-process-output-max (* 1024 1024))
   (setq compilation-skip-threshold 2)
 
+  ;; Define handy function to generate path::line for point under cursor.
+  (defun show-location ()
+    "Show the full path to the current point, including line number."
+    (interactive)
+    (message (concat (buffer-file-name) (format-mode-line "::%l")))
+    (kill-new (file-truename (concat "file:" (buffer-file-name) (format-mode-line "::%l")))))
+
   ;; Define handy function to insert Gerrit-style Change-Id trailers at the cursor
   (defun insert-change-id ()
     "Insert a Gerrit-style Change-Id at the cursor."
