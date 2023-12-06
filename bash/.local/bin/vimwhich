@@ -1,0 +1,5 @@
+#!/bin/bash
+# Open the located file in vim
+file="$1"
+shift
+vim $@ $(which $file)
