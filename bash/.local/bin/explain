@@ -1,0 +1,3 @@
+#!/bin/bash
+# Run the supplied command with --help and pipe to less -FR
+$@ --help | less -FR
