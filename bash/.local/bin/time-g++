@@ -1,0 +1,29 @@
+#!/bin/bash
+file=$*
+oSeen=0
+for arg in $*
+do
+    if [ $oSeen == 1 ]
+    then
+        #echo "OSEEN!"
+        file=$arg
+        #echo "arg now: $arg"
+        #echo "file now: $file"
+        break
+    fi
+    case $arg in
+        *.cpp)
+            #echo "CPP SEEN"
+            file = $arg
+            echo $file
+            break
+        ;;
+        -o)
+            oSeen=1
+            #echo "O SET!"
+            continue
+        ;;
+    esac
+    #echo "$arg: $file"
+done
+/usr/bin/time -f "%M ${file}" -o ~/offenders.list -a g++ $*

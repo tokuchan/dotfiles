@@ -1,4 +1,3 @@
-function ll --wraps='ls -lba' --wraps='ls -lba #' --wraps='ls -lba ' --description 'alias ll=ls -lba '
-  ls -lbah --icons --colour-scale $argv
-        
+function ll --wraps=ls --description 'List contents of directory using long format'
+    ~/.local/bin/ll $argv
 end

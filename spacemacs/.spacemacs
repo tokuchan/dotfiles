@@ -42,6 +42,7 @@ This function should only modify configuration layer settings."
      csv
      shell-scripts
      asciidoc
+     emacs-lisp
      git
      helm
      (lsp :variables
@@ -57,6 +58,7 @@ This function should only modify configuration layer settings."
           lsp-use-lsp-ui nil
           )
      ;; markdown
+     multiple-cursors
      ;;(org :variables
      ;;     ;; Bullets from Mayan numbers
      ;;     ;;org-superstar-headline-bullets-list '("𝋡","𝋢","𝋣","𝋤")
@@ -410,8 +412,8 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil the frame is maximized when Emacs starts up.
    ;; Takes effect only if `dotspacemacs-fullscreen-at-startup' is nil.
-   ;; (default nil) (Emacs 24.4+ only)
-   dotspacemacs-maximized-at-startup nil
+   ;; (default t) (Emacs 24.4+ only)
+   dotspacemacs-maximized-at-startup t
 
    ;; If non-nil the frame is undecorated when Emacs starts up. Combine this
    ;; variable with `dotspacemacs-maximized-at-startup' in OSX to obtain
@@ -427,6 +429,11 @@ It should only modify the values of Spacemacs settings."
    ;; the transparency level of a frame when it's inactive or deselected.
    ;; Transparency can be toggled through `toggle-transparency'. (default 90)
    dotspacemacs-inactive-transparency 90
+
+   ;; A value from the range (0..100), in increasing opacity, which describes the
+   ;; transparency level of a frame background when it's active or selected. Transparency
+   ;; can be toggled through `toggle-background-transparency'. (default 90)
+   dotspacemacs-background-transparency 90
 
    ;; If non-nil show the titles of transient states. (default t)
    dotspacemacs-show-transient-state-title t
@@ -702,6 +709,12 @@ nil : Otherwise, return nil and run next lineup function."
   ;; Set a few LSP-related variables
   (setq xref-backend-functions (lsp--xref-backend))
   (setq completion-at-point-functions (lsp-completion-at-point))
+
+  ;; Set up key bindings to make HJKL switch windows in normal mode
+  (evil-define-key 'normal 'global "K" 'evil-window-up)
+  (evil-define-key 'normal 'global "J" 'evil-window-down)
+  (evil-define-key 'normal 'global "H" 'evil-window-left)
+  (evil-define-key 'normal 'global "L" 'evil-window-right)
 
   ;; Automatically resume previous layout, based on the directory in which EMACS is started.
   (desktop-save-mode)

@@ -1,0 +1,25 @@
+#!/bin/bash
+# Universal "look" tool. Given a path or (eventually) a URL, tries to do the sane thing to show it to you.
+
+path=${1:-.}
+shift
+
+if [[ -d $path ]]; then
+  exec ll $path
+else
+  fileType=$(file -bLZ --mime-type $path)
+  re='^text/'
+  if [[ "${fileType}" =~ $re ]]; then
+    if command -v batcat 2>&1 > /dev/null; then
+      exec batcat $path
+    elif command -v less 2>&1 > /dev/null; then
+      exec less $path
+    elif command -v more 2>&1 > /dev/null; then
+      exec more $path
+    else
+      exec cat $path
+    fi
+  else
+    xdg-open $path
+  fi
+fi

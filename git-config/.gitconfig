@@ -34,33 +34,39 @@
 	editor = nvim -O
 
 [alias]
-	a = add
 	aliases = !$HOME/.local/bin/aliases.py
-	br = branch
 	branches = branch -a
+	changes = "log-pretty --no-merges --max-count=15 --graph"
+	patches = "changes patches...master"
+	last = "log-pretty --max-count=1"
+	log-pretty = "!f () { git log --pretty='format:%(trailers:key=Change-Id,valueonly,separator=%x2C) %C(dim green) %<(12,trunc)%ar %C(bold magenta)%h%Creset %C(green)%<(24,trunc)%an %C(italic #ff8800)%s' $@; }; f"
+	ready = diff --cached
+	remotes = remote -v
+	sweep = clean -fdi
+	tags = tag
+
+	do = "!f () { cd $(git rev-parse --show-toplevel); $*; }; f"
+	fix = "!f() { $EDITOR $(git diff --name-only); }; f"
+	save = "!f () { cd -- ${GIT_PREFIX:-.}; git stash push -m\"$(git state)\" $@; }; f"
+	tree = log --all --graph --decorate --oneline --simplify-by-decoration
+	unstage = reset HEAD --
+
+	a = add
+	br = branch
 	c = commit
 	co = checkout
 	cp = cherry-pick
 	df = diff
-	fix = "!f() { $EDITOR $(git diff --name-only); }; f"
 	fo = fetch origin
-	last = log -l HEAD
-	log-pretty = "log --no-merges --max-count=15 --pretty=\"format:%C(dim green) %<(12,trunc)%ar %C(bold magenta)%h%Creset %C(green)%<(24,trunc)%an %C(italic\n#ff8800)%s\" --graph"
 	lg = log
 	pos = push --set-upstream origin
 	p = pull
 	pp = push
-	remotes = remote -v
 	rs = restore --staged
 	st = status
-	stashes = stash list
 	sw = switch
-	tags = tag
-	tree = log --all --graph --decorate --oneline --simplify-by-decoration
 	tg = tag
-	unstage = reset HEAD --
 	regen-aliases = "!for a in $($HOME/dev/config/aliases.py -f simple -D); do fish -c alias g$a='g $a'; done"
-	patches = log --oneline patches...master
 	gpush = push gerrit patches:refs/for/master
 	log-exclude = "!f() { br=$(git branch --show-current); git log \"${br}\" --not $(git for-each-ref --format='%(refname)' refs/heads/ | grep -v \"refs/heads/${br}\") $*; }; f"
 	current-branch = "!f() { test -z \"${1}\" && git rev-parse --abbrev-ref HEAD || echo $1; }; f"
@@ -71,13 +77,11 @@
 	rebase-patches = "!f(){ b=$(git current-branch); git switch patches && git rebase && git switch \"${b}\"; }; f"
 	send = "!f() { br=$(git current-branch); pt=\"${*:-$(git log --oneline --no-abbrev-commit | head -1 | cut -d' ' -f1)}\"; test \"${br}\" != patches && git switch patches && (git cherry-pick \"${pt}\" || git cherry-pick --abort) && git switch \"${br}\"; git log --oneline patches...master; }; f"
 	pwd = "!f () { cd -- ${GIT_PREFIX:-.}; pwd | sed -e \"s|\"$(git do pwd)/\"||\"; }; f"
-	do = "!f () { cd $(git rev-parse --show-toplevel); $*; }; f"
 	state = "!f () { cd -- ${GIT_PREFIX:-.}; echo \"{\\\"branch\\\":\\\"$(git rev-parse --abbrev-ref HEAD)\\\",\\\"cwd\\\":\\\"$(git pwd)\\\",\\\"commit\\\":\\\"$(git log --pretty=format:\"%H\\\",\\\"log\\\":\\\"%s\"|head -1)\\\"}\" | jq $*; }; f"
-	stsh = "!f () { cd -- ${GIT_PREFIX:-.}; git stash push -m\"$(git state)\"; }; f"
 	sl = "!f () { cd -- ${GIT_PREFIX:-.}; git stash list | grep \": {\" | cut -d':' -f1,3- | sed 's/^/{\"ref\":\"/;s/: {/\",/' | jq -s . | jq $*; }; f"
 	sr = "!f () { cd -- ${GIT_PREFIX:-.}; git sl | jq \".[] | select(.branch==$(git state .branch)) | select(.cwd==$(git state .cwd))\" | jq $*; }; f"
-	changed = log --pretty=format:'%Cred%h%x09%Creset%(trailers:key=Change-Id,valueonly,separator=%x2C)%x09%Cgreen%s%Creset'
 	f = fuzzy-fetch
+	g = goto
 
 [pull]
 	rebase = false

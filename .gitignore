@@ -165,11 +165,16 @@ nohup.out
 fish/.config/fish/fish_variables
 
 # Ignore autojump package install
-unidev/.local/bin/autojump
-unidev/.local/bin/autojump_argparse.py
-unidev/.local/bin/autojump_data.py
-unidev/.local/bin/autojump_match.py
-unidev/.local/bin/autojump_utils.py
-unidev/.local/share/autojump/
-unidev/.local/share/man/
+autojump/.local/bin/autojump
+autojump/.local/bin/autojump_argparse.py
+autojump/.local/bin/autojump_data.py
+autojump/.local/bin/autojump_match.py
+autojump/.local/bin/autojump_utils.py
+autojump/.local/share/autojump/
+autojump/.local/share/man/
 
+# Ignore rust install
+rust/.local/share/rust/rustup
+rust/.local/share/rust/cargo
+rust/.config/fish/completions/
+rust/.local/share/bash-completion/

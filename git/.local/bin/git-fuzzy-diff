@@ -4,10 +4,8 @@
 if (( $# == 0 )); then
 	targets=$(git status --porcelain | sed -n -e 's,^ M,,p' | fzf -m --preview='git do readlink -f $(echo {} | sed -e"s,^.* ,,") | xargs git diff' | sed -e's,^.* ,,')
 	if [ -n "${targets}" ]; then
-		git do git add -e -- ${targets}
-	else
-		echo Skipping actual add since nothing was selected.
+		git do git diff -- ${targets}
 	fi
 else
-	git do git add $@
+	git do git diff $@
 fi

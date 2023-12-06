@@ -34,30 +34,34 @@
 	editor = vim -O
 
 [alias]
-	a = add
 	aliases = !$HOME/dev/config/aliases.py
-	br = branch -a
 	branches = branch -a
+	remotes = remote -v
+	stashes = stash list
+	tags = tag
+	tree = log --all --graph --decorate --oneline --simplify-by-decoration
+
+	fix = "!f() { $EDITOR $(git diff --name-only); }; f"
+	last = log -l HEAD
+	save = "!f () { cd -- ${GIT_PREFIX:-.}; git stash push -m\"$(git state)\" $@; }; f"
+	unstage = reset HEAD --
+
+	a = add
+	br = branch -a
 	c = commit
 	co = checkout
 	cp = cherry-pick
 	df = diff
-	fix = "!f() { $EDITOR $(git diff --name-only); }; f"
 	fo = fetch origin
-	last = log -l HEAD
 	lg = log -p
 	pos = push --set-upstream origin
 	p = pull
 	pp = push
-	remotes = remote -v
 	rs = restore --staged
 	st = status
-	stashes = stash list
+	state = "!f () { cd -- ${GIT_PREFIX:-.}; echo \"{\\\"branch\\\":\\\"$(git rev-parse --abbrev-ref HEAD)\\\",\\\"cwd\\\":\\\"$(git pwd)\\\",\\\"commit\\\":\\\"$(git log --pretty=format:\"%H\\\",\\\"log\\\":\\\"%s\"|head -1)\\\"}\" | jq $*; }; f"
 	sw = switch
-	tags = tag
-	tree = log --all --graph --decorate --oneline --simplify-by-decoration
 	tg = tag
-	unstage = reset HEAD --
 	regen-aliases = "!for a in $($HOME/dev/config/aliases.py -f simple -D); do fish -c alias g$a='g $a'; done"
 	f = fuzzy-fetch
 	g = goto

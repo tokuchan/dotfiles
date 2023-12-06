@@ -34,7 +34,7 @@ def cli(show_alias_definitions: bool, format: str):
 
     aliases__processed: OrderedDict[str, str] = OrderedDict()
 
-    for alias in sorted(aliases):
+    for alias in aliases:
         alias = re.sub(r"\x1b\[m", "", alias)
         alias = re.sub(r"\x1b\[?1h", "", alias)
         alias = re.sub(r"^alias\.", "", alias)
