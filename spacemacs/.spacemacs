@@ -686,7 +686,7 @@ nil : Otherwise, return nil and run next lineup function."
   ;; Don't forget to install the font: M-x fire-code-mode-install-fonts
   (use-package fira-code-mode
     :config (fira-code-mode-set-font)
-    :custom (fira-code-mode-disabled-ligatures '("x" "[]"))
+    :custom (fira-code-mode-disabled-ligatures '("x" "[]" "<=" ">="))
     :hook prog-mode)
 
   (add-hook 'git-commit-mode-hook (lambda () (setq fill-column 72)))
