@@ -631,6 +631,16 @@ before packages are loaded."
     (message (concat (buffer-file-name) (format-mode-line "::%l")))
     (kill-new (file-truename (concat "file:" (buffer-file-name) (format-mode-line "::%l")))))
 
+  (defun make-org-reference ()
+    "Generate an orgmode file reference to the pointed location."
+    (interactive)
+    (message (concat (buffer-file-name) (format-mode-line "::%l")))
+    (kill-new (concat "[[file:"
+                      (buffer-file-name)
+                      (format-mode-line "::%l][")
+                      (file-name-nondirectory (buffer-file-name))
+                      (format-mode-line "::%l]]"))))
+
   ;; Define handy function to insert Gerrit-style Change-Id trailers at the cursor
   (defun insert-change-id ()
     "Insert a Gerrit-style Change-Id at the cursor."
