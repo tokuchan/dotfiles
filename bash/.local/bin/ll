@@ -6,5 +6,6 @@ if command -v lsd && (( $(command lsd >/dev/null 2>&1; echo $?) == 0 )); then
 elif command -v exa && (( $(command exa >/dev/null 2>&1; echo $?) == 0 )); then
   exa -lbah --icons --colour-scale --colour=always $@ | less -RF
 else
-  ls --color=always -a --author -F --full-time --group-directories-first -h --hyperlink=always -l -L -r --time-style=full-iso -t -v $@ | less -RF
+  #ls --color=always -a --author -F --full-time --group-directories-first -h --hyperlink=always -l -L -r --time-style=full-iso -t -v $@ | less -rF
+  ls --color=always -a -F --full-time --group-directories-first -h --hyperlink=always -L -r -t -v $@ | tail -n +2 | less -rF
 fi
