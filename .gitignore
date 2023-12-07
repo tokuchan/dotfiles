@@ -178,3 +178,6 @@ rust/.local/share/rust/rustup
 rust/.local/share/rust/cargo
 rust/.config/fish/completions/
 rust/.local/share/bash-completion/
+
+# Ignore spacemacs python-support
+spacemacs/python-support
