@@ -77,6 +77,15 @@ rust-clean:
 all:: rust
 clean:: rust-clean
 
+#. == Install jujitsu VCS program
+#. This package requires rust to complete, and offers a VCS interface on top of
+#. git.
+.PHONY: jujitsu
+jujitsu: rust
+	cargo install --locked --bin jj jj-cli
+
+all:: jujitsu
+
 #. == Appendix: Processing this file to produce documentation
 #. This file is designed to be produced into documentation. To do so, run the
 #. following PERL script on the file, then pipe the results to `asciidoctor-pdf`.
