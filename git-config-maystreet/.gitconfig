@@ -65,6 +65,7 @@
 	regen-aliases = "!for a in $($HOME/dev/config/aliases.py -f simple -D); do fish -c alias g$a='g $a'; done"
 	f = fuzzy-fetch
 	g = goto
+	do = "!f () { cd $(git rev-parse --show-toplevel); $*; }; f"
 
 [pull]
 	rebase = false
