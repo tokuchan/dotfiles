@@ -28,3 +28,7 @@ if [ -n "$(which rg 2> /dev/null)" ]
 then
 	alias rgf='rg --files | rg'
 fi
+
+# Fix ll in some places
+alias l='command l'
+alias ll='command ll'
