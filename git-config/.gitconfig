@@ -64,7 +64,6 @@
 	pp = push
 	rs = restore --staged
 	st = status
-	sw = switch
 	tg = tag
 	regen-aliases = "!for a in $($HOME/dev/config/aliases.py -f simple -D); do fish -c alias g$a='g $a'; done"
 	gpush = push gerrit patches:refs/for/master
@@ -78,8 +77,8 @@
 	send = "!f() { br=$(git current-branch); pt=\"${*:-$(git log --oneline --no-abbrev-commit | head -1 | cut -d' ' -f1)}\"; test \"${br}\" != patches && git switch patches && (git cherry-pick \"${pt}\" || git cherry-pick --abort) && git switch \"${br}\"; git log --oneline patches...master; }; f"
 	pwd = "!f () { cd -- ${GIT_PREFIX:-.}; pwd | sed -e \"s|\"$(git do pwd)/\"||\"; }; f"
 	state = "!f () { cd -- ${GIT_PREFIX:-.}; echo \"{\\\"branch\\\":\\\"$(git rev-parse --abbrev-ref HEAD)\\\",\\\"cwd\\\":\\\"$(git pwd)\\\",\\\"commit\\\":\\\"$(git log --pretty=format:\"%H\\\",\\\"log\\\":\\\"%s\"|head -1)\\\"}\" | jq $*; }; f"
-	sl = "!f () { cd -- ${GIT_PREFIX:-.}; git stash list | grep \": {\" | cut -d':' -f1,3- | sed 's/^/{\"ref\":\"/;s/: {/\",/' | jq -s . | jq $*; }; f"
-	sr = "!f () { cd -- ${GIT_PREFIX:-.}; git sl | jq \".[] | select(.branch==$(git state .branch)) | select(.cwd==$(git state .cwd))\" | jq $*; }; f"
+	stl = "!f () { cd -- ${GIT_PREFIX:-.}; git stash list | grep \": {\" | cut -d':' -f1,3- | sed 's/^/{\"ref\":\"/;s/: {/\",/' | jq -s . | jq $*; }; f"
+	str = "!f () { cd -- ${GIT_PREFIX:-.}; git stl | jq \".[] | select(.branch==$(git state .branch)) | select(.cwd==$(git state .cwd))\" | jq $*; }; f"
 	f = fuzzy-fetch
 	g = goto
 
