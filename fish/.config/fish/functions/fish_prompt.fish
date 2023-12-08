@@ -117,7 +117,7 @@ function fish_prompt
     # jujitsu
     set -l prompt_jj (jj status --ignore-working-copy --color=always 2>/dev/null | sed -n 's/Working copy : //p')
     test -n "$prompt_jj"
-    and _nim_prompt_wrapper $retc G $prompt_jj
+    and _nim_prompt_wrapper $retc J $prompt_jj
 
     # Battery status
     type -q acpi
