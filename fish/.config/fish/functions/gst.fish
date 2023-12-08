@@ -4,6 +4,9 @@ function gst --wraps='g st' --description 'alias gst=g st'
   echo
   g st $argv; 
   echo
+  echo Smartlog:
+  g sl 'stack()'
+  echo
   echo Changes:
   echo
   g changes;
