@@ -37,6 +37,7 @@
 	aliases = !$HOME/.local/bin/aliases.py
 	branches = branch -a
 	changes = "log-pretty --no-merges --max-count=15 --graph"
+	detach = "checkout --detach"
 	patches = "changes patches...master"
 	last = "log-pretty --max-count=1"
 	log-pretty = "!f () { git log --pretty='format:%(trailers:key=Change-Id,valueonly,separator=%x2C) %C(dim green) %<(12,trunc)%ar %C(bold magenta)%h%Creset %C(green)%<(24,trunc)%an %C(italic #ff8800)%s' $@; }; f"
