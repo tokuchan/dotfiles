@@ -82,7 +82,7 @@
 	stl = "!f () { cd -- ${GIT_PREFIX:-.}; git stash list | grep \": {\" | cut -d':' -f1,3- | sed 's/^/{\"ref\":\"/;s/: {/\",/' | jq -s . | jq $*; }; f"
 	str = "!f () { cd -- ${GIT_PREFIX:-.}; git stl | jq \".[] | select(.branch==$(git state .branch)) | select(.cwd==$(git state .cwd))\" | jq $*; }; f"
 	f = fuzzy-fetch
-	g = goto
+	g = "!f() { git branchless switch --interactive $@ || git-goto $@; }; f"
 
 [pull]
 	rebase = false
@@ -109,3 +109,9 @@
 	ignoreSubmodules = dirty
 [advice]
 	skippedCherryPicks = false
+
+[difftool "branchless"]
+	cmd = git-branchless difftool --read-only --dir-diff $LOCAL $REMOTE
+
+[mergetool "branchless"]
+	cmd = git-branchless difftool $LOCAL $REMOTE --base $BASE --output $MERGED
