@@ -4,7 +4,7 @@
 if command -v lsd && (( $(command lsd >/dev/null 2>&1; echo $?) == 0 )); then
   lsd -alGg --group-dirs=first --header --hyperlink=always --color=always --date=+%y-%m-%dT%H:%M:%S $@ | less -RF
 elif command -v exa && (( $(command exa >/dev/null 2>&1; echo $?) == 0 )); then
-  exa -lbah --icons --colour-scale --colour=always $@ | less -RF
+  exa -lbah --sort=name --icons --colour-scale --colour=always $@ | less -RF
 else
   #ls --color=always -a --author -F --full-time --group-directories-first -h --hyperlink=always -l -L -r --time-style=full-iso -t -v $@ | less -rF
   ls --color=always -a -F --full-time --group-directories-first -h --hyperlink=always -L -r -t -v $@ | tail -n +2 | less -rF
