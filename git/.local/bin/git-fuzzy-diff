@@ -4,8 +4,8 @@
 if (( $# == 0 )); then
 	targets=$(git status --porcelain | sed -n -e 's,^ M,,p' | fzf -m --preview='git do readlink -f $(echo {} | sed -e"s,^.* ,,") | xargs git diff' | sed -e's,^.* ,,')
 	if [ -n "${targets}" ]; then
-		git do git diff -- ${targets}
+		git do git diff --color -- ${targets} | less -FR
 	fi
 else
-	git do git diff $@
+	git do git diff --color $@ | less -FR
 fi
