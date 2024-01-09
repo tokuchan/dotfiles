@@ -2,8 +2,6 @@ function gst --wraps='g st' --description 'alias gst=g st'
   echo
   echo Status:
   echo
-  g st $argv; 
-  echo
   echo Smartlog:
   g sl 'stack()'
   echo
@@ -14,4 +12,6 @@ function gst --wraps='g st' --description 'alias gst=g st'
   echo Patches:
   echo
   g patches;
+  echo
+  g st $argv; 
 end
