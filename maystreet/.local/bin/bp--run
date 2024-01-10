@@ -44,6 +44,7 @@ do
       pop
     ;;
     --)
+      shift
       break 2
     ;;
     *)
