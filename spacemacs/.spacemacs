@@ -825,7 +825,7 @@ This function is called at the very end of Spacemacs initialization."
  '(cursor ((t (:background "DarkGoldenrod2" :distant-foreground "black" :foreground "black" :weight heavy))))
  '(hi-blue ((t (:background "pale turquoise" :foreground "dim gray"))))
  '(hi-blue-b ((t (:foreground "deep sky blue" :weight bold))))
- '(hl-line ((t (:background "000"))))
+ '(hl-line ((t (:extend t :background "#212026" :height 1.25))))
  '(mouse ((t (:background "white"))))
  '(term-color-cyan ((t (:background "#146780" :foreground "#28def0")))))
 )
