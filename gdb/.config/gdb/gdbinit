@@ -8,3 +8,5 @@ register_libstdcxx_printers (None)
 end
 
 set history save on
+
+add-auto-load-safe-path /usr/local/lib64/libstdc++.so.6.0.31-gdb.py
