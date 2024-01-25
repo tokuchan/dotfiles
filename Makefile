@@ -84,6 +84,12 @@ clean:: rust-clean
 jujitsu: rust
 	cargo install --locked --bin jj jj-cli
 
+#. == Install typest text processor
+.PHONY: typest
+typest: rust
+	cargo install --git https://github.com/typst/typst typst-cli
+
+all:: typest
 
 #. == Appendix: Processing this file to produce documentation
 #. This file is designed to be produced into documentation. To do so, run the
