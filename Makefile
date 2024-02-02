@@ -91,6 +91,13 @@ typest: rust
 
 all:: typest
 
+#. == Install just command runner
+.PHONY: just
+just: rust
+	cargo install just
+
+all:: just
+
 #. == Appendix: Processing this file to produce documentation
 #. This file is designed to be produced into documentation. To do so, run the
 #. following PERL script on the file, then pipe the results to `asciidoctor-pdf`.
