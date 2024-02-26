@@ -181,3 +181,4 @@ rust/.local/share/bash-completion/
 
 # Ignore spacemacs python-support
 spacemacs/python-support
+neovide

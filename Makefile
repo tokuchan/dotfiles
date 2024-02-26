@@ -63,11 +63,16 @@ rust: export CARGO_HOME := $(shell readlink -f ./rust/.local/share/rust/cargo)
 rust: export RUSTUP_HOME := $(shell readlink -f ./rust/.local/share/rust/rustup)
 rust: rustup := $(CARGO_HOME)/bin/rustup
 rust: rust/.local/share/rust/rustup.sh
-	./rust/.local/share/rust/rustup.sh --no-modify-path -q -y --default-toolchain stable
-	mkdir -p rust/.local/share/bash-completion/completions
-	$(rustup) completions bash > rust/.local/share/bash-completion/completions/rustup
-	mkdir -p rust/.config/fish/completions
-	$(rustup) completions fish > rust/.config/fish/completions/rustup.fish
+	if command -v rustup; \
+	then \
+		echo 'Rust installed already.'; \
+	else \
+		./rust/.local/share/rust/rustup.sh --no-modify-path -q -y --default-toolchain stable; \
+		mkdir -p rust/.local/share/bash-completion/completions; \
+		$(rustup) completions bash > rust/.local/share/bash-completion/completions/rustup; \
+		mkdir -p rust/.config/fish/completions; \
+		$(rustup) completions fish > rust/.config/fish/completions/rustup.fish; \
+	fi
 
 .PHONY: rust-clean
 rust-clean:
@@ -97,6 +102,22 @@ just: rust
 	cargo install just
 
 all:: just
+
+#. == Build and prepare the neovide package.
+.PHONY: neovide
+neovide: submodules/neovide/target/release/neovide
+	mkdir -p neovide/.local/bin
+	cp submodules/neovide/target/release/neovide neovide/.local/bin/neovide
+
+.PHONY: neovide-clean
+neovide-clean:
+	rm -rf neovide
+
+submodules/neovide/target/release/neovide: rust
+	cd submodules/neovide && cargo build --release 
+
+all:: neovide
+clean:: neovide-clean
 
 #. == Appendix: Processing this file to produce documentation
 #. This file is designed to be produced into documentation. To do so, run the
