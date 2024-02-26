@@ -23,6 +23,7 @@ declare -A options
 options[image]=gcc13
 options[root]=on
 options[cpus]=4
+options[as]=6144000000
 options[path]="build-debug/bin"
 
 for arg in $*
@@ -115,6 +116,7 @@ Options:
 
   image (default: gcc13) Specify the build image to run the command within.
   cpus  (default: 6)     Specify the number of CPUs to expose to the container.
+  as    (default: 6144000000)  Specify the address space size, to limit RAM usage.
   path  (defautl: build-debug/bin) Specify the path to image-internal executables. Prepends the CWD automatically.
 EOF
 
