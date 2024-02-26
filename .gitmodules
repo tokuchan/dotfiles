@@ -4,3 +4,6 @@
 [submodule "submodules/autojump"]
 	path = submodules/autojump
 	url = git@github.com:wting/autojump.git
+[submodule "astro-nvim/.config/nvim"]
+	path = astro-nvim/.config/nvim
+	url = https://github.com/AstroNvim/AstroNvim
