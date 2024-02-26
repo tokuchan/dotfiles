@@ -7,3 +7,6 @@
 [submodule "astro-nvim/.config/nvim"]
 	path = astro-nvim/.config/nvim
 	url = https://github.com/AstroNvim/AstroNvim
+[submodule "submodules/neovide"]
+	path = submodules/neovide
+	url = git@github.com:neovide/neovide.git
