@@ -54,6 +54,19 @@ autojump-clean:
 all:: autojump
 clean:: autojump-clean
 
+#. == Install lazygit (go package)
+.PHONY: lazygit
+lazygit: GOBIN := $(top)/lazygit/.local/bin/
+lazygit:
+	if command -v go; \
+	then \
+		cd submodules/lazygit && GOBIN=$(GOBIN) go install; \
+	else \
+		echo 'Go not installed.'; \
+	fi
+
+all:: lazygit
+
 #. == Build Rust Package
 #. This package requires I configure and run a special installer, which
 #. downloads and installs Rust from the official project pages. As usual, I will
@@ -118,6 +131,18 @@ submodules/neovide/target/release/neovide: rust
 
 all:: neovide
 clean:: neovide-clean
+
+.PHONY: evcxr
+evcxr: rust
+	cargo install evcxr_repl
+
+all:: evcxr
+
+.PHONY: bacon
+bacon: rust
+	cargo install bacon
+
+all:: bacon
 
 #. == Appendix: Processing this file to produce documentation
 #. This file is designed to be produced into documentation. To do so, run the

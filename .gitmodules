@@ -10,3 +10,6 @@
 [submodule "submodules/neovide"]
 	path = submodules/neovide
 	url = git@github.com:neovide/neovide.git
+[submodule "submodules/lazygit"]
+	path = submodules/lazygit
+	url = git@github.com:jesseduffield/lazygit.git
