@@ -156,6 +156,12 @@ bacon: rust
 
 all:: bacon
 
+.PHONY: zoxide
+zoxide: rust
+	cargo install --release zoxide
+
+all:: zoxide
+
 #. == Appendix: Processing this file to produce documentation
 #. This file is designed to be produced into documentation. To do so, run the
 #. following PERL script on the file, then pipe the results to `asciidoctor-pdf`.
