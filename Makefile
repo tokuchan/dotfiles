@@ -146,19 +146,19 @@ clean:: neovide-clean
 
 .PHONY: evcxr
 evcxr: rust
-	cargo install --release evcxr_repl
+	cargo install evcxr_repl
 
 all:: evcxr
 
 .PHONY: bacon
 bacon: rust
-	cargo install --release bacon
+	cargo install bacon
 
 all:: bacon
 
 .PHONY: zoxide
 zoxide: rust
-	cargo install --release zoxide
+	cargo install zoxide
 
 all:: zoxide
 
