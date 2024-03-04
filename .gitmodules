@@ -13,3 +13,6 @@
 [submodule "submodules/lazygit"]
 	path = submodules/lazygit
 	url = git@github.com:jesseduffield/lazygit.git
+[submodule "submodules/lastpass-cli"]
+	path = submodules/lastpass-cli
+	url = git@github.com:lastpass/lastpass-cli.git

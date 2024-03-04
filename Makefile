@@ -67,6 +67,18 @@ lazygit:
 
 all:: lazygit
 
+#. == Build lastpass-cli package for stow
+.PHONY: lastpass-cli
+lastpass-cli: submodules
+	mkdir -p lastpass-cli/.local
+	cd submodules/lastpass-cli && cmake -DCMAKE_INSTALL_PREFIX:PATH=$(top)/lastpass-cli/.local/ && make all install
+
+.PHONY: lastpass-cli-clean
+	cd submodules/lastpass-cli && make clean
+
+all:: lastpass-cli
+clean:: lastpass-cli-clean
+
 #. == Build Rust Package
 #. This package requires I configure and run a special installer, which
 #. downloads and installs Rust from the official project pages. As usual, I will
