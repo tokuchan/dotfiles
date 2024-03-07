@@ -159,6 +159,10 @@ all:: bacon
 .PHONY: zoxide
 zoxide: rust
 	cargo install zoxide
+	mkdir -p zoxide/.config/fish/conf.d
+	mkdir -p zoxide/.bashrc.d
+	zoxide init --cmd=cd fish > zoxide/.config/fish/conf.d/zoxide.fish
+	zoxide init --cmd=cd bash > zoxide/.bashrc.d/zoxide.bash
 
 all:: zoxide
 
