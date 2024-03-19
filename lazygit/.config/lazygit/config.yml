@@ -63,7 +63,7 @@ gui:
 git:
     paging:
         colorArg: always
-        pager: ""
+        pager: "diffr.sh"
         useConfig: false
         externalDiffCommand: ""
     commit:
@@ -175,10 +175,10 @@ keybinding:
         recentRepos: <enter>
         allBranchesLogGraph: a
     files:
-        commitChanges: C
+        commitChanges: c
         commitChangesWithoutHook: w
         amendLastCommit: A
-        commitChangesWithEditor: c
+        commitChangesWithEditor: C
         findBaseCommitForFixup: <c-f>
         confirmDiscard: x
         ignoreFile: i

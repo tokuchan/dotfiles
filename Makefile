@@ -166,6 +166,12 @@ zoxide: rust
 
 all:: zoxide
 
+.PHONY: diffr
+diffr: rust
+	cargo install diffr
+
+all:: diffr
+
 #. == Appendix: Processing this file to produce documentation
 #. This file is designed to be produced into documentation. To do so, run the
 #. following PERL script on the file, then pipe the results to `asciidoctor-pdf`.
