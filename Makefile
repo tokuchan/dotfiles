@@ -54,13 +54,33 @@ autojump-clean:
 all:: autojump
 clean:: autojump-clean
 
+#. == Install go if needed
+.PHONY: golang
+golang: go1.22.2.linux-amd64.tar.gz .golang.installed
+
+.golang.installed:
+	rm -rf $(HOME)/.local/go && tar -C $(HOME)/.local -xf go1.22.2.linux-amd64.tar.gz
+	touch .golang.installed
+
+go1.22.2.linux-amd64.tar.gz:
+	wget https://go.dev/dl/go1.22.2.linux-amd64.tar.gz
+
+golang-clean:
+	rm -rf $(HOME)/.local/go
+	rm -f go1.22.2.linux-amd64
+	rm -f .golang.installed
+
+all:: golang
+clean:: golang-clean
+
 #. == Install lazygit (go package)
 .PHONY: lazygit
 lazygit: GOBIN := $(top)/lazygit/.local/bin/
-lazygit:
-	if command -v go; \
+lazygit: GO := $(HOME)/.local/go/bin/go
+lazygit: golang
+	if command -v $(GO); \
 	then \
-		cd submodules/lazygit && GOBIN=$(GOBIN) go install; \
+		cd submodules/lazygit && GOBIN=$(GOBIN) $(GO) install; \
 	else \
 		echo 'Go not installed.'; \
 	fi
