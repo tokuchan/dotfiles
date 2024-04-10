@@ -185,3 +185,5 @@ neovide
 lazygit
 lastpass-cli/
 zoxide/
+.golang.installed
+go1.22.2.linux-amd64.tar.gz

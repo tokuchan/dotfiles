@@ -59,6 +59,7 @@ clean:: autojump-clean
 golang: go1.22.2.linux-amd64.tar.gz .golang.installed
 
 .golang.installed:
+	mkdir -p $(HOME)/.local/go
 	rm -rf $(HOME)/.local/go && tar -C $(HOME)/.local -xf go1.22.2.linux-amd64.tar.gz
 	touch .golang.installed
 
@@ -91,7 +92,7 @@ all:: lazygit
 .PHONY: lastpass-cli
 lastpass-cli: submodules
 	mkdir -p lastpass-cli/.local
-	cd submodules/lastpass-cli && cmake -DCMAKE_INSTALL_PREFIX:PATH=$(top)/lastpass-cli/.local/ && make all install
+	cd submodules/lastpass-cli && mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX:PATH=$(top)/lastpass-cli/.local/ .. && make all install
 
 .PHONY: lastpass-cli-clean
 	cd submodules/lastpass-cli && make clean

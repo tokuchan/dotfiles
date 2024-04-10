@@ -1,1 +1,1 @@
-cmake pkg-config automake git make libxml2
+build-essential gcc-12 cmake pkg-config automake git make libxml2 stow
