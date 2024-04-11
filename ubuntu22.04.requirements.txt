@@ -1,1 +1,0 @@
-build-essential gcc-12 cmake pkg-config automake git make libxml2-dev libssl-dev libcurl4-openssl-dev libfontconfig-dev libfreetype-dev stow kitty fish ninja-build gettext cmake unzip curl bat exa fzf libglib2.0-dev libgtk-3-dev libgnutls28-dev libncurses-dev podman libtool libvterm-dev
