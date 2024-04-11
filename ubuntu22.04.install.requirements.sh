@@ -36,5 +36,8 @@ fzf \
 git-flow \
 kitty \
 podman \
+podman-docker \
 stow \
-unzip 
+unzip \
+doxygen \
+graphviz
