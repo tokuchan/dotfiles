@@ -218,6 +218,24 @@ neovim-clean:
 all:: neovim
 clean:: neovim-clean
 
+#. == Build emacs 29+
+.PHONY: emacs
+emacs: submodules/emacs/Makefile
+	make -C submodules/emacs -j 20 install
+
+submodules/emacs/Makefile: submodules/emacs/configure
+	cd submodules/emacs && ./configure --with-pgtk --prefix=$(top)/emacs/.local/
+
+submodules/emacs/configure: submodules/emacs/configure.ac submodules/emacs/autogen.sh
+	cd submodules/emacs && ./autogen.sh
+
+.PHONY: emacs-clean
+emacs-clean:
+	cd submodules/emacs && git reset --hard HEAD
+
+all:: emacs
+clean:: emacs-clean
+
 #. == Appendix: Processing this file to produce documentation
 #. This file is designed to be produced into documentation. To do so, run the
 #. following PERL script on the file, then pipe the results to `asciidoctor-pdf`.
