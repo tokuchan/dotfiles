@@ -187,3 +187,5 @@ lastpass-cli/
 zoxide/
 .golang.installed
 go1.22.2.linux-amd64.tar.gz
+neovim/.local
+rust/.local/share/fish

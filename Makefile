@@ -17,6 +17,11 @@
 #. along. In case I _can't_, I can make do with a docker image in this repo, but
 #. that's a last resort and quite a pain to use.
 
+#. == Change Default Shell
+#. I need to be able to source shell setup. Therefore, I must change the
+#. default shell.
+SHELL := /bin/bash
+
 #. == Primary Targets
 #.. Default Target
 .PHONY: all
@@ -119,6 +124,7 @@ rust: rust/.local/share/rust/rustup.sh
 		mkdir -p rust/.config/fish/completions; \
 		$(rustup) completions fish > rust/.config/fish/completions/rustup.fish; \
 	fi
+	stow rust
 
 .PHONY: rust-clean
 rust-clean:
@@ -186,6 +192,22 @@ zoxide: rust
 	zoxide init --cmd=cd bash > zoxide/.bashrc.d/zoxide.bash
 
 all:: zoxide
+
+#. == Build the neovim package
+.PHONY: neovim
+neovim: neovim/.local/bin/nvim
+
+neovim/.local/bin/nvim:
+	mkdir -p neovim/.local/bin
+	cd submodules/neovim \
+		&& make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=$(top)/neovim/.local/ install
+
+neovim-clean:
+	rm -rf $(top)/neovim
+	cd submodules/neovim && make clean
+
+all:: neovim
+clean:: neovim-clean
 
 #. == Appendix: Processing this file to produce documentation
 #. This file is designed to be produced into documentation. To do so, run the
