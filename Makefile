@@ -97,7 +97,10 @@ all:: lazygit
 .PHONY: lastpass-cli
 lastpass-cli: submodules
 	mkdir -p lastpass-cli/.local
-	cd submodules/lastpass-cli && mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX:PATH=$(top)/lastpass-cli/.local/ .. && make all install
+	cd submodules/lastpass-cli \
+		&& cmake -DCMAKE_INSTALL_PREFIX:PATH=$(top)/lastpass-cli/.local/ -S . -B build \
+		&& cmake --build build \
+		&& cmake --build build -t install
 
 .PHONY: lastpass-cli-clean
 	cd submodules/lastpass-cli && make clean
