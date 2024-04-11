@@ -196,6 +196,12 @@ zoxide: rust
 
 all:: zoxide
 
+.PHONY: lsd
+lsd: rust
+	cargo install --git https://github.com/lsd-rs/lsd.git --branch master
+
+all:: lsd
+
 #. == Build the neovim package
 .PHONY: neovim
 neovim: neovim/.local/bin/nvim
