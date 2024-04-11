@@ -1,1 +1,1 @@
-build-essential gcc-12 cmake pkg-config automake git make libxml2 stow
+build-essential gcc-12 cmake pkg-config automake git make libxml2-dev libssl-dev libcurl4-openssl-dev libfontconfig-dev libfreetype-dev stow kitty fish ninja-build gettext cmake unzip curl
