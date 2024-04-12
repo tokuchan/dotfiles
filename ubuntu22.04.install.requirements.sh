@@ -24,7 +24,8 @@ libncurses-dev \
 libssl-dev \
 libtool \
 libvterm-dev \
-libxml2-dev
+libxml2-dev \
+libgccjit-12-dev
 
 # Install utilities:
 sudo apt install -yqq \
