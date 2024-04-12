@@ -1,8 +1,7 @@
 function g --wraps=git --description 'alias g=git'
-  if count $argv > /dev/null
-    git $argv; 
-  else
-    lazygit
-    #gst
-  end
+    if count $argv >/dev/null
+        git $argv
+    else
+        lazygit
+    end
 end

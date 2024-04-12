@@ -16,3 +16,9 @@
 [submodule "submodules/lastpass-cli"]
 	path = submodules/lastpass-cli
 	url = git@github.com:lastpass/lastpass-cli.git
+[submodule "submodules/neovim"]
+	path = submodules/neovim
+	url = git@github.com:neovim/neovim.git
+[submodule "submodules/emacs"]
+	path = submodules/emacs
+	url = https://git.savannah.gnu.org/git/emacs.git

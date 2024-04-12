@@ -17,6 +17,11 @@
 #. along. In case I _can't_, I can make do with a docker image in this repo, but
 #. that's a last resort and quite a pain to use.
 
+#. == Change Default Shell
+#. I need to be able to source shell setup. Therefore, I must change the
+#. default shell.
+SHELL := /bin/bash
+
 #. == Primary Targets
 #.. Default Target
 .PHONY: all
@@ -54,13 +59,34 @@ autojump-clean:
 all:: autojump
 clean:: autojump-clean
 
+#. == Install go if needed
+.PHONY: golang
+golang: go1.22.2.linux-amd64.tar.gz .golang.installed
+
+.golang.installed:
+	mkdir -p $(HOME)/.local/go
+	rm -rf $(HOME)/.local/go && tar -C $(HOME)/.local -xf go1.22.2.linux-amd64.tar.gz
+	touch .golang.installed
+
+go1.22.2.linux-amd64.tar.gz:
+	wget https://go.dev/dl/go1.22.2.linux-amd64.tar.gz
+
+golang-clean:
+	rm -rf $(HOME)/.local/go
+	rm -f go1.22.2.linux-amd64
+	rm -f .golang.installed
+
+all:: golang
+clean:: golang-clean
+
 #. == Install lazygit (go package)
 .PHONY: lazygit
 lazygit: GOBIN := $(top)/lazygit/.local/bin/
-lazygit:
-	if command -v go; \
+lazygit: GO := $(HOME)/.local/go/bin/go
+lazygit: golang
+	if command -v $(GO); \
 	then \
-		cd submodules/lazygit && GOBIN=$(GOBIN) go install; \
+		cd submodules/lazygit && GOBIN=$(GOBIN) $(GO) install; \
 	else \
 		echo 'Go not installed.'; \
 	fi
@@ -71,7 +97,10 @@ all:: lazygit
 .PHONY: lastpass-cli
 lastpass-cli: submodules
 	mkdir -p lastpass-cli/.local
-	cd submodules/lastpass-cli && cmake -DCMAKE_INSTALL_PREFIX:PATH=$(top)/lastpass-cli/.local/ && make all install
+	cd submodules/lastpass-cli \
+		&& cmake -DCMAKE_INSTALL_PREFIX:PATH=$(top)/lastpass-cli/.local/ -S . -B build \
+		&& cmake --build build \
+		&& cmake --build build -t install
 
 .PHONY: lastpass-cli-clean
 	cd submodules/lastpass-cli && make clean
@@ -98,6 +127,7 @@ rust: rust/.local/share/rust/rustup.sh
 		mkdir -p rust/.config/fish/completions; \
 		$(rustup) completions fish > rust/.config/fish/completions/rustup.fish; \
 	fi
+	stow rust
 
 .PHONY: rust-clean
 rust-clean:
