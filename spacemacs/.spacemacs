@@ -597,6 +597,9 @@ default it calls `spacemacs/load-spacemacs-env' which loads the environment
 variables declared in `~/.spacemacs.env' or `~/.spacemacs.d/.spacemacs.env'.
 See the header of this file for more information."
   (spacemacs/load-spacemacs-env)
+
+  ;; Set TZ properly
+  (setenv "TZ" "America/New_York")
 )
 
 (defun dotspacemacs/user-init ()
@@ -731,9 +734,6 @@ nil : Otherwise, return nil and run next lineup function."
   ;; Set up key bindings to make HJKL switch windows in normal mode
   (spacemacs/set-leader-keys "ww" 'spacemacs/window-transient-state/body)
 
-  ;; Set TZ properly
-  (setenv "TZ" "America/New_York")
-
   ;; Automatically resume previous layout, based on the directory in which EMACS is started.
   (desktop-save-mode)
   (desktop-read)
@@ -800,6 +800,7 @@ This function is called at the very end of Spacemacs initialization."
  '(minimap-mode t)
  '(minimap-window-location 'right)
  '(mouse-autoselect-window t)
+ '(org-duration-format '(("h") (special . 2)))
  '(org-fontify-done-headline nil)
  '(org-fontify-todo-headline nil)
  '(org-log-into-drawer t)
