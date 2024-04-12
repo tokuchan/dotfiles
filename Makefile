@@ -196,6 +196,11 @@ zoxide: rust
 
 all:: zoxide
 
+.PHONY: diffr
+diffr: rust
+	cargo install diffr
+all:: diffr
+
 .PHONY: lsd
 lsd: rust
 	cargo install --git https://github.com/lsd-rs/lsd.git --branch master

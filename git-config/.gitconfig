@@ -115,3 +115,5 @@
 
 [mergetool "branchless"]
 	cmd = git-branchless difftool $LOCAL $REMOTE --base $BASE --output $MERGED
+[submodule]
+	recurse = true
