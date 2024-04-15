@@ -241,6 +241,17 @@ emacs-clean:
 all:: emacs
 clean:: emacs-clean
 
+#. Set up git-repo symlink for install
+repo:
+	mkdir -p repo/.local/bin
+	ln -s $$(readlink -f ./submodules/git-repo/repo) repo/.local/bin/repo
+
+repo-clean:
+	rm -rf repo
+
+all:: repo
+clean:: repo-clean
+
 #. == Appendix: Processing this file to produce documentation
 #. This file is designed to be produced into documentation. To do so, run the
 #. following PERL script on the file, then pipe the results to `asciidoctor-pdf`.

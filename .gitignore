@@ -191,3 +191,4 @@ neovim/.local
 rust/.local/share/fish
 emacs/.local
 fonts/.fonts
+repo/.local/bin/repo

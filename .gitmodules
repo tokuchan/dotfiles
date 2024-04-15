@@ -22,3 +22,6 @@
 [submodule "submodules/emacs"]
 	path = submodules/emacs
 	url = https://git.savannah.gnu.org/git/emacs.git
+[submodule "submodules/git-repo"]
+	path = submodules/git-repo
+	url = https://gerrit.googlesource.com/git-repo
