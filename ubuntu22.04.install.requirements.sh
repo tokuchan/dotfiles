@@ -8,6 +8,7 @@ cmake \
 gcc-12 \
 gettext \
 git \
+gitk \
 make \
 ninja-build \
 pkg-config
@@ -41,4 +42,5 @@ podman-docker \
 stow \
 unzip \
 doxygen \
-graphviz
+graphviz \
+ripgrep
