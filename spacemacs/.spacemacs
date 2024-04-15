@@ -790,7 +790,7 @@ This function is called at the very end of Spacemacs initialization."
  '(minimap-mode t)
  '(minimap-window-location 'right)
  '(mouse-autoselect-window t)
- '(org-duration-format '(("h") (special . 2)))
+ '(org-duration-format '(("h") (special . h:mm)))
  '(org-fontify-done-headline nil)
  '(org-fontify-todo-headline nil)
  '(org-log-into-drawer t)
