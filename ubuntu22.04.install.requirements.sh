@@ -43,4 +43,6 @@ stow \
 unzip \
 doxygen \
 graphviz \
-ripgrep
+ripgrep \
+devhelp \
+cppreference-doc-en-html
