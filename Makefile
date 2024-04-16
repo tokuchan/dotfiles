@@ -44,6 +44,13 @@ submodules:
 	git submodule init
 	git submodule update
 
+#. == Install system dependencies
+.PHONY: system-dependencies
+system-dependencies:
+	./ubuntu22.04.install.requirements.sh
+
+all:: system-dependencies
+
 #. == Build Autojump Package
 #. This package is in a submodule, so I will need submodules to work with it.
 #. Otherwise, I just need to install it to the stowage directory. I will put it in
@@ -251,6 +258,13 @@ repo-clean:
 
 all:: repo
 clean:: repo-clean
+
+#. == Install default stowage
+.PHONY: install-default
+install-default: install-default.sh
+	./install-default.sh
+
+all:: install-default
 
 #. == Appendix: Processing this file to produce documentation
 #. This file is designed to be produced into documentation. To do so, run the
