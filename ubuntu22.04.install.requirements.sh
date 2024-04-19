@@ -45,4 +45,5 @@ doxygen \
 graphviz \
 ripgrep \
 devhelp \
-cppreference-doc-en-html
+cppreference-doc-en-html \
+pass
