@@ -852,7 +852,11 @@ This function is called at the very end of Spacemacs initialization."
  '(shell-pop-universal-key "C-a")
  '(shell-pop-window-position 'top)
  '(warning-suppress-log-types '((comp)))
- '(warning-suppress-types '((lsp-mode))))
+ '(warning-suppress-types '((lsp-mode)))
+ '(yas-snippet-dirs
+   '("/home/seans/.emacs.d/core/../private/snippets/"
+     "/home/seans/.emacs.d/layers/+completion/auto-completion/local/snippets"
+     yasnippet-snippets-dir "/home/seans/.config/yas/snippets/")))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
