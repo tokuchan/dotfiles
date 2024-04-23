@@ -13,7 +13,6 @@ stow git-config
 #. == Then editors
 stow emacs
 stow spacemacs
-stow nvim
 stow astro-nvim
 
 #. == Shells and terminals next
