@@ -264,7 +264,7 @@ emacs: submodules/emacs/Makefile
 
 submodules/emacs/Makefile: submodules/emacs/configure
 	#cd submodules/emacs && ./configure --with-native-compilation=yes --with-pgtk --prefix=$(top)/emacs/.local/
-	cd submodules/emacs && ./configure --without-pgtk --with-native-compilation=yes --with-x --prefix=$(top)/emacs/.local/
+	cd submodules/emacs && ./configure --with-native-compilation=yes --with-x --prefix=$(top)/emacs/.local/
 
 submodules/emacs/configure: submodules/emacs/configure.ac submodules/emacs/autogen.sh
 	cd submodules/emacs && ./autogen.sh
