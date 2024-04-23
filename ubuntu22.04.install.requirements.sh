@@ -26,7 +26,10 @@ libssl-dev \
 libtool \
 libvterm-dev \
 libxml2-dev \
-libgccjit-12-dev
+libgccjit-12-dev \
+libgif-dev \
+libpng-dev \
+libpng++-dev
 
 # Install utilities:
 sudo apt install -yqq \
