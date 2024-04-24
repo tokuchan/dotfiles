@@ -263,8 +263,8 @@ emacs: submodules/emacs/Makefile
 	make -C submodules/emacs -j 20 install
 
 submodules/emacs/Makefile: submodules/emacs/configure
-	#cd submodules/emacs && ./configure --with-native-compilation=yes --with-pgtk --prefix=$(top)/emacs/.local/
-	cd submodules/emacs && ./configure --with-native-compilation=yes --with-x --prefix=$(top)/emacs/.local/
+	cd submodules/emacs && ./configure --with-native-compilation=yes --with-pgtk --prefix=$(top)/emacs/.local/
+	#cd submodules/emacs && ./configure --with-native-compilation=yes --with-x --prefix=$(top)/emacs/.local/
 
 submodules/emacs/configure: submodules/emacs/configure.ac submodules/emacs/autogen.sh
 	cd submodules/emacs && ./autogen.sh
