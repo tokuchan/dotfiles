@@ -53,4 +53,5 @@ graphviz \
 ripgrep \
 devhelp \
 cppreference-doc-en-html \
-pass
+pass \
+jq
