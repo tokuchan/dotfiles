@@ -31,8 +31,8 @@ This function should only modify configuration layer settings."
    dotspacemacs-configuration-layer-path '()
 
    ;; List of configuration layers to load.
-   dotspacemacs-configuration-layers '(
-     ;; ----------------------------------------------------------------
+   dotspacemacs-configuration-layers '(javascript
+                                       ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
      ;; `M-m f e R' (Emacs style) to install them.
@@ -117,7 +117,7 @@ This function should only modify configuration layer settings."
    ;; `:location' property: '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
 
-   dotspacemacs-additional-packages '(nov fira-code-mode gerrit shell-pop org-pivotal sqlite3 exec-path-from-shell)
+   dotspacemacs-additional-packages '(nov fira-code-mode gerrit shell-pop org-pivotal sqlite3 exec-path-from-shell ligature)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -688,6 +688,24 @@ nil : Otherwise, return nil and run next lineup function."
     (c-set-offset 'func-decl-cont '0))
   (add-hook 'c++-mode-hook 'my-c++-mode-hook)
 
+  ;; Add refactoring support to c++ mode
+  (require 'srefactor)
+  (require 'srefactor-lisp)
+
+  ;; OPTIONAL: ADD IT ONLY IF YOU USE C/C++.
+  (semantic-mode 1) ;; -> this is optional for Lisp
+
+  ;;(define-key c-mode-map (kbd "M-RET") 'srefactor-refactor-at-point)
+  ;;(define-key c++-mode-map (kbd "M-RET") 'srefactor-refactor-at-point)
+  ;;(global-set-key (kbd "M-RET o") 'srefactor-lisp-one-line)
+  ;;(global-set-key (kbd "M-RET m") 'srefactor-lisp-format-sexp)
+  ;;(global-set-key (kbd "M-RET d") 'srefactor-lisp-format-defun)
+  ;;(global-set-key (kbd "M-RET b") 'srefactor-lisp-format-buffer)
+
+  ;; Kill clang-format with fire
+  (require 'clang-format)
+  (setq clang-format "none")
+
   ;; nov ePub reader settings
   (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
   (setq nov-text-width 80)
@@ -703,12 +721,38 @@ nil : Otherwise, return nil and run next lineup function."
     (interactive)
     (term-send-raw-string "\C-v"))
 
-  ;; Set up Fira ligatures
-  ;; Don't forget to install the font: M-x fire-code-mode-install-fonts
-  (use-package fira-code-mode
-    :config (fira-code-mode-set-font)
-    :custom (fira-code-mode-disabled-ligatures '("x" "[]" "<=" ">="))
-    :hook prog-mode)
+  ;; This EMACS has built-in ligatures support
+  (use-package ligature
+    :config
+    ;; Enable the "www" ligature in every possible major mode
+    (ligature-set-ligatures 't '("www"))
+    ;; Enable traditional ligature support in eww-mode, if the
+    ;; `variable-pitch' face supports it
+    (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
+    ;; Enable all Cascadia Code ligatures in programming modes
+    (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
+                                         ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
+                                         "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
+                                         "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
+                                         "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
+                                         "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
+                                         "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
+                                         "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
+                                         ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
+                                         "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
+                                         "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
+                                         "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
+                                         "\\\\" "://"))
+    ;; Enables ligature checks globally in all buffers. You can also do it
+    ;; per mode with `ligature-mode'.
+    (global-ligature-mode t))
+
+  ;;;; Set up Fira ligatures
+  ;;;; Don't forget to install the font: M-x fira-code-mode-install-fonts
+  ;;(use-package fira-code-mode
+  ;;  :config (fira-code-mode-set-font)
+  ;;  :custom (fira-code-mode-disabled-ligatures '("x" "[]" "<=" ">="))
+  ;;  :hook prog-mode)
 
   (add-hook 'git-commit-mode-hook (lambda () (setq fill-column 72)))
 
@@ -759,6 +803,7 @@ This function is called at the very end of Spacemacs initialization."
  '(c-doc-comment-style
    '((c-mode . doxygen) (c++-mode . doxygen) (java-mode . javadoc)
      (pike-mode . autodoc)))
+ '(clang-format-style "file")
  '(company-idle-delay 0.02)
  '(compilation-always-kill t)
  '(compilation-ask-about-save nil)
@@ -775,6 +820,7 @@ This function is called at the very end of Spacemacs initialization."
  '(display-line-numbers-type 'visual)
  '(evil-want-Y-yank-to-eol t)
  '(explicit-shell-file-name "/usr/bin/fish")
+ '(flycheck-gcc-args '("--std=c++2a"))
  '(focus-follows-mouse t)
  '(git-gutter:diff-option "-w")
  '(hl-todo-keyword-faces
@@ -784,6 +830,8 @@ This function is called at the very end of Spacemacs initialization."
      ("KLUDGE" . "#b1951d") ("HACK" . "#b1951d") ("TEMP" . "#b1951d")
      ("FIXME" . "#dc752f") ("XXX+" . "#dc752f") ("\\?\\?\\?+" . "#dc752f")))
  '(ispell-dictionary "american")
+ '(lsp-enable-indentation nil)
+ '(lsp-enable-on-type-formatting nil)
  '(lsp-semgrep-scan-jobs 2)
  '(lsp-semgrep-server-command
    '("/home/seans/dotfiles/spacemacs/python-support/semgrep.sh" "lsp"))
@@ -798,17 +846,18 @@ This function is called at the very end of Spacemacs initialization."
  '(org-log-note-clock-out t)
  '(org-log-refile 'note)
  '(package-selected-packages
-   '(ac-ispell ace-jump-helm-line ace-link ace-window adoc-mode aggressive-indent
-               aio all-the-icons annalist anzu async auto-compile auto-complete
-               auto-dictionary auto-highlight-symbol auto-yasnippet avy bind-key
-               bind-map cargo centered-cursor-mode cfrs clang-format
-               clean-aindent-mode closql cmake-mode column-enforce-mode company
-               company-shell compat counsel counsel-gtags csv-mode dash
-               define-word devdocs diminish dired-quick-sort docker docker-tramp
-               dockerfile-mode dotenv-mode dracula-theme drag-stuff dumb-jump
-               editorconfig elisp-def elisp-slime-nav emacsql emacsql-sqlite emr
-               epl esh-help eshell-git-prompt eshell-prompt-extras eshell-z
-               esxml eval-sexp-fu evil evil-anzu evil-args evil-cleverparens
+   '(ac-ispell ace-jump-helm-line ace-link ace-window add-node-modules-path
+               adoc-mode aggressive-indent aio all-the-icons annalist anzu async
+               auto-compile auto-complete auto-dictionary auto-highlight-symbol
+               auto-yasnippet avy bind-key bind-map cargo centered-cursor-mode
+               cfrs clang-format clean-aindent-mode closql cmake-mode
+               column-enforce-mode company company-shell compat counsel
+               counsel-gtags csv-mode dash define-word devdocs diminish
+               dired-quick-sort docker docker-tramp dockerfile-mode dotenv-mode
+               dracula-theme drag-stuff dumb-jump editorconfig elisp-def
+               elisp-slime-nav emacsql emacsql-sqlite emr epl esh-help
+               eshell-git-prompt eshell-prompt-extras eshell-z esxml
+               eval-sexp-fu evil evil-anzu evil-args evil-cleverparens
                evil-collection evil-easymotion evil-ediff evil-escape
                evil-exchange evil-goggles evil-iedit-state evil-indent-plus
                evil-lion evil-lisp-state evil-matchit evil-mc
@@ -821,32 +870,36 @@ This function is called at the very end of Spacemacs initialization."
                flycheck-rust flyspell-correct flyspell-correct-helm font-lock+
                forge fuzzy gerrit ggtags ghub git-commit git-link git-messenger
                git-modes git-timemachine gitignore-templates golden-ratio
-               google-translate goto-chg helm helm-ag helm-c-yasnippet
+               google-translate goto-chg grizzl helm helm-ag helm-c-yasnippet
                helm-company helm-core helm-descbinds helm-flx helm-git-grep
                helm-gtags helm-ls-git helm-lsp helm-make helm-mode-manager
                helm-org helm-projectile helm-purpose helm-swoop helm-themes
                helm-xref hide-comnt highlight-indentation highlight-numbers
-               highlight-parentheses hl-todo ht hungry-delete hybrid-mode hydra
-               iedit imenu-list indent-guide info+ insert-shebang inspector ivy
-               json-mode json-snatcher kv link-hint list-utils lorem-ipsum
-               lsp-mode lsp-origami lsp-treemacs lsp-ui lv macrostep magit
-               magit-section markdown-mode memoize minimap multi-line multi-term
-               mwim nameless nov open-junk-file org-pivotal org-re-reveal
-               org-superstar origami overseer ox-gfm package-lint packed paradox
-               paredit parent-mode password-generator pcre2el persistent-scratch
-               persp-mode pfuture pkg-info popup popwin pos-tip posframe
-               powerline projectile queue quickrun racer rainbow-delimiters
-               reformatter request restart-emacs ron-mode rust-mode s shell-pop
-               shfmt shut-up smartparens smeargle spaceline
+               highlight-parentheses hl-todo ht htmlize hungry-delete
+               hybrid-mode hydra iedit imenu-list impatient-mode import-js
+               indent-guide info+ insert-shebang inspector ivy js-doc js2-mode
+               js2-refactor json-mode json-snatcher kv ligature link-hint
+               list-utils livid-mode lorem-ipsum lsp-mode lsp-origami
+               lsp-treemacs lsp-ui lv macrostep magit magit-section
+               markdown-mode memoize minimap multi-line multi-term
+               multiple-cursors mwim nameless nodejs-repl nov npm-mode
+               open-junk-file org-pivotal org-re-reveal org-superstar origami
+               overseer ox-gfm package-lint packed paradox paredit parent-mode
+               password-generator pcre2el persistent-scratch persp-mode pfuture
+               pkg-info popup popwin pos-tip posframe powerline prettier-js
+               projectile queue quickrun racer rainbow-delimiters reformatter
+               request restart-emacs ron-mode rust-mode s shell-pop shfmt
+               shut-up simple-httpd skewer-mode smartparens smeargle spaceline
                spaceline-all-the-icons spinner sqlite3 srefactor
                stickyfunc-enhance string-edit string-inflection swiper
-               symbol-overlay symon symon-lingr tablist terminal-here toc-org
-               toml-mode transient treemacs treemacs-evil treemacs-icons-dired
-               treemacs-magit treemacs-persp treemacs-projectile treepy
-               undo-tree unfill unkillable-scratch use-package uuidgen
-               vi-tilde-fringe visual-fill-column volatile-highlights vterm
-               which-key window-purpose winum with-editor writeroom-mode
-               ws-butler xterm-color yaml yasnippet yasnippet-snippets))
+               symbol-overlay symon symon-lingr tablist terminal-here tern
+               toc-org toml-mode transient treemacs treemacs-evil
+               treemacs-icons-dired treemacs-magit treemacs-persp
+               treemacs-projectile treepy undo-tree unfill unkillable-scratch
+               use-package uuidgen vi-tilde-fringe visual-fill-column
+               volatile-highlights vterm web-beautify which-key window-purpose
+               winum with-editor writeroom-mode ws-butler xterm-color yaml
+               yasnippet yasnippet-snippets))
  '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
  '(scroll-bar-mode 'right)
  '(shell-pop-full-span t)
