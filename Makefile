@@ -325,5 +325,5 @@ help:
 weave: Makefile.typst
 
 Makefile.typst: Makefile
-	cat Makefile | sed 's,^# ,,g' | awk -v RS= -v ORS="\n\n" '!/#\. /{print "```\n"$$0"\n```\n"}; /^#\./{gsub("#\. ", "", $$0); print $$0}' > $@
+	cat Makefile | sed 's,^# ,,g' | awk -v RS= -v ORS="\n\n" '!/#\. /{print "``""`\n"$$0"\n`""``\n"}; /^#\./{gsub("#\. ", "", $$0); print $$0}' > $@
 	typst compile Makefile.typst Makefile.pdf
