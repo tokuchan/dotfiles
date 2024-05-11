@@ -1,0 +1,6 @@
+#!/bin/bash
+# Rinse the repo, removing untracked and staged changes and straightening up the submodules.
+# Note: this destroys in-progress work! Make sure to stash or commit first!
+git submodule foreach --recursive git clean -xfd \
+&& git submodule sync --recursive \
+&& git restore . --recurse-submodules

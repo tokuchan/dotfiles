@@ -190,4 +190,9 @@ go1.22.2.linux-amd64.tar.gz
 neovim/.local
 rust/.local/share/fish
 emacs/.local
-fonts/.fonts
+repo/.local/bin/repo
+Makefile.pdf
+Makefile.typst
+
+# Ignore windows stuff
+.uuid

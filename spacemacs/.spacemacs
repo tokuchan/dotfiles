@@ -757,9 +757,7 @@ This function is called at the very end of Spacemacs initialization."
  '(ansi-color-names-vector
    ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
  '(c-doc-comment-style
-   '((c-mode . doxygen)
-     (c++-mode . doxygen)
-     (java-mode . javadoc)
+   '((c-mode . doxygen) (c++-mode . doxygen) (java-mode . javadoc)
      (pike-mode . autodoc)))
  '(company-idle-delay 0.02)
  '(compilation-always-kill t)
@@ -769,7 +767,10 @@ This function is called at the very end of Spacemacs initialization."
  '(compilation-scroll-output t)
  '(custom-enabled-themes '(spacemacs-dark))
  '(custom-safe-themes
-   '("fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "ce17f0b935cb4cf9167b384c8fefcff5448f039b89dbd1e45029400bc52b9b33" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default))
+   '("603a831e0f2e466480cdc633ba37a0b1ae3c3e9a4e90183833bc4def3421a961"
+     "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088"
+     "ce17f0b935cb4cf9167b384c8fefcff5448f039b89dbd1e45029400bc52b9b33"
+     "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default))
  '(desktop-save-mode t)
  '(display-line-numbers-type 'visual)
  '(evil-want-Y-yank-to-eol t)
@@ -777,21 +778,11 @@ This function is called at the very end of Spacemacs initialization."
  '(focus-follows-mouse t)
  '(git-gutter:diff-option "-w")
  '(hl-todo-keyword-faces
-   '(("TODO" . "#dc752f")
-     ("NEXT" . "#dc752f")
-     ("THEM" . "#2d9574")
-     ("PROG" . "#4f97d7")
-     ("OKAY" . "#4f97d7")
-     ("DONT" . "#f2241f")
-     ("FAIL" . "#f2241f")
-     ("DONE" . "#86dc2f")
-     ("NOTE" . "#b1951d")
-     ("KLUDGE" . "#b1951d")
-     ("HACK" . "#b1951d")
-     ("TEMP" . "#b1951d")
-     ("FIXME" . "#dc752f")
-     ("XXX+" . "#dc752f")
-     ("\\?\\?\\?+" . "#dc752f")))
+   '(("TODO" . "#dc752f") ("NEXT" . "#dc752f") ("THEM" . "#2d9574")
+     ("PROG" . "#4f97d7") ("OKAY" . "#4f97d7") ("DONT" . "#f2241f")
+     ("FAIL" . "#f2241f") ("DONE" . "#86dc2f") ("NOTE" . "#b1951d")
+     ("KLUDGE" . "#b1951d") ("HACK" . "#b1951d") ("TEMP" . "#b1951d")
+     ("FIXME" . "#dc752f") ("XXX+" . "#dc752f") ("\\?\\?\\?+" . "#dc752f")))
  '(ispell-dictionary "american")
  '(lsp-semgrep-scan-jobs 2)
  '(lsp-semgrep-server-command
@@ -800,26 +791,76 @@ This function is called at the very end of Spacemacs initialization."
  '(minimap-mode t)
  '(minimap-window-location 'right)
  '(mouse-autoselect-window t)
- '(org-duration-format '(("h") (special . 2)))
+ '(org-duration-format '(("h") (special . h:mm)))
  '(org-fontify-done-headline nil)
  '(org-fontify-todo-headline nil)
  '(org-log-into-drawer t)
  '(org-log-note-clock-out t)
  '(org-log-refile 'note)
  '(package-selected-packages
-   '(mwim srefactor stickyfunc-enhance unfill exec-path-from-shell sqlite3 adoc-mode csv-mode fireplace cargo flycheck-rust racer ron-mode rust-mode toml-mode org-pivotal eshell-git-prompt gerrit shfmt reformatter insert-shebang helm-gtags ggtags flycheck-bashate fish-mode counsel-gtags counsel swiper ivy company-shell fira-code-mode symon-lingr ox-gfm org-re-reveal dockerfile-mode docker tablist json-mode docker-tramp aio json-snatcher minimap nov esxml kv unkillable-scratch persistent-scratch yasnippet-snippets xterm-color vterm treemacs-magit terminal-here smeargle shell-pop multi-term lsp-ui lsp-treemacs lsp-origami origami helm-lsp lsp-mode helm-ls-git helm-git-grep helm-company helm-c-yasnippet gitignore-templates git-timemachine git-modes git-messenger git-link fuzzy forge yaml markdown-mode magit ghub closql emacsql-sqlite emacsql treepy magit-section git-commit with-editor transient flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip eshell-z eshell-prompt-extras esh-help company auto-yasnippet yasnippet auto-dictionary ac-ispell auto-complete ws-butler writeroom-mode visual-fill-column winum volatile-highlights vi-tilde-fringe uuidgen undo-tree queue treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil treemacs cfrs pfuture posframe toc-org symon symbol-overlay string-inflection string-edit spaceline-all-the-icons memoize spaceline powerline restart-emacs request rainbow-delimiters quickrun popwin persp-mode password-generator paradox spinner overseer org-superstar open-junk-file nameless multi-line shut-up macrostep lorem-ipsum link-hint inspector info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt helm-xref helm-themes helm-swoop helm-purpose window-purpose imenu-list helm-projectile helm-org helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flycheck-package package-lint flycheck pkg-info epl flycheck-elsa flx-ido flx fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-terminal-cursor-changer evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-easymotion evil-collection annalist evil-cleverparens smartparens evil-args evil-anzu anzu eval-sexp-fu emr iedit clang-format projectile paredit list-utils elisp-slime-nav elisp-def f editorconfig dumb-jump s drag-stuff dired-quick-sort devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol ht dash auto-compile packed compat all-the-icons aggressive-indent ace-window ace-link ace-jump-helm-line helm avy popup helm-core which-key use-package pcre2el hydra lv hybrid-mode font-lock+ evil goto-chg dotenv-mode diminish bind-map bind-key async cmake-mode))
+   '(ac-ispell ace-jump-helm-line ace-link ace-window adoc-mode aggressive-indent
+               aio all-the-icons annalist anzu async auto-compile auto-complete
+               auto-dictionary auto-highlight-symbol auto-yasnippet avy bind-key
+               bind-map cargo centered-cursor-mode cfrs clang-format
+               clean-aindent-mode closql cmake-mode column-enforce-mode company
+               company-shell compat counsel counsel-gtags csv-mode dash
+               define-word devdocs diminish dired-quick-sort docker docker-tramp
+               dockerfile-mode dotenv-mode dracula-theme drag-stuff dumb-jump
+               editorconfig elisp-def elisp-slime-nav emacsql emacsql-sqlite emr
+               epl esh-help eshell-git-prompt eshell-prompt-extras eshell-z
+               esxml eval-sexp-fu evil evil-anzu evil-args evil-cleverparens
+               evil-collection evil-easymotion evil-ediff evil-escape
+               evil-exchange evil-goggles evil-iedit-state evil-indent-plus
+               evil-lion evil-lisp-state evil-matchit evil-mc
+               evil-nerd-commenter evil-numbers evil-surround
+               evil-terminal-cursor-changer evil-textobj-line evil-tutor
+               evil-unimpaired evil-visual-mark-mode evil-visualstar
+               exec-path-from-shell expand-region eyebrowse f fancy-battery
+               fira-code-mode fireplace fish-mode flx flx-ido flycheck
+               flycheck-bashate flycheck-elsa flycheck-package flycheck-pos-tip
+               flycheck-rust flyspell-correct flyspell-correct-helm font-lock+
+               forge fuzzy gerrit ggtags ghub git-commit git-link git-messenger
+               git-modes git-timemachine gitignore-templates golden-ratio
+               google-translate goto-chg helm helm-ag helm-c-yasnippet
+               helm-company helm-core helm-descbinds helm-flx helm-git-grep
+               helm-gtags helm-ls-git helm-lsp helm-make helm-mode-manager
+               helm-org helm-projectile helm-purpose helm-swoop helm-themes
+               helm-xref hide-comnt highlight-indentation highlight-numbers
+               highlight-parentheses hl-todo ht hungry-delete hybrid-mode hydra
+               iedit imenu-list indent-guide info+ insert-shebang inspector ivy
+               json-mode json-snatcher kv link-hint list-utils lorem-ipsum
+               lsp-mode lsp-origami lsp-treemacs lsp-ui lv macrostep magit
+               magit-section markdown-mode memoize minimap multi-line multi-term
+               mwim nameless nov open-junk-file org-pivotal org-re-reveal
+               org-superstar origami overseer ox-gfm package-lint packed paradox
+               paredit parent-mode password-generator pcre2el persistent-scratch
+               persp-mode pfuture pkg-info popup popwin pos-tip posframe
+               powerline projectile queue quickrun racer rainbow-delimiters
+               reformatter request restart-emacs ron-mode rust-mode s shell-pop
+               shfmt shut-up smartparens smeargle spaceline
+               spaceline-all-the-icons spinner sqlite3 srefactor
+               stickyfunc-enhance string-edit string-inflection swiper
+               symbol-overlay symon symon-lingr tablist terminal-here toc-org
+               toml-mode transient treemacs treemacs-evil treemacs-icons-dired
+               treemacs-magit treemacs-persp treemacs-projectile treepy
+               undo-tree unfill unkillable-scratch use-package uuidgen
+               vi-tilde-fringe visual-fill-column volatile-highlights vterm
+               which-key window-purpose winum with-editor writeroom-mode
+               ws-butler xterm-color yaml yasnippet yasnippet-snippets))
  '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
  '(scroll-bar-mode 'right)
  '(shell-pop-full-span t)
  '(shell-pop-shell-type
-   '("ansi-term" "*ansi-term*"
-     (lambda nil
-       (ansi-term shell-pop-term-shell))))
+   '("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell))))
  '(shell-pop-term-shell "/usr/bin/fish")
  '(shell-pop-universal-key "C-a")
  '(shell-pop-window-position 'top)
  '(warning-suppress-log-types '((comp)))
- '(warning-suppress-types '((lsp-mode))))
+ '(warning-suppress-types '((lsp-mode)))
+ '(yas-snippet-dirs
+   '("/home/seans/.emacs.d/core/../private/snippets/"
+     "/home/seans/.emacs.d/layers/+completion/auto-completion/local/snippets"
+     yasnippet-snippets-dir "/home/seans/.config/yas/snippets/")))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
