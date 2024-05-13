@@ -54,4 +54,6 @@ ripgrep \
 devhelp \
 cppreference-doc-en-html \
 pass \
-jq
+jq \
+ranger \
+ddclient
