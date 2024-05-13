@@ -1,6 +1,7 @@
 [user]
 	name = Sean R. Spillane
-	email = sean@spillane.us
+	email = tokuchan@gmail.com
+	signingkey = /home/seans/.ssh/id_ed25519.pub
 
 [color]
 	diff = auto
@@ -117,3 +118,9 @@
 	cmd = git-branchless difftool $LOCAL $REMOTE --base $BASE --output $MERGED
 [submodule]
 	recurse = true
+[credential]
+	helper = store
+[commit]
+	gpgsign = true
+[gpg]
+	format = ssh
