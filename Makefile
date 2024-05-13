@@ -278,6 +278,32 @@ emacs-clean:
 all:: emacs
 clean:: emacs-clean
 
+#. == Install late-model node and npm (for EMACS lsp servers)
+
+#. It so happens that many of the LSP modules are written in JS, and require a
+# late model of node to work properly. Unfortunately, the underlying OS tends to
+# lag far behind, so I install it manually here.
+
+define nvm_install_config_bash
+export NVM_DIR="$$HOME/.nvm"
+[ -s "$$NVM_DIR/nvm.sh" ] && \. "$$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$$NVM_DIR/bash_completion" ] && \. "$$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+endef
+export nvm_install_config_bash
+PROFILE:=/dev/null
+export PROFILE
+
+.nvm-install: system-dependencies
+	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+	echo "$$nvm_install_config_bash" > $$HOME/.bashrc.d/nvm.bashrc
+	touch .nvm-install
+
+.PHONY: node-install # Install latest node.js system
+node-install: .nvm-install
+	bash --login -c 'source $$HOME/.nvm/nvm.sh && nvm install 20'
+
+all:: node-install
+
 #. Set up git-repo symlink for install
 
 repo:
