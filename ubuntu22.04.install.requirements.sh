@@ -56,4 +56,5 @@ cppreference-doc-en-html \
 pass \
 jq \
 ranger \
-ddclient
+ddclient \
+keychain
