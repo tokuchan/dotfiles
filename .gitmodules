@@ -25,3 +25,6 @@
 [submodule "submodules/git-repo"]
 	path = submodules/git-repo
 	url = https://gerrit.googlesource.com/git-repo
+[submodule "submodules/entr"]
+	path = submodules/entr
+	url = git@github.com:eradman/entr.git
