@@ -316,6 +316,28 @@ repo-clean:
 all:: repo
 clean:: repo-clean
 
+#. == Install `entr` for convenient auto-refreshing commands
+
+#. The entr program watches paths and runs commands when they change.
+
+.PHONY: entr
+entr: entr/.local/bin/entr
+
+entr/.local/bin/entr: submodules/entr/configure system-dependencies
+	cd submodules/entr \
+		&& ./configure \
+		&& CFLAGS='-static' make test \
+		&& PREFIX='$(top)/entr/.local' make install
+
+.PHONY: entr-clean
+entr-clean:
+	- rm .entr-receipt
+	- rm -rf entr
+	- cd submodules/entr && make clean
+
+all:: entr
+clean:: entr-clean
+
 #. == Install default stowage
 
 .PHONY: install-default # Install the default stow packages

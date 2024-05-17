@@ -197,3 +197,5 @@ Makefile.typst
 # Ignore windows stuff
 .uuid
 .nvm-install
+.entr-receipt
+entr

@@ -33,7 +33,8 @@ libgccjit-12-dev \
 libgif-dev \
 libpng-dev \
 libpng++-dev \
-libxpm-dev
+libxpm-dev \
+libbsd-dev
 
 # Install utilities:
 sudo apt install -yqq \
