@@ -34,7 +34,8 @@ libgif-dev \
 libpng-dev \
 libpng++-dev \
 libxpm-dev \
-libbsd-dev
+libbsd-dev \
+libzip-dev
 
 # Install utilities:
 sudo apt install -yqq \
