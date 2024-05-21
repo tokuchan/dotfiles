@@ -59,4 +59,5 @@ pass \
 jq \
 ranger \
 ddclient \
-keychain
+keychain \
+sshfs
