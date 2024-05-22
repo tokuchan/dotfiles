@@ -338,6 +338,23 @@ entr-clean:
 all:: entr
 clean:: entr-clean
 
+#. == Install neofetch system-information viewer
+
+.PHONY: neofetch
+neofetch: neofetch/.local/bin/neofetch
+
+neofetch/.local/bin/neofetch: submodules/neofetch/Makefile system-dependencies
+	cd submodules/neofetch \
+		&& make PREFIX=$(top)/neofetch/.local install
+
+.PHONY:neofetch-clean
+neofetch-clean:
+	- rm -rf neofetch
+	- cd submodules/neofetch && make clean
+
+all:: neofetch
+clean:: neofetch-clean
+
 #. == Install default stowage
 
 .PHONY: install-default # Install the default stow packages

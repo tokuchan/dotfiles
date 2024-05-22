@@ -28,3 +28,6 @@
 [submodule "submodules/entr"]
 	path = submodules/entr
 	url = git@github.com:eradman/entr.git
+[submodule "submodules/neofetch"]
+	path = submodules/neofetch
+	url = git@github.com:dylanaraps/neofetch.git
