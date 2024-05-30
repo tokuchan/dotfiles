@@ -60,4 +60,5 @@ jq \
 ranger \
 ddclient \
 keychain \
-sshfs
+sshfs \
+meld
