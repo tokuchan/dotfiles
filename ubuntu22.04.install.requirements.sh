@@ -61,4 +61,5 @@ ranger \
 ddclient \
 keychain \
 sshfs \
-meld
+meld \
+tcl-awthemes
