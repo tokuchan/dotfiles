@@ -31,3 +31,6 @@
 [submodule "submodules/neofetch"]
 	path = submodules/neofetch
 	url = git@github.com:dylanaraps/neofetch.git
+[submodule "submodules/tpm"]
+	path = submodules/tpm
+	url = https://github.com/tmux-plugins/tpm

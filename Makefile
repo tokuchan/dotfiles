@@ -355,6 +355,20 @@ neofetch-clean:
 all:: neofetch
 clean:: neofetch-clean
 
+#. == Install Tmux Package Manager
+
+.PHONY: tmux-package-manager
+tmux-package-manager:
+	mkdir -p $(top)/tmux/.config/tmux/plugins
+	ln -s submodules/tpm $(top)/tmux/.config/tmux/plugins/tpm
+
+.PHONY: tmux-package-manager-clean
+tmux-package-manager-clean:
+	rm -rf $(top)/tmux/.tmux/plugins/tpm
+
+all:: tmux-package-manager
+clean:: tmux-package-manager-clean
+
 #. == Install default stowage
 
 .PHONY: install-default # Install the default stow packages
