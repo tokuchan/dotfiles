@@ -200,3 +200,7 @@ Makefile.typst
 .entr-receipt
 entr
 neofetch/.local
+tmux/.config/tmux/plugins/tmux
+tmux/.config/tmux/plugins/tmux-sensible
+tmux/.config/tmux/plugins/vim-tmux-navigator
+tmux/.config/tmux/plugins/tmux-yank
