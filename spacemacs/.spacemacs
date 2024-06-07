@@ -811,13 +811,15 @@ This function is called at the very end of Spacemacs initialization."
  '(compilation-ask-about-save nil)
  '(compilation-auto-jump-to-first-error nil)
  '(compilation-max-output-line-length nil)
- '(compilation-scroll-output t)
+ '(compilation-scroll-output 'first-error)
  '(custom-enabled-themes '(spacemacs-dark))
  '(custom-safe-themes
    '("603a831e0f2e466480cdc633ba37a0b1ae3c3e9a4e90183833bc4def3421a961" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "ce17f0b935cb4cf9167b384c8fefcff5448f039b89dbd1e45029400bc52b9b33" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default))
  '(desktop-save-mode t)
  '(display-line-numbers-type 'visual)
  '(evil-want-Y-yank-to-eol t)
+ '(expand-region-smart-cursor nil)
+ '(expand-region-subword-enabled t)
  '(explicit-shell-file-name "/usr/bin/fish")
  '(flycheck-gcc-args '("--std=c++2a"))
  '(focus-follows-mouse t)
@@ -849,6 +851,7 @@ This function is called at the very end of Spacemacs initialization."
  '(minimap-mode t)
  '(minimap-window-location 'right)
  '(mouse-autoselect-window t)
+ '(next-error-recenter '(4))
  '(org-duration-format '(("h") (special . h:mm)))
  '(org-fontify-done-headline nil)
  '(org-fontify-todo-headline nil)
@@ -877,6 +880,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(company-preview ((t (:background "#34323e" :foreground "#9a9aba" :height 1.25))))
+ '(compilation-warning ((t (:inherit warning :foreground "yellow"))))
  '(completions-highlight ((t nil)))
  '(cursor ((t (:background "DarkGoldenrod2" :distant-foreground "black" :foreground "black" :weight heavy)))))
 )
