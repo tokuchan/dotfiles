@@ -80,7 +80,7 @@ git:
     fetchAll: true
     branchLogCmd: git log --graph --color=always --abbrev-commit --decorate --date=relative --pretty=medium {{branchName}} --
     allBranchesLogCmd: git log --graph --all --color=always --abbrev-commit --decorate --date=relative  --pretty=medium
-    overrideGpg: false
+    overrideGpg: true
     disableForcePushing: false
     commitPrefixes: {}
     parseEmoji: false
