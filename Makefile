@@ -238,6 +238,18 @@ lsd: rust
 
 all:: lsd
 
+.PHONY: nu # Build and install the nu shell
+nu: rust
+	cd submodules/nu/nushell \
+		&& cargo build --release --workspace \
+		&& cargo install --path . \
+		&& mkdir -t $(top)/receipts \
+		&& touch $(top)/receipts/nu-installed
+all:: nu
+
+.PHONY: nu_plugin_bash_env
+nu_plugin_bash_env: nu
+
 #. == Build the neovim package
 
 .PHONY: neovim # Build the neovim editor and install it to the neovim stow package

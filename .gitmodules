@@ -34,3 +34,9 @@
 [submodule "tmux/.config/tmux/plugins/tpm"]
 	path = tmux/.config/tmux/plugins/tpm
 	url = https://github.com/tmux-plugins/tpm
+[submodule "submodules/nu/nushell"]
+	path = submodules/nu/nushell
+	url = git@github.com:nushell/nushell.git
+[submodule "submodules/nu/nu_plugin_bash_env"]
+	path = submodules/nu/nu_plugin_bash_env
+	url = git@github.com:tesujimath/nu_plugin_bash_env.git
