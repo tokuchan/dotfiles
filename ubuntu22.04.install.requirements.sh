@@ -11,7 +11,9 @@ git \
 gitk \
 make \
 ninja-build \
-pkg-config
+pkg-config \
+clang-format-15 \
+clang-tidy-15
 
 # Install libraries:
 sudo apt install -yqq \
@@ -62,4 +64,5 @@ ddclient \
 keychain \
 sshfs \
 meld \
-tcl-awthemes
+tcl-awthemes \
+miller
