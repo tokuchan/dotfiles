@@ -17,5 +17,9 @@ if status is-interactive
 
     # Set the terminal to xterm256-color by default
     set -gx "TERM" "xterm-256color"
+    set-display
 end
+
+# We should try to connect to openport so the Reverse SSH stuff is running.
+set-up-openport
 
