@@ -59,7 +59,12 @@ submodules:
 
 .PHONY: system-dependencies # Install Ubuntu system dependencies
 system-dependencies:
-	./ubuntu22.04.install.requirements.sh
+	if test $$(lsb_release -rs | grep '[0-9]') = '22.04'; then \
+	       ./ubuntu22.04.install.requirements.sh; \
+	       fi
+	if test $$(lsb_release -rs | grep '[0-9]') = '24.04'; then \
+	       ./ubuntu24.04.install.requirements.sh; \
+	       fi
 
 all:: system-dependencies
 
