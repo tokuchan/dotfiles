@@ -88,16 +88,21 @@
 [pull]
 	rebase = false
 
-[mergetool "nvim"]
-	cmd = nvim -f -c \"Gdiffsplit!\" \"$MERGED\"
-
-[merge]
-	tool = meld
-	ff = true
-	conflictstyle = diff3
-
-[mergetool]
+[diff]
+	tool = vimdiff
+[difftool]
 	prompt = false
+[difftool "nvimdiff"]
+	cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
+[merge]
+	tool = vimdiff
+[mergetool]
+	prompt = true
+[mergetool "nvimdiff"]
+	#cmd = "nvim -d \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\""
+	layout = "LOCAL,BASE,REMOTE / MERGED + BASE,LOCAL + BASE,REMOTE + (LOCAL/BASE/REMOTE),MERGED"
+[mergetool "vimdiff"]
+	layout = "LOCAL,BASE,REMOTE / MERGED + BASE,LOCAL + BASE,REMOTE + (LOCAL/BASE/REMOTE),MERGED"
 [init]
 	defaultBranch = master
 [rerere]
@@ -106,6 +111,7 @@
 	submodulesummary = true
 [guitool "Stage by edit in term"]
 	cmd = xterm -fa 'fixed' -fs 14 -e git stage -e $FILENAME
+
 [diff]
 	ignoreSubmodules = dirty
 [advice]
