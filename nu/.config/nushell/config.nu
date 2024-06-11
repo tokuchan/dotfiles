@@ -897,5 +897,8 @@ $env.config = {
 # Load zoxide
 source ~/.zoxide.nu
 
+# Load completions
+use completions *
+
 # Aliases
 alias g = lazygit

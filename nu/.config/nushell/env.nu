@@ -101,3 +101,9 @@ $env.NU_PLUGIN_DIRS = [
 
 # Load zoxide
 zoxide init nushell --cmd cd | save -f ~/.zoxide.nu
+
+# Load custom completers
+$env.NU_LIB_DIRS= [
+  ...
+  $nu.default-config-dir
+]
