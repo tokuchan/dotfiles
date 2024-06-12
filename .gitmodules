@@ -40,3 +40,6 @@
 [submodule "submodules/nu/nu_plugin_bash_env"]
 	path = submodules/nu/nu_plugin_bash_env
 	url = git@github.com:tesujimath/nu_plugin_bash_env.git
+[submodule "pyenv/.pyenv"]
+	path = pyenv/.pyenv
+	url = https://github.com/pyenv/pyenv.git

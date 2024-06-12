@@ -6,11 +6,11 @@ set -gx MANPATH $MANPATH ~/.local/man:
 set -x SHELL /bin/bash
 
 # Set up pyenv
-set -gx PYENV_ROOT "$HOME/.pyenv"
-if not command -v pyenv >/dev/null
-  set -gx PATH "$PYENV_ROOT/bin" $PATH
-end
-pyenv init --no-rehash - | source
+#set -gx PYENV_ROOT "$HOME/.pyenv"
+#if not command -v pyenv >/dev/null
+#  set -gx PATH "$PYENV_ROOT/bin" $PATH
+#end
+#pyenv init --no-rehash - | source
 
 if status is-interactive
     # Commands to run in interactive sessions can go here

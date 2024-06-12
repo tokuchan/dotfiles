@@ -396,12 +396,19 @@ all:: tmux-package-manager
 clean:: tmux-package-manager-clean
 
 #. == Openport reverse SSH tunnel manager
+
 .PHONY: openport # Manage reverse SSH tunnels
 openport:
 	curl -Lo openport.deb https://openport.io/download/debian64/latest.deb
 	sudo dpkg --install ./openport.deb
 
 all:: openport
+
+#. == Pyenv python installation manager
+
+.PHONY: pyenv # Python installation manager
+pyenv: submodules
+	cd pyenv/.pyenv && ./src/configure && make -C src
 
 #. == Install default stowage
 
