@@ -204,3 +204,5 @@ tmux/.config/tmux/plugins/tmux
 tmux/.config/tmux/plugins/tmux-sensible
 tmux/.config/tmux/plugins/vim-tmux-navigator
 tmux/.config/tmux/plugins/tmux-yank
+receipts/nu-installed
+rust/.bashrc.d/nvm.bashrc
