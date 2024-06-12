@@ -69,4 +69,7 @@ meld \
 tcl-awthemes \
 miller \
 texinfo \
-openssh-server
+openssh-server \
+fortune \
+cowsay \
+lolcat

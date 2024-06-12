@@ -65,4 +65,7 @@ keychain \
 sshfs \
 meld \
 tcl-awthemes \
-miller
+miller \
+fortune \
+cowsay \
+lolcat
