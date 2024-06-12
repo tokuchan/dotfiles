@@ -33,9 +33,8 @@ libtool \
 libvterm-dev \
 libxml2-dev \
 libgccjit-9-dev \
-libgccjit-10-dev \
-libgccjit-11-dev \
-libgccjit-12-dev \
+libgccjit-13-dev \
+libgccjit-14-dev \
 libgif-dev \
 libpng-dev \
 libpng++-dev \
@@ -68,4 +67,5 @@ keychain \
 sshfs \
 meld \
 tcl-awthemes \
-miller
+miller \
+texinfo
