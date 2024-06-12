@@ -68,4 +68,5 @@ sshfs \
 meld \
 tcl-awthemes \
 miller \
-texinfo
+texinfo \
+openssh-server
