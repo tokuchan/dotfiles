@@ -20,6 +20,8 @@ if status is-interactive
     set-display
 end
 
+set -gx PATH "$HOME/.cargo/bin" $PATH
+
 # We should try to connect to openport so the Reverse SSH stuff is running.
 set-up-openport
 
