@@ -1,5 +1,6 @@
 #!/bin/bash
 # Install requirements for Ubuntu 22.04 LTS
+
 # Add universe
 yes | sudo add-apt-repository universe
 sudo apt-get update
@@ -19,6 +20,14 @@ pkg-config \
 clang-format-15 \
 clang-tidy-15 \
 ppa-purge
+
+# Install mesa packages:
+# Mesa is currently broken on distro, so we add a PPA with a point release for now:
+yes | sudo ppa-purge ppa:kisak/kisak-mesa
+yes | sudo add-apt-repository ppa:kisak/kisak-mesa > /dev/null
+sudo apt install -yqq \
+libgl1-mesa-dri \
+mesa-utils
 
 # Install libraries:
 sudo apt install -yqq \
