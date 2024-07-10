@@ -17,7 +17,8 @@ make \
 ninja-build \
 pkg-config \
 clang-format-15 \
-clang-tidy-15
+clang-tidy-15 \
+ppa-purge
 
 # Install libraries:
 sudo apt install -yqq \
