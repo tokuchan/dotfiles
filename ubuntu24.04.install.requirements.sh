@@ -73,4 +73,7 @@ texinfo \
 openssh-server \
 fortune \
 cowsay \
-lolcat
+lolcat \
+locate \
+oathtool \
+gdb
