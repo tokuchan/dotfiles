@@ -843,6 +843,8 @@ This function is called at the very end of Spacemacs initialization."
  '(minimap-window-location 'right)
  '(mouse-autoselect-window t)
  '(next-error-recenter '(4))
+ '(org-agenda-files '("~/dev/helix-project/helix/helix.org"))
+ '(org-agenda-include-diary t)
  '(org-duration-format '(("h") (special . h:mm)))
  '(org-fontify-done-headline nil)
  '(org-fontify-todo-headline nil)
