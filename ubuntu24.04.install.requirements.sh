@@ -23,8 +23,8 @@ ppa-purge
 
 # Install mesa packages:
 # Mesa is currently broken on distro, so we add a PPA with a point release for now:
-yes | sudo ppa-purge ppa:kisak/kisak-mesa
-yes | sudo add-apt-repository ppa:kisak/kisak-mesa > /dev/null
+#yes | sudo ppa-purge ppa:kisak/kisak-mesa
+#yes | sudo add-apt-repository ppa:kisak/kisak-mesa > /dev/null
 sudo apt install -yqq \
 libgl1-mesa-dri \
 mesa-utils
