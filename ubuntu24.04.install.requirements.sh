@@ -50,7 +50,8 @@ libpng-dev \
 libpng++-dev \
 libxpm-dev \
 libbsd-dev \
-libzip-dev
+libzip-dev \
+libqrencode-dev
 
 # Install utilities:
 sudo apt install -yqq \
@@ -85,4 +86,6 @@ cowsay \
 lolcat \
 locate \
 oathtool \
-gdb
+gdb \
+imagemagick \
+zbar-tools
