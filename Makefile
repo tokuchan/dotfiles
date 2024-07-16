@@ -264,6 +264,12 @@ all:: nu
 .PHONY: nu_plugin_bash_env
 nu_plugin_bash_env: nu
 
+.PHONY: git-branchless # Build and install git-branchless to make git better
+git-branchless: rust
+	cargo install --locked git-branchless
+
+all:: git-branchless
+
 #. == Build the neovim package
 
 .PHONY: neovim # Build the neovim editor and install it to the neovim stow package
