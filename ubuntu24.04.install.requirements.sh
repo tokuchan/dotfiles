@@ -91,4 +91,6 @@ locate \
 oathtool \
 gdb \
 imagemagick \
-zbar-tools
+zbar-tools \
+traceroute \
+python3-pip
