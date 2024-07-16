@@ -148,7 +148,7 @@ keybinding:
         scrollUpMain-alt2: <c-u>
         scrollDownMain-alt2: <c-d>
         executeCustomCommand: ':'
-        createRebaseOptionsMenu: m
+        createRebaseOptionsMenu: M
         pushFiles: P
         pullFiles: p
         refresh: R
@@ -189,7 +189,7 @@ keybinding:
         viewResetOptions: D
         fetch: f
         toggleTreeView: '`'
-        openMergeTool: M
+        openMergeTool: m
         openStatusFilter: <c-b>
         copyFileInfoToClipboard: "y"
     branches:
@@ -200,7 +200,7 @@ keybinding:
         forceCheckoutBranch: F
         rebaseBranch: r
         renameBranch: R
-        mergeIntoCurrentBranch: M
+        mergeIntoCurrentBranch: m
         viewGitFlowOptions: i
         fastForward: f
         createTag: T
