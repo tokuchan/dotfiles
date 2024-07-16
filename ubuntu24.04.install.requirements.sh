@@ -51,7 +51,10 @@ libpng++-dev \
 libxpm-dev \
 libbsd-dev \
 libzip-dev \
-libqrencode-dev
+libqrencode-dev \
+libsqlite3-dev \
+libreadline-dev \
+libffi-dev
 
 # Install utilities:
 sudo apt install -yqq \
