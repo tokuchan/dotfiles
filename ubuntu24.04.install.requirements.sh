@@ -93,4 +93,5 @@ gdb \
 imagemagick \
 zbar-tools \
 traceroute \
-python3-pip
+python3-pip \
+zstd
