@@ -95,4 +95,5 @@ zbar-tools \
 traceroute \
 python3-pip \
 zstd \
-wslu
+wslu \
+valgrind
