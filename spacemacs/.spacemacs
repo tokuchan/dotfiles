@@ -628,12 +628,23 @@ before packages are loaded."
   (setq read-process-output-max (* 1024 1024))
   (setq compilation-skip-threshold 2)
 
+  ;; Toggle CamelCase motion on globally.
+  (spacemacs/toggle-camel-case-motion-globally-on)
+
+  ;; Mark off custom binding space
+  (spacemacs/declare-prefix "o" "personal")
+
+  ;; Define org agenda shortcut
+  (spacemacs/set-leader-keys "oa" 'org-agenda)
+
   ;; Define handy function to generate path::line for point under cursor.
   (defun show-location ()
     "Show the full path to the current point, including line number."
     (interactive)
     (message (concat (buffer-file-name) (format-mode-line "::%l")))
     (kill-new (file-truename (concat "file:" (buffer-file-name) (format-mode-line "::%l")))))
+
+  (spacemacs/set-leader-keys "ol" 'show-location)
 
   (defun make-org-reference ()
     "Generate an orgmode file reference to the pointed location."
@@ -645,11 +656,15 @@ before packages are loaded."
                       (file-name-nondirectory (buffer-file-name))
                       (format-mode-line "::%l]]"))))
 
+  (spacemacs/set-leader-keys "or" 'make-org-reference)
+
   ;; Define handy function to insert Gerrit-style Change-Id trailers at the cursor
   (defun insert-change-id ()
     "Insert a Gerrit-style Change-Id at the cursor."
     (interactive)
     (insert (concat "Change-Id: I" (substring (secure-hash 'sha256 (number-to-string (random t))) 0 40))))
+
+  (spacemacs/set-leader-keys "oc" 'insert-change-id)
 
   ;; Define a line-up function for hanging template arguments
   (defun c++-template-args-cont (langelem)

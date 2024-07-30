@@ -94,4 +94,6 @@ imagemagick \
 zbar-tools \
 traceroute \
 python3-pip \
-zstd
+zstd \
+wslu \
+valgrind
