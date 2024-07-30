@@ -59,7 +59,12 @@ submodules:
 
 .PHONY: system-dependencies # Install Ubuntu system dependencies
 system-dependencies:
-	./ubuntu22.04.install.requirements.sh
+	if test $$(lsb_release -rs | grep '[0-9]') = '22.04'; then \
+	       ./ubuntu22.04.install.requirements.sh; \
+	       fi
+	if test $$(lsb_release -rs | grep '[0-9]') = '24.04'; then \
+	       ./ubuntu24.04.install.requirements.sh; \
+	       fi
 
 all:: system-dependencies
 
@@ -152,8 +157,17 @@ rust: rust/.local/share/rust/rustup.sh
 		$(rustup) completions bash > rust/.local/share/bash-completion/completions/rustup; \
 		mkdir -p rust/.config/fish/completions; \
 		$(rustup) completions fish > rust/.config/fish/completions/rustup.fish; \
+		$(rustup) default stable-x86_64-unknown-linux-gnu; \
 	fi
 	stow rust
+
+define run-cargo
+  source /home/seans/dotfiles/rust/.local/share/rust/cargo/env && cargo $1
+endef
+
+define run-rusty
+  $$HOME/.cargo/bin/$1
+endef
 
 .PHONY: rust-clean # Clean up the rust language stow package
 rust-clean:
@@ -170,13 +184,13 @@ clean:: rust-clean
 
 .PHONY: jujitsu # Build and install the jujitsu repo manager
 jujitsu: rust
-	cargo install --locked --bin jj jj-cli
+	$(call run-cargo,install --locked --bin jj jj-cli)
 
 #. == Install typest text processor
 
 .PHONY: typest # Build and install the typest document processor
 typest: rust
-	cargo install --git https://github.com/typst/typst typst-cli
+	$(call run-cargo,install --git https://github.com/typst/typst typst-cli)
 
 all:: typest
 
@@ -184,7 +198,7 @@ all:: typest
 
 .PHONY: just # Build and install the just command runner
 just: rust
-	cargo install just
+	$(call run-cargo,install just)
 
 all:: just
 
@@ -200,43 +214,61 @@ neovide-clean:
 	rm -rf neovide
 
 submodules/neovide/target/release/neovide: rust
-	cd submodules/neovide && cargo build --release 
+	cd submodules/neovide && $(call run-cargo,build --release) 
 
 all:: neovide
 clean:: neovide-clean
 
 .PHONY: evcxr # Build and install the evcxr rust REPL
 evcxr: rust
-	cargo install evcxr_repl
+	$(call run-cargo,install evcxr_repl)
 
 all:: evcxr
 
 .PHONY: bacon # Build and install bacon rust build watch program
 bacon: rust
-	cargo install bacon
+	$(call run-cargo,install bacon)
 
 all:: bacon
 
 .PHONY: zoxide # Build and install the zoxide tool, and prepare the zoxide configuration stow package
 zoxide: rust
-	cargo install zoxide
+	$(call run-cargo,install zoxide)
 	mkdir -p zoxide/.config/fish/conf.d
 	mkdir -p zoxide/.bashrc.d
-	zoxide init --cmd=cd fish > zoxide/.config/fish/conf.d/zoxide.fish
-	zoxide init --cmd=cd bash > zoxide/.bashrc.d/zoxide.bash
+	$(call run-rusty,zoxide init --cmd=cd fish > zoxide/.config/fish/conf.d/zoxide.fish)
+	$(call run-rusty,zoxide init --cmd=cd bash > zoxide/.bashrc.d/zoxide.bash)
 
 all:: zoxide
 
 .PHONY: diffr # Build and install diffr, to enhance git diffs
 diffr: rust
-	cargo install diffr
+	$(call run-cargo,install diffr)
 all:: diffr
 
 .PHONY: lsd # Build and install the lsd enhanced directory lister
 lsd: rust
-	cargo install --git https://github.com/lsd-rs/lsd.git --branch master
+	$(call run-cargo,install --git https://github.com/lsd-rs/lsd.git --branch master)
 
 all:: lsd
+
+.PHONY: nu # Build and install the nu shell
+nu: rust
+	cd submodules/nu/nushell \
+		&& $(call run-cargo,build --release --workspace) \
+		&& $(call run-cargo,install --path .) \
+		&& mkdir -p $(top)/receipts \
+		&& touch $(top)/receipts/nu-installed
+all:: nu
+
+.PHONY: nu_plugin_bash_env
+nu_plugin_bash_env: nu
+
+.PHONY: git-branchless # Build and install git-branchless to make git better
+git-branchless: rust
+	cargo install --locked git-branchless
+
+all:: git-branchless
 
 #. == Build the neovim package
 
@@ -278,6 +310,32 @@ emacs-clean:
 all:: emacs
 clean:: emacs-clean
 
+#. == Install late-model node and npm (for EMACS lsp servers)
+
+#. It so happens that many of the LSP modules are written in JS, and require a
+# late model of node to work properly. Unfortunately, the underlying OS tends to
+# lag far behind, so I install it manually here.
+
+define nvm_install_config_bash
+export NVM_DIR="$$HOME/.nvm"
+[ -s "$$NVM_DIR/nvm.sh" ] && \. "$$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$$NVM_DIR/bash_completion" ] && \. "$$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+endef
+export nvm_install_config_bash
+PROFILE:=/dev/null
+export PROFILE
+
+.nvm-install: system-dependencies
+	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+	echo "$$nvm_install_config_bash" > $$HOME/.bashrc.d/nvm.bashrc
+	touch .nvm-install
+
+.PHONY: node-install # Install latest node.js system
+node-install: .nvm-install
+	bash --login -c 'source $$HOME/.nvm/nvm.sh && nvm install 20'
+
+all:: node-install
+
 #. Set up git-repo symlink for install
 
 repo:
@@ -289,6 +347,74 @@ repo-clean:
 
 all:: repo
 clean:: repo-clean
+
+#. == Install `entr` for convenient auto-refreshing commands
+
+#. The entr program watches paths and runs commands when they change.
+
+.PHONY: entr
+entr: entr/.local/bin/entr
+
+entr/.local/bin/entr: submodules/entr/configure system-dependencies
+	cd submodules/entr \
+		&& ./configure \
+		&& CFLAGS='-static' make test \
+		&& PREFIX='$(top)/entr/.local' make install
+
+.PHONY: entr-clean
+entr-clean:
+	- rm .entr-receipt
+	- rm -rf entr
+	- cd submodules/entr && make clean
+
+all:: entr
+clean:: entr-clean
+
+#. == Install neofetch system-information viewer
+
+.PHONY: neofetch
+neofetch: neofetch/.local/bin/neofetch
+
+neofetch/.local/bin/neofetch: submodules/neofetch/Makefile system-dependencies
+	cd submodules/neofetch \
+		&& make PREFIX=$(top)/neofetch/.local install
+
+.PHONY:neofetch-clean
+neofetch-clean:
+	- rm -rf neofetch
+	- cd submodules/neofetch && make clean
+
+all:: neofetch
+clean:: neofetch-clean
+
+#. == Install Tmux Package Manager
+
+.PHONY: tmux-package-manager
+tmux-package-manager:
+	mkdir -p $(top)/tmux/.config/tmux/plugins
+	- ln -s submodules/tpm $(top)/tmux/.config/tmux/plugins/tpm
+
+.PHONY: tmux-package-manager-clean
+tmux-package-manager-clean:
+	rm -rf $(top)/tmux/.tmux/plugins/tpm
+
+all:: tmux-package-manager
+clean:: tmux-package-manager-clean
+
+#. == Openport reverse SSH tunnel manager
+
+.PHONY: openport # Manage reverse SSH tunnels
+openport:
+	curl -Lo openport.deb https://openport.io/download/debian64/latest.deb
+	sudo dpkg --install ./openport.deb
+
+all:: openport
+
+#. == Pyenv python installation manager
+
+.PHONY: pyenv # Python installation manager
+pyenv: submodules
+	cd pyenv/.pyenv && ./src/configure && make -C src
 
 #. == Install default stowage
 
@@ -325,5 +451,5 @@ help:
 weave: Makefile.typst
 
 Makefile.typst: Makefile
-	cat Makefile | sed 's,^# ,,g' | awk -v RS= -v ORS="\n\n" '!/#\. /{print "```\n"$$0"\n```\n"}; /^#\./{gsub("#\. ", "", $$0); print $$0}' > $@
+	cat Makefile | sed 's,^# ,,g' | awk -v RS= -v ORS="\n\n" '!/#\. /{print "``""`\n"$$0"\n`""``\n"}; /^#\./{gsub("#\. ", "", $$0); print $$0}' > $@
 	typst compile Makefile.typst Makefile.pdf

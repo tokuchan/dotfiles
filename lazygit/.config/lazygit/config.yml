@@ -80,7 +80,7 @@ git:
     fetchAll: true
     branchLogCmd: git log --graph --color=always --abbrev-commit --decorate --date=relative --pretty=medium {{branchName}} --
     allBranchesLogCmd: git log --graph --all --color=always --abbrev-commit --decorate --date=relative  --pretty=medium
-    overrideGpg: false
+    overrideGpg: true
     disableForcePushing: false
     commitPrefixes: {}
     parseEmoji: false
@@ -148,7 +148,7 @@ keybinding:
         scrollUpMain-alt2: <c-u>
         scrollDownMain-alt2: <c-d>
         executeCustomCommand: ':'
-        createRebaseOptionsMenu: m
+        createRebaseOptionsMenu: M
         pushFiles: P
         pullFiles: p
         refresh: R
@@ -189,7 +189,7 @@ keybinding:
         viewResetOptions: D
         fetch: f
         toggleTreeView: '`'
-        openMergeTool: M
+        openMergeTool: m
         openStatusFilter: <c-b>
         copyFileInfoToClipboard: "y"
     branches:
@@ -200,7 +200,7 @@ keybinding:
         forceCheckoutBranch: F
         rebaseBranch: r
         renameBranch: R
-        mergeIntoCurrentBranch: M
+        mergeIntoCurrentBranch: m
         viewGitFlowOptions: i
         fastForward: f
         createTag: T
@@ -251,7 +251,70 @@ keybinding:
     commitMessage:
         switchToEditor: <c-o>
 disableStartupPopups: false
-customCommands: []
+customCommands:
+  - key: "o"
+    command: "gh pr create --fill --web"
+    context: "global"
+    loadingText: "Creating pull request on GitHub"
+  - key: "<c-v>"
+    context: "global"
+    description: "Create new conventional commit"
+    prompts:
+      - type: "menu"
+        key: "Type"
+        title: "Type of change"
+        options:
+          - name: "build"
+            description: "Changes that affect the build system or external dependencies"
+            value: "build"
+          - name: "feat"
+            description: "A new feature"
+            value: "feat"
+          - name: "fix"
+            description: "A bug fix"
+            value: "fix"
+          - name: "chore"
+            description: "Other changes that don't modify src or test files"
+            value: "chore"
+          - name: "ci"
+            description: "Changes to CI configuration files and scripts"
+            value: "ci"
+          - name: "docs"
+            description: "Documentation only changes"
+            value: "docs"
+          - name: "perf"
+            description: "A code change that improves performance"
+            value: "perf"
+          - name: "refactor"
+            description: "A code change that neither fixes a bug nor adds a feature"
+            value: "refactor"
+          - name: "revert"
+            description: "Reverts a previous commit"
+            value: "revert"
+          - name: "style"
+            description: "Changes that do not affect the meaning of the code"
+            value: "style"
+          - name: "test"
+            description: "Adding missing tests or correcting existing tests"
+            value: "test"
+      - type: "input"
+        title: "Scope - Add '(<scope>)'"
+        key: "Scope"
+        initialValue: ""
+      - type: "input"
+        title: "Breaking change - Add '!'"
+        key: "Breaking"
+        initialValue: ""
+      - type: "input"
+        title: "message"
+        key: "Message"
+        initialValue: ""
+      - type: "confirm"
+        key: "Confirm"
+        title: "Commit"
+        body: "Are you sure you want to commit?"
+    command: "git commit --message '{{.Form.Type}}{{.Form.Scope}}{{.Form.Breaking}}: {{.Form.Message}}'"
+    loadingText: "Creating conventional commit..."
 services: {}
 notARepository: prompt
 promptToReturnFromSubprocess: true

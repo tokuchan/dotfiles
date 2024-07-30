@@ -1,5 +1,10 @@
 #!/bin/bash
 # Install requirements for Ubuntu 22.04 LTS
+
+# Add universe
+yes | sudo add-apt-repository universe
+sudo apt-get update
+
 # Install base packages:
 sudo apt install -yqq \
 automake \
@@ -13,7 +18,16 @@ make \
 ninja-build \
 pkg-config \
 clang-format-15 \
-clang-tidy-15
+clang-tidy-15 \
+ppa-purge
+
+# Install mesa packages:
+# Mesa is currently broken on distro, so we add a PPA with a point release for now:
+#yes | sudo ppa-purge ppa:kisak/kisak-mesa
+#yes | sudo add-apt-repository ppa:kisak/kisak-mesa > /dev/null
+sudo apt install -yqq \
+libgl1-mesa-dri \
+mesa-utils
 
 # Install libraries:
 sudo apt install -yqq \
@@ -29,21 +43,24 @@ libtool \
 libvterm-dev \
 libxml2-dev \
 libgccjit-9-dev \
-libgccjit-10-dev \
-libgccjit-11-dev \
-libgccjit-12-dev \
+libgccjit-13-dev \
+libgccjit-14-dev \
 libgif-dev \
 libpng-dev \
 libpng++-dev \
 libxpm-dev \
 libbsd-dev \
-libzip-dev
+libzip-dev \
+libqrencode-dev \
+libsqlite3-dev \
+libreadline-dev \
+libffi-dev
 
 # Install utilities:
 sudo apt install -yqq \
 bat \
 curl \
-exa \
+eza \
 fish \
 fzf \
 git-flow \
@@ -60,12 +77,21 @@ cppreference-doc-en-html \
 pass \
 jq \
 ranger \
-ddclient \
 keychain \
 sshfs \
 meld \
 tcl-awthemes \
 miller \
+texinfo \
+openssh-server \
 fortune \
 cowsay \
-lolcat
+lolcat \
+locate \
+oathtool \
+gdb \
+imagemagick \
+zbar-tools \
+traceroute \
+python3-pip \
+zstd

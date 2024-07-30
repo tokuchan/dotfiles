@@ -25,3 +25,27 @@
 [submodule "submodules/git-repo"]
 	path = submodules/git-repo
 	url = https://gerrit.googlesource.com/git-repo
+[submodule "submodules/entr"]
+	path = submodules/entr
+	url = git@github.com:eradman/entr.git
+[submodule "submodules/neofetch"]
+	path = submodules/neofetch
+	url = git@github.com:dylanaraps/neofetch.git
+[submodule "tmux/.config/tmux/plugins/tpm"]
+	path = tmux/.config/tmux/plugins/tpm
+	url = https://github.com/tmux-plugins/tpm
+[submodule "submodules/nu/nushell"]
+	path = submodules/nu/nushell
+	url = git@github.com:nushell/nushell.git
+[submodule "submodules/nu/nu_plugin_bash_env"]
+	path = submodules/nu/nu_plugin_bash_env
+	url = git@github.com:tesujimath/nu_plugin_bash_env.git
+[submodule "pyenv/.pyenv"]
+	path = pyenv/.pyenv
+	url = https://github.com/pyenv/pyenv.git
+[submodule "submodules/gdb-dashboard"]
+	path = submodules/gdb-dashboard
+	url = git@github.com:cyrus-and/gdb-dashboard.git
+[submodule "submodules/asc-key-to-qr-code-gif"]
+	path = submodules/asc-key-to-qr-code-gif
+	url = git@github.com:yishilin14/asc-key-to-qr-code-gif.git
