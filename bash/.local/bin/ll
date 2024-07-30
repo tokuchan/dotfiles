@@ -3,12 +3,13 @@
 
 set +x
 if command -v lsd && (( $(command lsd >/dev/null 2>&1; echo $?) == 0 )); then
-  tabs 13,+10,+10,+8,+18,+11,+8
-  lsd -alGg --group-dirs=first --header --hyperlink=always --color=always --date=+%y-%m-%dT%H:%M:%S $@ | \
-    awk 'NR>1{printf "permissions %s\nuser %s\ngroup %s\nsize %s %s\nmodified-time %s\ngit-status %s\nname %s\n\n", $1, $2, $3, $4, $5, $6, $7, $8}' | \
-    mlr --xtab -o tsv cat | \
-    less -RF
-  tabs 8
+  lsd -alGg --group-dirs=first --hyperlink=always --color=always --date=+%y-%m-%dT%H:%M:%S $@ | \
+    awk '
+      BEGIN {printf "\033[3g             \033H           \033H           \033H        \033H                   \033H     \033H         \033H         \033H\rPermissions\tUser\tGroup\tSize\tModified Time\tGit\tName\n"};
+      NR>1 {printf "%s\t%s\t%s\t%s %s\t%s\t%s\t%s\n", $1, $2, $3, $4, $5, $6, $7, $8};
+      END {printf "\033[3g"}
+      '
+  tabs
 elif command -v exa && (( $(command exa >/dev/null 2>&1; echo $?) == 0 )); then
   exa -lbah --sort=name --icons --colour-scale --colour=always $@ | less -RF
 else
