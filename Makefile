@@ -410,6 +410,17 @@ openport:
 
 all:: openport
 
+#. === Make diff-pdf package
+.PHONY: diff-pdf # Compute a diff between PDF files
+diff-pdf: submodules system-dependencies
+	cd submodules/diff-pdf \
+		&& ./bootstrap \
+		&& ./configure --prefix=$(top)/diff-pdf/.local/ \
+		&& make \
+		&& make install
+
+all:: diff-pdf
+
 #. == Pyenv python installation manager
 
 .PHONY: pyenv # Python installation manager

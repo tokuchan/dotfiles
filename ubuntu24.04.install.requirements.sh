@@ -54,7 +54,12 @@ libzip-dev \
 libqrencode-dev \
 libsqlite3-dev \
 libreadline-dev \
-libffi-dev
+libffi-dev \
+libglib2.0-dev \
+libpoppler-dev \
+libpoppler-glib-dev \
+libcairo2-dev \
+libwxgtk3.2-dev
 
 # Install utilities:
 sudo apt install -yqq \

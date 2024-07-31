@@ -49,3 +49,6 @@
 [submodule "submodules/asc-key-to-qr-code-gif"]
 	path = submodules/asc-key-to-qr-code-gif
 	url = git@github.com:yishilin14/asc-key-to-qr-code-gif.git
+[submodule "submodules/diff-pdf"]
+	path = submodules/diff-pdf
+	url = git@github.com:vslavik/diff-pdf.git
