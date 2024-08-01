@@ -1,0 +1,35 @@
+#!/bin/bash
+# Pick out files changed by commits from a range from another branch, relative
+# to this one then check them out into the current branch.
+
+# To know what other branch we want to space-pull from, we have to ask.
+branch="$1"
+shift
+
+# Now that we know it's safe, get the list of commits to send over
+commits=$(\
+git cherry -v HEAD "$branch" \
+  | tac \
+  | awk '\
+      $1=="-"{exit}; \
+      { \
+        gsub (/^\s*\+\s*/, ""); \
+        print $0 \
+      }' \
+  | fzf \
+    -m \
+    --cycle \
+    --border=rounded \
+    --border-label='Choose commits to send' \
+    --layout=reverse-list \
+    --prompt='Choose commits > ' \
+    --marker='+' \
+    --ansi \
+    --color='dark,pointer:bright-yellow:bold,marker:bright-green:bold' \
+    --preview='echo {+1} | xargs git show --color --pretty="" --name-only | sort -u' \
+  | awk '{print $1}'
+  )
+
+paths=$(git show --pretty="" --name-only $commits | sort -u)
+
+git restore --source $branch -- $paths
