@@ -101,4 +101,6 @@ traceroute \
 python3-pip \
 zstd \
 wslu \
-valgrind
+valgrind \
+git-gui \
+perl-doc
