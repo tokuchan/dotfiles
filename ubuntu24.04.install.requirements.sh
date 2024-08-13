@@ -103,4 +103,45 @@ zstd \
 wslu \
 valgrind \
 git-gui \
-perl-doc
+perl-doc \
+figlet \
+gparted \
+git-lfs \
+python3-rich
+
+ # Yocto dependencies
+sudo apt install -yqq \
+git \
+cmake \
+gcc \
+g++ \
+gdb \
+emacs \
+gparted \
+gitk \
+git-lfs \
+libstdc++6 \
+libgtk2.0-0t64 \
+dpkg-dev \
+python3-pip \
+libncurses6 \
+libtinfo6 \
+libtinfo-dev \
+gawk \
+xterm \
+autoconf \
+libtool \
+texinfo \
+gcc-multilib \
+net-tools \
+repo \
+pv \
+libi2c-dev \
+chrpath \
+diffstat \
+zstd \
+lz4 \
+libgpiod-dev \
+libssl-dev \
+gnuplot \
+parted
