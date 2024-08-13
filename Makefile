@@ -427,6 +427,19 @@ all:: diff-pdf
 pyenv: submodules
 	cd pyenv/.pyenv && ./src/configure && make -C src
 
+#. == Install Python utilities
+
+#. This rule is not included in `all` because we don't directly install Python.
+# The user must do that using `pyenv` first. However, if they've done so, they
+# can then run this target to install useful utilities.
+
+.PHONY: python-utilities # Install useful python utilities
+python-utilities:
+	python3 -m pip install --upgrade pip
+	python3 -m pip install -U pipx
+	python3 -m pipx install rich-cli
+	python3 -m pipx install rich-click
+
 #. == Install default stowage
 
 .PHONY: install-default # Install the default stow packages
