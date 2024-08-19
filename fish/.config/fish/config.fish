@@ -17,7 +17,7 @@ if status is-interactive
 
     # Set the terminal to xterm256-color by default
     set -gx "TERM" "xterm-256color"
-    set-display
+    #set-display
 end
 
 set -gx PATH "$HOME/.cargo/bin" $PATH
