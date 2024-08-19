@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Format a simple changelog from the logs on this branch.
+
+printf "# Changelog\n\n## [Unreleased]\n\n### Added\n\n### Changed\n\n### Deprecated\n\n### Removed\n\n### Fixed\n\n### Security\n\n"
+git log --oneline master..HEAD --format="#### %s%n%n%b"
