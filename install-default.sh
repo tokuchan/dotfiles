@@ -9,6 +9,7 @@ stow rust
 #. == Git next
 stow git
 stow git-config
+stow git-annex
 
 #. == Then editors
 stow emacs
@@ -23,3 +24,4 @@ stow fish
 #. == Finally utilitis
 stow lazygit
 stow zoxide
+stow rclone

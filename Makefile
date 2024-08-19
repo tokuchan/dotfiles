@@ -421,6 +421,46 @@ diff-pdf: submodules system-dependencies
 
 all:: diff-pdf
 
+#. == Rclone
+
+.PHONY: rclone-build # Build rclone stow package
+rclone-build: GOBIN := $(top)/rclone/.local/bin/
+rclone-build: GO := $(HOME)/.local/go/bin/go
+rclone-build: submodules system-dependencies golang
+	cd submodules/rclone \
+		&& GOBIN=$(GOBIN) $(GO) install -tags cmount -trimpath -ldflags -s
+
+all:: rclone-build
+
+#. == Git Annex
+
+#. NOTE: Git annex requires some stuff be added to the configuration for apt.
+# The configuration file is in /etc/apt/sources.list.d/ubuntu.sources. You need
+# to add `deb-src` and `noble-proposed` to make the results look like this:
+# ````
+# ## See the sources.list(5) manual page for further settings.
+# Types: deb deb-src
+# URIs: http://archive.ubuntu.com/ubuntu
+# Suites: noble noble-updates noble-backports noble-proposed
+# Components: main universe restricted multiverse
+# Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+#
+# ## Ubuntu security updates. Aside from URIs and Suites,
+# ## this should mirror your choices in the previous section.
+# Types: deb deb-src
+# URIs: http://security.ubuntu.com/ubuntu
+# Suites: noble-security
+# Components: main universe restricted multiverse
+# Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+# ````
+
+.PHONY: git-annex-build # Build git-annex stow package
+git-annex-build: submodules system-dependencies rclone-build
+	cabal update \
+	&& $(MAKE) -C submodules/git-annex.branchable.com install PREFIX=$(top)/git-annex/.local
+
+all:: git-annex-build
+
 #. == Pyenv python installation manager
 
 .PHONY: pyenv # Python installation manager

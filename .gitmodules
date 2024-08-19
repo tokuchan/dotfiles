@@ -52,3 +52,9 @@
 [submodule "submodules/diff-pdf"]
 	path = submodules/diff-pdf
 	url = git@github.com:vslavik/diff-pdf.git
+[submodule "submodules/rclone"]
+	path = submodules/rclone
+	url = https://github.com/rclone/rclone.git
+[submodule "submodules/git-annex.branchable.com"]
+	path = submodules/git-annex.branchable.com
+	url = git://git-annex.branchable.com/
