@@ -410,7 +410,8 @@ openport:
 
 all:: openport
 
-#. === Make diff-pdf package
+#. == Make diff-pdf package
+
 .PHONY: diff-pdf # Compute a diff between PDF files
 diff-pdf: submodules system-dependencies
 	cd submodules/diff-pdf \
@@ -516,4 +517,6 @@ weave: Makefile.typst
 
 Makefile.typst: Makefile
 	cat Makefile | sed 's,^# ,,g' | awk -v RS= -v ORS="\n\n" '!/#\. /{print "``""`\n"$$0"\n`""``\n"}; /^#\./{gsub("#\. ", "", $$0); print $$0}' > $@
+
+Makefile.pdf: Makefile.typst
 	typst compile Makefile.typst Makefile.pdf
