@@ -59,7 +59,9 @@ libglib2.0-dev \
 libpoppler-dev \
 libpoppler-glib-dev \
 libcairo2-dev \
-libwxgtk3.2-dev
+libwxgtk3.2-dev \
+libubsan1 \
+libasan8
 
 # Install utilities:
 sudo apt install -yqq \
