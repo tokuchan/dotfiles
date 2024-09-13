@@ -84,6 +84,7 @@
 	str = "!f () { cd -- ${GIT_PREFIX:-.}; git stl | jq \".[] | select(.branch==$(git state .branch)) | select(.cwd==$(git state .cwd))\" | jq $*; }; f"
 	f = fuzzy-fetch
 	g = "!f() { git branchless switch --interactive $@ || git-goto $@; }; f"
+	freshen = "!f() { set -x; git clean -xfd && git submodule foreach --recursive git clean -xfd && git reset --hard && git submodule foreach --recursive git reset --hard && git submodule update --init --recursive; set +x; }; f"
 
 [pull]
 	rebase = false
