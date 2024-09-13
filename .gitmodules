@@ -43,3 +43,18 @@
 [submodule "pyenv/.pyenv"]
 	path = pyenv/.pyenv
 	url = https://github.com/pyenv/pyenv.git
+[submodule "submodules/gdb-dashboard"]
+	path = submodules/gdb-dashboard
+	url = git@github.com:cyrus-and/gdb-dashboard.git
+[submodule "submodules/asc-key-to-qr-code-gif"]
+	path = submodules/asc-key-to-qr-code-gif
+	url = git@github.com:yishilin14/asc-key-to-qr-code-gif.git
+[submodule "submodules/diff-pdf"]
+	path = submodules/diff-pdf
+	url = git@github.com:vslavik/diff-pdf.git
+[submodule "submodules/rclone"]
+	path = submodules/rclone
+	url = https://github.com/rclone/rclone.git
+[submodule "submodules/git-annex.branchable.com"]
+	path = submodules/git-annex.branchable.com
+	url = git://git-annex.branchable.com/

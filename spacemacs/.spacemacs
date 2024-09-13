@@ -628,12 +628,23 @@ before packages are loaded."
   (setq read-process-output-max (* 1024 1024))
   (setq compilation-skip-threshold 2)
 
+  ;; Toggle CamelCase motion on globally.
+  (spacemacs/toggle-camel-case-motion-globally-on)
+
+  ;; Mark off custom binding space
+  (spacemacs/declare-prefix "o" "personal")
+
+  ;; Define org agenda shortcut
+  (spacemacs/set-leader-keys "oa" 'org-agenda)
+
   ;; Define handy function to generate path::line for point under cursor.
   (defun show-location ()
     "Show the full path to the current point, including line number."
     (interactive)
     (message (concat (buffer-file-name) (format-mode-line "::%l")))
     (kill-new (file-truename (concat "file:" (buffer-file-name) (format-mode-line "::%l")))))
+
+  (spacemacs/set-leader-keys "ol" 'show-location)
 
   (defun make-org-reference ()
     "Generate an orgmode file reference to the pointed location."
@@ -645,11 +656,15 @@ before packages are loaded."
                       (file-name-nondirectory (buffer-file-name))
                       (format-mode-line "::%l]]"))))
 
+  (spacemacs/set-leader-keys "or" 'make-org-reference)
+
   ;; Define handy function to insert Gerrit-style Change-Id trailers at the cursor
   (defun insert-change-id ()
     "Insert a Gerrit-style Change-Id at the cursor."
     (interactive)
     (insert (concat "Change-Id: I" (substring (secure-hash 'sha256 (number-to-string (random t))) 0 40))))
+
+  (spacemacs/set-leader-keys "oc" 'insert-change-id)
 
   ;; Define a line-up function for hanging template arguments
   (defun c++-template-args-cont (langelem)
@@ -801,9 +816,7 @@ This function is called at the very end of Spacemacs initialization."
  '(ansi-color-names-vector
    ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
  '(c-doc-comment-style
-   '((c-mode . doxygen)
-     (c++-mode . doxygen)
-     (java-mode . javadoc)
+   '((c-mode . doxygen) (c++-mode . doxygen) (java-mode . javadoc)
      (pike-mode . autodoc)))
  '(clang-format-style "file")
  '(company-idle-delay 0.02)
@@ -814,7 +827,10 @@ This function is called at the very end of Spacemacs initialization."
  '(compilation-scroll-output 'first-error)
  '(custom-enabled-themes '(spacemacs-dark))
  '(custom-safe-themes
-   '("603a831e0f2e466480cdc633ba37a0b1ae3c3e9a4e90183833bc4def3421a961" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "ce17f0b935cb4cf9167b384c8fefcff5448f039b89dbd1e45029400bc52b9b33" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default))
+   '("603a831e0f2e466480cdc633ba37a0b1ae3c3e9a4e90183833bc4def3421a961"
+     "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088"
+     "ce17f0b935cb4cf9167b384c8fefcff5448f039b89dbd1e45029400bc52b9b33"
+     "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default))
  '(desktop-save-mode t)
  '(display-line-numbers-type 'visual)
  '(evil-want-Y-yank-to-eol t)
@@ -826,21 +842,11 @@ This function is called at the very end of Spacemacs initialization."
  '(git-gutter:diff-option "-w")
  '(global-flycheck-mode nil)
  '(hl-todo-keyword-faces
-   '(("TODO" . "#dc752f")
-     ("NEXT" . "#dc752f")
-     ("THEM" . "#2d9574")
-     ("PROG" . "#4f97d7")
-     ("OKAY" . "#4f97d7")
-     ("DONT" . "#f2241f")
-     ("FAIL" . "#f2241f")
-     ("DONE" . "#86dc2f")
-     ("NOTE" . "#b1951d")
-     ("KLUDGE" . "#b1951d")
-     ("HACK" . "#b1951d")
-     ("TEMP" . "#b1951d")
-     ("FIXME" . "#dc752f")
-     ("XXX+" . "#dc752f")
-     ("\\?\\?\\?+" . "#dc752f")))
+   '(("TODO" . "#dc752f") ("NEXT" . "#dc752f") ("THEM" . "#2d9574")
+     ("PROG" . "#4f97d7") ("OKAY" . "#4f97d7") ("DONT" . "#f2241f")
+     ("FAIL" . "#f2241f") ("DONE" . "#86dc2f") ("NOTE" . "#b1951d")
+     ("KLUDGE" . "#b1951d") ("HACK" . "#b1951d") ("TEMP" . "#b1951d")
+     ("FIXME" . "#dc752f") ("XXX+" . "#dc752f") ("\\?\\?\\?+" . "#dc752f")))
  '(ispell-dictionary "american")
  '(lsp-enable-indentation nil)
  '(lsp-enable-on-type-formatting nil)
@@ -852,6 +858,8 @@ This function is called at the very end of Spacemacs initialization."
  '(minimap-window-location 'right)
  '(mouse-autoselect-window t)
  '(next-error-recenter '(4))
+ '(org-agenda-files '("~/dev/helix-project/helix/helix.org"))
+ '(org-agenda-include-diary t)
  '(org-duration-format '(("h") (special . h:mm)))
  '(org-fontify-done-headline nil)
  '(org-fontify-todo-headline nil)
@@ -859,21 +867,74 @@ This function is called at the very end of Spacemacs initialization."
  '(org-log-note-clock-out t)
  '(org-log-refile 'note)
  '(package-selected-packages
-   '(ac-ispell ace-jump-helm-line ace-link ace-window add-node-modules-path adoc-mode aggressive-indent aio all-the-icons annalist anzu async auto-compile auto-complete auto-dictionary auto-highlight-symbol auto-yasnippet avy bind-key bind-map cargo centered-cursor-mode cfrs clang-format clean-aindent-mode closql cmake-mode column-enforce-mode company company-shell compat counsel counsel-gtags csv-mode dash define-word devdocs diminish dired-quick-sort docker docker-tramp dockerfile-mode dotenv-mode dracula-theme drag-stuff dumb-jump editorconfig elisp-def elisp-slime-nav emacsql emacsql-sqlite emr epl esh-help eshell-git-prompt eshell-prompt-extras eshell-z esxml eval-sexp-fu evil evil-anzu evil-args evil-cleverparens evil-collection evil-easymotion evil-ediff evil-escape evil-exchange evil-goggles evil-iedit-state evil-indent-plus evil-lion evil-lisp-state evil-matchit evil-mc evil-nerd-commenter evil-numbers evil-surround evil-terminal-cursor-changer evil-textobj-line evil-tutor evil-unimpaired evil-visual-mark-mode evil-visualstar exec-path-from-shell expand-region eyebrowse f fancy-battery fira-code-mode fireplace fish-mode flx flx-ido flycheck flycheck-bashate flycheck-elsa flycheck-package flycheck-pos-tip flycheck-rust flyspell-correct flyspell-correct-helm font-lock+ forge fuzzy gerrit ggtags ghub git-commit git-link git-messenger git-modes git-timemachine gitignore-templates golden-ratio google-translate goto-chg grizzl helm helm-ag helm-c-yasnippet helm-company helm-core helm-descbinds helm-flx helm-git-grep helm-gtags helm-ls-git helm-lsp helm-make helm-mode-manager helm-org helm-projectile helm-purpose helm-swoop helm-themes helm-xref hide-comnt highlight-indentation highlight-numbers highlight-parentheses hl-todo ht htmlize hungry-delete hybrid-mode hydra iedit imenu-list impatient-mode import-js indent-guide info+ insert-shebang inspector ivy js-doc js2-mode js2-refactor json-mode json-snatcher kv ligature link-hint list-utils livid-mode lorem-ipsum lsp-mode lsp-origami lsp-treemacs lsp-ui lv macrostep magit magit-section markdown-mode memoize minimap multi-line multi-term multiple-cursors mwim nameless nodejs-repl nov npm-mode open-junk-file org-pivotal org-re-reveal org-superstar origami overseer ox-gfm package-lint packed paradox paredit parent-mode password-generator pcre2el persistent-scratch persp-mode pfuture pkg-info popup popwin pos-tip posframe powerline prettier-js projectile queue quickrun racer rainbow-delimiters reformatter request restart-emacs ron-mode rust-mode s shell-pop shfmt shut-up simple-httpd skewer-mode smartparens smeargle spaceline spaceline-all-the-icons spinner sqlite3 srefactor stickyfunc-enhance string-edit string-inflection swiper symbol-overlay symon symon-lingr tablist terminal-here tern toc-org toml-mode transient treemacs treemacs-evil treemacs-icons-dired treemacs-magit treemacs-persp treemacs-projectile treepy undo-tree unfill unkillable-scratch use-package uuidgen vi-tilde-fringe visual-fill-column volatile-highlights vterm web-beautify which-key window-purpose winum with-editor writeroom-mode ws-butler xterm-color yaml yasnippet yasnippet-snippets))
+   '(ac-ispell ace-jump-helm-line ace-link ace-window add-node-modules-path
+               adoc-mode aggressive-indent aio all-the-icons annalist anzu async
+               auto-compile auto-complete auto-dictionary auto-highlight-symbol
+               auto-yasnippet avy bind-key bind-map cargo centered-cursor-mode
+               cfrs clang-format clean-aindent-mode closql cmake-mode
+               column-enforce-mode company company-shell compat counsel
+               counsel-gtags csv-mode dash define-word devdocs diminish
+               dired-quick-sort docker docker-tramp dockerfile-mode dotenv-mode
+               dracula-theme drag-stuff dumb-jump editorconfig elisp-def
+               elisp-slime-nav emacsql emacsql-sqlite emr epl esh-help
+               eshell-git-prompt eshell-prompt-extras eshell-z esxml
+               eval-sexp-fu evil evil-anzu evil-args evil-cleverparens
+               evil-collection evil-easymotion evil-ediff evil-escape
+               evil-exchange evil-goggles evil-iedit-state evil-indent-plus
+               evil-lion evil-lisp-state evil-matchit evil-mc
+               evil-nerd-commenter evil-numbers evil-surround
+               evil-terminal-cursor-changer evil-textobj-line evil-tutor
+               evil-unimpaired evil-visual-mark-mode evil-visualstar
+               exec-path-from-shell expand-region eyebrowse f fancy-battery
+               fira-code-mode fireplace fish-mode flx flx-ido flycheck
+               flycheck-bashate flycheck-elsa flycheck-package flycheck-pos-tip
+               flycheck-rust flyspell-correct flyspell-correct-helm font-lock+
+               forge fuzzy gerrit ggtags ghub git-commit git-link git-messenger
+               git-modes git-timemachine gitignore-templates golden-ratio
+               google-translate goto-chg grizzl helm helm-ag helm-c-yasnippet
+               helm-company helm-core helm-descbinds helm-flx helm-git-grep
+               helm-gtags helm-ls-git helm-lsp helm-make helm-mode-manager
+               helm-org helm-projectile helm-purpose helm-swoop helm-themes
+               helm-xref hide-comnt highlight-indentation highlight-numbers
+               highlight-parentheses hl-todo ht htmlize hungry-delete
+               hybrid-mode hydra iedit imenu-list impatient-mode import-js
+               indent-guide info+ insert-shebang inspector ivy js-doc js2-mode
+               js2-refactor json-mode json-snatcher kv ligature link-hint
+               list-utils livid-mode lorem-ipsum lsp-mode lsp-origami
+               lsp-treemacs lsp-ui lv macrostep magit magit-section
+               markdown-mode memoize minimap multi-line multi-term
+               multiple-cursors mwim nameless nodejs-repl nov npm-mode
+               open-junk-file org-pivotal org-re-reveal org-superstar origami
+               overseer ox-gfm package-lint packed paradox paredit parent-mode
+               password-generator pcre2el persistent-scratch persp-mode pfuture
+               pkg-info popup popwin pos-tip posframe powerline prettier-js
+               projectile queue quickrun racer rainbow-delimiters reformatter
+               request restart-emacs ron-mode rust-mode s shell-pop shfmt
+               shut-up simple-httpd skewer-mode smartparens smeargle spaceline
+               spaceline-all-the-icons spinner sqlite3 srefactor
+               stickyfunc-enhance string-edit string-inflection swiper
+               symbol-overlay symon symon-lingr tablist terminal-here tern
+               toc-org toml-mode transient treemacs treemacs-evil
+               treemacs-icons-dired treemacs-magit treemacs-persp
+               treemacs-projectile treepy undo-tree unfill unkillable-scratch
+               use-package uuidgen vi-tilde-fringe visual-fill-column
+               volatile-highlights vterm web-beautify which-key window-purpose
+               winum with-editor writeroom-mode ws-butler xterm-color yaml
+               yasnippet yasnippet-snippets))
  '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
  '(scroll-bar-mode 'right)
  '(shell-pop-full-span t)
  '(shell-pop-shell-type
-   '("ansi-term" "*ansi-term*"
-     (lambda nil
-       (ansi-term shell-pop-term-shell))))
+   '("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell))))
  '(shell-pop-term-shell "/usr/bin/fish")
  '(shell-pop-universal-key "C-a")
  '(shell-pop-window-position 'top)
  '(warning-suppress-log-types '((comp)))
  '(warning-suppress-types '((lsp-mode)))
  '(yas-snippet-dirs
-   '("/home/seans/.emacs.d/core/../private/snippets/" "/home/seans/.emacs.d/layers/+completion/auto-completion/local/snippets" yasnippet-snippets-dir "/home/seans/.config/yas/snippets/")))
+   '("/home/seans/.emacs.d/core/../private/snippets/"
+     "/home/seans/.emacs.d/layers/+completion/auto-completion/local/snippets"
+     yasnippet-snippets-dir "/home/seans/.config/yas/snippets/")))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

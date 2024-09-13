@@ -264,6 +264,12 @@ all:: nu
 .PHONY: nu_plugin_bash_env
 nu_plugin_bash_env: nu
 
+.PHONY: git-branchless # Build and install git-branchless to make git better
+git-branchless: rust
+	cargo install --locked git-branchless
+
+all:: git-branchless
+
 #. == Build the neovim package
 
 .PHONY: neovim # Build the neovim editor and install it to the neovim stow package
@@ -289,7 +295,7 @@ emacs: submodules/emacs/Makefile
 	make -C submodules/emacs -j 20 install
 
 submodules/emacs/Makefile: submodules/emacs/configure
-	cd submodules/emacs && ./configure --with-native-compilation=yes --with-pgtk --prefix=$(top)/emacs/.local/
+	cd submodules/emacs && ./configure --with-native-compilation --with-x --with-xwidgets --with-tree-sitter --prefix=$(top)/emacs/.local/
 	#cd submodules/emacs && ./configure --with-native-compilation=yes --with-x --prefix=$(top)/emacs/.local/
 
 submodules/emacs/configure: submodules/emacs/configure.ac submodules/emacs/autogen.sh
@@ -404,11 +410,76 @@ openport:
 
 all:: openport
 
+#. == Make diff-pdf package
+
+.PHONY: diff-pdf # Compute a diff between PDF files
+diff-pdf: submodules system-dependencies
+	cd submodules/diff-pdf \
+		&& ./bootstrap \
+		&& ./configure --prefix=$(top)/diff-pdf/.local/ \
+		&& make \
+		&& make install
+
+all:: diff-pdf
+
+#. == Rclone
+
+.PHONY: rclone-build # Build rclone stow package
+rclone-build: GOBIN := $(top)/rclone/.local/bin/
+rclone-build: GO := $(HOME)/.local/go/bin/go
+rclone-build: submodules system-dependencies golang
+	cd submodules/rclone \
+		&& GOBIN=$(GOBIN) $(GO) install -tags cmount -trimpath -ldflags -s
+
+all:: rclone-build
+
+#. == Git Annex
+
+#. NOTE: Git annex requires some stuff be added to the configuration for apt.
+# The configuration file is in /etc/apt/sources.list.d/ubuntu.sources. You need
+# to add `deb-src` and `noble-proposed` to make the results look like this:
+# ````
+# ## See the sources.list(5) manual page for further settings.
+# Types: deb deb-src
+# URIs: http://archive.ubuntu.com/ubuntu
+# Suites: noble noble-updates noble-backports noble-proposed
+# Components: main universe restricted multiverse
+# Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+#
+# ## Ubuntu security updates. Aside from URIs and Suites,
+# ## this should mirror your choices in the previous section.
+# Types: deb deb-src
+# URIs: http://security.ubuntu.com/ubuntu
+# Suites: noble-security
+# Components: main universe restricted multiverse
+# Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+# ````
+
+.PHONY: git-annex-build # Build git-annex stow package
+git-annex-build: submodules system-dependencies rclone-build
+	cabal update \
+	&& $(MAKE) -C submodules/git-annex.branchable.com install PREFIX=$(top)/git-annex/.local
+
+all:: git-annex-build
+
 #. == Pyenv python installation manager
 
 .PHONY: pyenv # Python installation manager
 pyenv: submodules
 	cd pyenv/.pyenv && ./src/configure && make -C src
+
+#. == Install Python utilities
+
+#. This rule is not included in `all` because we don't directly install Python.
+# The user must do that using `pyenv` first. However, if they've done so, they
+# can then run this target to install useful utilities.
+
+.PHONY: python-utilities # Install useful python utilities
+python-utilities:
+	python3 -m pip install --upgrade pip
+	python3 -m pip install -U pipx
+	python3 -m pipx install rich-cli
+	python3 -m pipx install rich-click
 
 #. == Install default stowage
 
@@ -446,4 +517,6 @@ weave: Makefile.typst
 
 Makefile.typst: Makefile
 	cat Makefile | sed 's,^# ,,g' | awk -v RS= -v ORS="\n\n" '!/#\. /{print "``""`\n"$$0"\n`""``\n"}; /^#\./{gsub("#\. ", "", $$0); print $$0}' > $@
+
+Makefile.pdf: Makefile.typst
 	typst compile Makefile.typst Makefile.pdf

@@ -1,5 +1,6 @@
 #!/bin/bash
 # Install requirements for Ubuntu 22.04 LTS
+
 # Add universe
 yes | sudo add-apt-repository universe
 sudo apt-get update
@@ -17,7 +18,16 @@ make \
 ninja-build \
 pkg-config \
 clang-format-15 \
-clang-tidy-15
+clang-tidy-15 \
+ppa-purge
+
+# Install mesa packages:
+# Mesa is currently broken on distro, so we add a PPA with a point release for now:
+#yes | sudo ppa-purge ppa:kisak/kisak-mesa
+#yes | sudo add-apt-repository ppa:kisak/kisak-mesa > /dev/null
+sudo apt install -yqq \
+libgl1-mesa-dri \
+mesa-utils
 
 # Install libraries:
 sudo apt install -yqq \
@@ -40,7 +50,16 @@ libpng-dev \
 libpng++-dev \
 libxpm-dev \
 libbsd-dev \
-libzip-dev
+libzip-dev \
+libqrencode-dev \
+libsqlite3-dev \
+libreadline-dev \
+libffi-dev \
+libglib2.0-dev \
+libpoppler-dev \
+libpoppler-glib-dev \
+libcairo2-dev \
+libwxgtk3.2-dev
 
 # Install utilities:
 sudo apt install -yqq \
@@ -72,4 +91,61 @@ texinfo \
 openssh-server \
 fortune \
 cowsay \
-lolcat
+lolcat \
+locate \
+oathtool \
+gdb \
+imagemagick \
+zbar-tools \
+traceroute \
+python3-pip \
+zstd \
+wslu \
+valgrind \
+git-gui \
+perl-doc \
+figlet \
+gparted \
+git-lfs \
+python3-rich
+
+ # Yocto dependencies
+sudo apt install -yqq \
+git \
+cmake \
+gcc \
+g++ \
+gdb \
+emacs \
+gparted \
+gitk \
+git-lfs \
+libstdc++6 \
+libgtk2.0-0t64 \
+dpkg-dev \
+python3-pip \
+libncurses6 \
+libtinfo6 \
+libtinfo-dev \
+gawk \
+xterm \
+autoconf \
+libtool \
+texinfo \
+gcc-multilib \
+net-tools \
+repo \
+pv \
+libi2c-dev \
+chrpath \
+diffstat \
+zstd \
+lz4 \
+libgpiod-dev \
+libssl-dev \
+gnuplot \
+parted
+
+# git-annex dependencies
+sudo apt-get -yqq build-dep git-annex
+sudo apt-get -yqq install libfuse-dev

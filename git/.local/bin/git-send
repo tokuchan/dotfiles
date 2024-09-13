@@ -1,0 +1,43 @@
+#!/bin/bash
+# Pick out commits from a range from HEAD to the first commit already landed,
+# then cherry pick them.
+
+# This command assumes a _worktree_ flow, where the patches branch for a repo
+# named "foo" would be "foo--patches" in the _same_ directory as "foo" itself.
+
+# Get the patch to the patches branch
+patches=$(pwd | xargs basename | awk -F'--' '{printf "../%s--patches", $1}')
+
+# Error out if the patches path doesn't exist in the expected location
+if ! test -d "$patches"; then
+  exit -1
+fi
+
+# Now that we know it's safe, get the list of commits to send over
+commits=$(\
+git cherry -v patches drafts \
+  | tac \
+  | awk '\
+      $1=="-"{exit}; \
+      { \
+        gsub (/^\s*\+\s*/, ""); \
+        print $0 \
+      }' \
+  | fzf \
+    -m \
+    --cycle \
+    --border=rounded \
+    --border-label='Choose commits to send' \
+    --layout=reverse-list \
+    --prompt='Choose commits > ' \
+    --marker='+' \
+    --ansi \
+    --color='dark,pointer:bright-yellow:bold,marker:bright-green:bold' \
+    --preview='echo {} | cut -d" " -f1 | xargs git show --color' \
+  | tac \
+  | awk '{print $1}'\
+  )
+
+# Move to the patches directory
+cd "$patches"
+git cherry-pick $commits

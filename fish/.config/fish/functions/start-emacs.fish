@@ -1,3 +1,3 @@
 function start-emacs --description 'Start EMACS and disown it'
-emacs& && disown
+    emacs 2>/dev/null & && disown
 end

@@ -1,1 +1,1 @@
-neofetch
+motd
