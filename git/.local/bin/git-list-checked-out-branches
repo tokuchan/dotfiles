@@ -1,0 +1,11 @@
+#!/bin/bash
+# Starting from pwd, search every subdirectory that contains a git repo and print out its current branch.
+
+# Clear the tabs when we're done
+trap 'tabs 8' EXIT INT TERM 
+
+# Set up the tab stops for a nice output
+printf "\033[3g                                                         \033H        \033H\rDirectory\tBranch\n" 
+
+# Print the table
+find . -type d -exec test -e '{}/.git' \; -print -prune | parallel cd "{}" \&\& printf "%s\\\\t" \$\(pwd\) \&\& git rev-parse --abbrev-ref HEAD
