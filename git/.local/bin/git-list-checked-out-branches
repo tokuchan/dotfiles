@@ -5,7 +5,7 @@
 trap 'tabs 8' EXIT INT TERM 
 
 # Set up the tab stops for a nice output
-printf "\033[3g                                                         \033H        \033H\rDirectory\tBranch\n" 
+printf "\033[3g                                                         \033H        \033H\rDirectory\tBranch\n---------\t------\n" 
 
 # Print the table
 find . -type d -exec test -e '{}/.git' \; -print -prune | parallel cd "{}" \&\& printf "%s\\\\t" \$\(pwd\) \&\& git rev-parse --abbrev-ref HEAD
