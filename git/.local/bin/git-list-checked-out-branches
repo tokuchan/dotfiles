@@ -4,8 +4,30 @@
 # Clear the tabs when we're done
 trap 'tabs 8' EXIT INT TERM 
 
+# Set the base find command we can use to run parallel git commands
+function gitFind () {
+  find . -type d -exec test -e '{}/.git' \; -print -prune | parallel cd "{}" \&\& $*
+}
+
+# Get the length of the longest result in the command
+function gitLen () {
+  gitFind $* | awk '{print length}' | sort -nr | head -1
+}
+
+# Get the shortest unambiguous ref for the current head
+function gitHead () {
+  git rev-parse --abbrev-ref HEAD
+}
+
+pwdLen=$(gitLen pwd)
+
 # Set up the tab stops for a nice output
-printf "\033[3g                                                         \033H        \033H\rDirectory\tBranch\n---------\t------\n" 
+printf "\033[3g%${pwdLen}s  \033H                                          \033H\rDirectory\tHash\tBranch\n---------\t----\t------\n" ' '
 
 # Print the table
-find . -type d -exec test -e '{}/.git' \; -print -prune | parallel cd "{}" \&\& printf "%s\\\\t" \$\(pwd\) \&\& git rev-parse --abbrev-ref HEAD
+find . -type d -exec test -e '{}/.git' \; -print -prune \
+  | parallel cd "{}" \
+  \&\& printf "%s\\\\t%s\\\\t%s\\\\n" \
+  \$\(pwd\) \
+  \$\(git show --no-patch --pretty="%H" \$\(git rev-parse --abbrev-ref HEAD\)\) \
+  \$\(git rev-parse --abbrev-ref HEAD\)
