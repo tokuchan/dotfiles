@@ -20,9 +20,11 @@ function gitHead () {
 }
 
 pwdLen=$(gitLen pwd)
+subLen=$(gitLen 'git submodule foreach --quiet --recursive pwd')
+maxLen=$(printf "%s\n%s\n" $pwdLen $subLen | sort -nr | head -1)
 
 # Set up the tab stops for a nice output
-printf "\033[3g%${pwdLen}s  \033H                                          \033H\rDirectory\tHash\tBranch\n---------\t----\t------\n" ' '
+printf "\033[3g%${maxLen}s  \033H                                          \033H\rDirectory\tHash\tBranch\n---------\t----\t------\n" ' '
 
 # Print the table
 find . -type d -exec test -e '{}/.git' \; -print -prune \
@@ -30,4 +32,9 @@ find . -type d -exec test -e '{}/.git' \; -print -prune \
   \&\& printf "%s\\\\t%s\\\\t%s\\\\n" \
   \$\(pwd\) \
   \$\(git show --no-patch --pretty="%H" \$\(git rev-parse --abbrev-ref HEAD\)\) \
-  \$\(git rev-parse --abbrev-ref HEAD\)
+  \$\(git rev-parse --abbrev-ref HEAD\) \
+  \&\& git submodule foreach --quiet --recursive bash -c \'printf "%s\\\\t%s\\\\t%s\\\\n" \
+  \$\(pwd\) \
+  \$\(git show --no-patch --pretty="%H" \$\(git rev-parse --abbrev-ref HEAD\)\) \
+  \$\(git rev-parse --abbrev-ref HEAD\) \
+  \'
