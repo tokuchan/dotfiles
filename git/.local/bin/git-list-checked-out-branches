@@ -27,7 +27,9 @@ maxLen=$(printf "%s\n%s\n" $pwdLen $subLen | sort -nr | head -1)
 printf "\033[3g%${maxLen}s  \033H                                          \033H\rDirectory\tHash\tBranch\n---------\t----\t------\n" ' '
 
 # Print the table
-find . -type d -exec test -e '{}/.git' \; -print -prune \
+wd=${@:-.}
+
+find "${wd}" -type d -exec test -e '{}/.git' \; -print -prune \
   | parallel cd "{}" \
   \&\& printf "%s\\\\t%s\\\\t%s\\\\n" \
   \$\(pwd\) \
