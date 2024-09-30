@@ -6,7 +6,7 @@ trap 'tabs 8' EXIT INT TERM
 
 # Set the base find command we can use to run parallel git commands
 function gitFind () {
-  find . -type d -exec test -e '{}/.git' \; -print -prune | parallel cd "{}" \&\& $*
+  find . -type d -exec test -e '{}/.git' \; -print -prune | parallel cd "{}" \&\& pwd \&\& $*
 }
 
 gitFind $*
