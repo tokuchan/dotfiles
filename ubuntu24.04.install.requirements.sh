@@ -61,7 +61,8 @@ libpoppler-glib-dev \
 libcairo2-dev \
 libwxgtk3.2-dev \
 libubsan1 \
-libasan8
+libasan8 \
+libboost-all-dev
 
 # Install utilities:
 sudo apt install -yqq \
@@ -109,7 +110,10 @@ perl-doc \
 figlet \
 gparted \
 git-lfs \
-python3-rich
+python3-rich \
+nmap \
+parallel \
+mosh
 
  # Yocto dependencies
 sudo apt install -yqq \
