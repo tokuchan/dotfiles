@@ -3,4 +3,5 @@
 # Note: this destroys in-progress work! Make sure to stash or commit first!
 git submodule foreach --recursive git clean -xfd \
 && git submodule sync --recursive \
-&& git restore . --recurse-submodules
+&& git restore . --no-recurse-submodules \
+&& git submodule foreach git rinse
