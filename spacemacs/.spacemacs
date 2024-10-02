@@ -31,7 +31,8 @@ This function should only modify configuration layer settings."
    dotspacemacs-configuration-layer-path '()
 
    ;; List of configuration layers to load.
-   dotspacemacs-configuration-layers '(javascript
+   dotspacemacs-configuration-layers '(typescript
+                                       javascript
                                        ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
@@ -884,8 +885,8 @@ This function is called at the very end of Spacemacs initialization."
                counsel-gtags csv-mode dash define-word devdocs diminish
                dired-quick-sort docker docker-tramp dockerfile-mode dotenv-mode
                dracula-theme drag-stuff dumb-jump editorconfig elisp-def
-               elisp-slime-nav emacsql emacsql-sqlite emr epl esh-help
-               eshell-git-prompt eshell-prompt-extras eshell-z esxml
+               elisp-slime-nav emacsql emacsql-sqlite emmet-mode emr epl
+               esh-help eshell-git-prompt eshell-prompt-extras eshell-z esxml
                eval-sexp-fu evil evil-anzu evil-args evil-cleverparens
                evil-collection evil-easymotion evil-ediff evil-escape
                evil-exchange evil-goggles evil-iedit-state evil-indent-plus
@@ -924,11 +925,12 @@ This function is called at the very end of Spacemacs initialization."
                symbol-overlay symon symon-lingr tablist terminal-here tern
                toc-org toml-mode transient treemacs treemacs-evil
                treemacs-icons-dired treemacs-magit treemacs-persp
-               treemacs-projectile treepy undo-tree unfill unkillable-scratch
-               use-package uuidgen vi-tilde-fringe visual-fill-column
-               volatile-highlights vterm web-beautify which-key window-purpose
-               winum with-editor writeroom-mode ws-butler xterm-color yaml
-               yasnippet yasnippet-snippets))
+               treemacs-projectile treepy typescript-mode undo-tree unfill
+               unkillable-scratch use-package uuidgen vi-tilde-fringe
+               visual-fill-column volatile-highlights vterm web-beautify
+               web-mode which-key window-purpose winum with-editor
+               writeroom-mode ws-butler xterm-color yaml yasnippet
+               yasnippet-snippets))
  '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
  '(scroll-bar-mode 'right)
  '(shell-pop-full-span t)
