@@ -6,7 +6,8 @@ alias ...='cd ../..'
 alias ....='cd ../../..'
 
 # Git aliases
-alias g='git '
+alias g='f() { if (( $# > 0 )); then git $@; else lazygit; fi; }; f'
+alias lg='lazygit'
 alias gg='git-goto'
 alias gf='git-fuzzy-fetch'
 alias gm='git merge'
