@@ -2,7 +2,9 @@
 # Smart wrapper for ls.
 
 set +x
-if command -v lsd && (( $(command lsd >/dev/null 2>&1; echo $?) == 0 )); then
+if command -v exa && (( $(command exa >/dev/null 2>&1; echo $?) == 0 )); then
+  exa -lbah --sort=name --icons --colour-scale --colour=always $@ | less -RF
+elif command -v lsd && (( $(command lsd >/dev/null 2>&1; echo $?) == 0 )); then
   lsd -alGg --group-dirs=first --hyperlink=always --color=always --date=+%y-%m-%dT%H:%M:%S $@ | \
     awk '
       BEGIN {printf "\033[3g             \033H           \033H           \033H        \033H                   \033H     \033H         \033H         \033H\rPermissions\tUser\tGroup\tSize\tModified Time\tGit\tName\n"};
@@ -10,8 +12,6 @@ if command -v lsd && (( $(command lsd >/dev/null 2>&1; echo $?) == 0 )); then
       END {printf "\033[3g"}
       '
   tabs
-elif command -v exa && (( $(command exa >/dev/null 2>&1; echo $?) == 0 )); then
-  exa -lbah --sort=name --icons --colour-scale --colour=always $@ | less -RF
 else
   #ls --color=always -a --author -F --full-time --group-directories-first -h --hyperlink=always -l -L -r --time-style=full-iso -t -v $@ | less -rF
   ls --color=always -a -F --full-time --group-directories-first -h --hyperlink=always -L -r -t -v $@ | tail -n +2 | less -rF

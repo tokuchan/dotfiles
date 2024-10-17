@@ -2,5 +2,7 @@
   "dependencies": {
     "coc-json": ">=1.4.1",
     "coc-pyright": ">=1.1.228"
-  }
+  },
+  "disabled": [],
+  "locked": []
 }
