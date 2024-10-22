@@ -58,3 +58,6 @@
 [submodule "submodules/git-annex.branchable.com"]
 	path = submodules/git-annex.branchable.com
 	url = git://git-annex.branchable.com/
+[submodule "fzf"]
+	path = submodules/fzf
+	url = git@github.com:junegunn/fzf.git
