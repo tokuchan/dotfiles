@@ -31,7 +31,8 @@ This function should only modify configuration layer settings."
    dotspacemacs-configuration-layer-path '()
 
    ;; List of configuration layers to load.
-   dotspacemacs-configuration-layers '(typescript
+   dotspacemacs-configuration-layers '(systemd
+                                       typescript
                                        javascript
                                        ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
@@ -907,9 +908,9 @@ This function is called at the very end of Spacemacs initialization."
                helm-xref hide-comnt highlight-indentation highlight-numbers
                highlight-parentheses hl-todo ht htmlize hungry-delete
                hybrid-mode hydra iedit imenu-list impatient-mode import-js
-               indent-guide info+ insert-shebang inspector ivy js-doc js2-mode
-               js2-refactor json-mode json-snatcher kv ligature link-hint
-               list-utils livid-mode lorem-ipsum lsp-mode lsp-origami
+               indent-guide info+ insert-shebang inspector ivy journalctl-mode
+               js-doc js2-mode js2-refactor json-mode json-snatcher kv ligature
+               link-hint list-utils livid-mode lorem-ipsum lsp-mode lsp-origami
                lsp-treemacs lsp-ui lv macrostep magit magit-section
                markdown-mode memoize minimap multi-line multi-term
                multiple-cursors mwim nameless nodejs-repl nov npm-mode
@@ -922,8 +923,8 @@ This function is called at the very end of Spacemacs initialization."
                shut-up simple-httpd skewer-mode smartparens smeargle spaceline
                spaceline-all-the-icons spinner sqlite3 srefactor
                stickyfunc-enhance string-edit string-inflection swiper
-               symbol-overlay symon symon-lingr tablist terminal-here tern
-               toc-org toml-mode transient treemacs treemacs-evil
+               symbol-overlay symon symon-lingr systemd tablist terminal-here
+               tern toc-org toml-mode transient treemacs treemacs-evil
                treemacs-icons-dired treemacs-magit treemacs-persp
                treemacs-projectile treepy typescript-mode undo-tree unfill
                unkillable-scratch use-package uuidgen vi-tilde-fringe
