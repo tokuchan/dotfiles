@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# save tty settings
+saved_stty=$(stty -g)
+
+restore()
+{
+  stty $saved_stty
+  # reset scrolling region
+  printf "\033[1;${rows}r"
+
+  # move to bottom of display
+  printf "\033[999;1H"
+}
+
+trap restore int term exit
+
+# move to bottom of display
+printf "\033[999;1H"
+
+printf "\n\n\n\n\n\n\n\n\n\n"
+
+# Query the actual cursor position
+printf "\033[6n"
+
+# read tty response
+tty_response=
+stty raw isig -echo
+while true; do
+    char=$(dd bs=1 count=1 2> /dev/null)
+    if [ "$char" = "R" ] ; then
+        break;
+    fi
+    tty_response="$tty_response$char"
+done
+stty $saved_stty
+
+# parse tty_response
+get_size()
+{
+   cols=$3
+   rows=$2
+}
+
+save_IFS=$IFS
+IFS='[;R'
+get_size $tty_response
+IFS=$save_IFS
+
+# set scrolling region to 10 lines
+printf "\033[$((rows-9));${rows}r"
+
+# move to bottom of display
+printf "\033[999;1H"
+
+# run command
+"$@"
