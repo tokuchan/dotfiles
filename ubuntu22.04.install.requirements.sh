@@ -69,3 +69,7 @@ miller \
 fortune \
 cowsay \
 lolcat
+
+# git-annex dependencies
+sudo apt-get -yqq build-dep git-annex
+sudo apt-get -yqq install libfuse-dev
