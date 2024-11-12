@@ -1,6 +1,6 @@
 [user]
 	name = Sean R. Spillane
-	email = tokuchan@gmail.com
+	email = sean@spillane.us
 	signingkey = /home/seans/.ssh/id_ed25519.pub
 
 [color]
@@ -132,3 +132,5 @@
 	gpgsign = true
 [gpg]
 	format = ssh
+[url "ssh://git@github.com"]
+	insteadOf = https://github.com
