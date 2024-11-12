@@ -58,3 +58,6 @@
 [submodule "submodules/git-annex.branchable.com"]
 	path = submodules/git-annex.branchable.com
 	url = git://git-annex.branchable.com/
+[submodule "pass/.config/pass/extensions/pass-fzf"]
+	path = pass/.config/pass/extensions/pass-fzf
+	url = git@github.com:ficoos/pass-fzf.git

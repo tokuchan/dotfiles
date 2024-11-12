@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+
+from shutil import get_terminal_size
+
+def tabs(n=8):
+  print('\033[3g', end='', flush=True)
+  print(''.join(('\033H' if x % n == 0 else ' ') for x in range(0,get_terminal_size()[0])), end='\r', flush=True)
+
+tabs(16)
+
+for i, j in zip(range(30, 37 + 1), [47, 38, 38, 38, 38, 38, 38, 38]):
+    print("\033[%d;%dm%d\033[49m\t\033[%d;%dm%d\033[49;39m" % (i, j, i, i + 60, j, i + 60))
+
+tabs(40)
+print("\033[39;49m\n\033[4mSequence\tMeaning\033[24m\n")
+
+print("\\033[39m\\033[49m\tReset color")
+print("\\033[2K\tClear Line")
+print("\\033[<L>;<C>H or \\033[<L>;<C>f\tPut the cursor at line L and column C.")
+print("\\033[<N>A\tMove the cursor up N lines")
+print("\\033[<N>B\tMove the cursor down N lines")
+print("\\033[<N>C\tMove the cursor forward N columns")
+print("\\033[<N>D\tMove the cursor backward N columns\n")
+print("\\033[2J\tClear the screen, move to (0,0)")
+print("\\033[K\tErase to end of line")
+print("\\033[s\tSave cursor position")
+print("\\033[u\tRestore cursor position\n")
+print("\\033[4m\tUnderline on")
+print("\\033[24m\tUnderline off\n")
+print("\\033[1m\tBold on")
+print("\\033[21m\tBold off\n")
+print("\\033[3g\tClear tab stops")
+print("\\033H\tSet tab stop at cursor position")
+
+tabs()
