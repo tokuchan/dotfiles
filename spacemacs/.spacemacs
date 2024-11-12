@@ -797,6 +797,7 @@ nil : Otherwise, return nil and run next lineup function."
   (setq completion-at-point-functions (lsp-completion-at-point))
 
   ;; Set up key bindings to make HJKL switch windows in normal mode
+  (spacemacs/set-leader-keys "ww" nil)
   (spacemacs/set-leader-keys "ww" 'spacemacs/window-transient-state/body)
 
   ;; Automatically resume previous layout, based on the directory in which EMACS is started.
@@ -804,7 +805,9 @@ nil : Otherwise, return nil and run next lineup function."
   (desktop-read)
 
   ;; Change window split behaviour to focus into the new windows, since that's how I think.
+  (spacemacs/set-leader-keys "w-" nil)
   (spacemacs/set-leader-keys "w-" 'split-window-below-and-focus)
+  (spacemacs/set-leader-keys "w/" nil)
   (spacemacs/set-leader-keys "w/" 'split-window-right-and-focus)
 )
 
