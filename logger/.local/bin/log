@@ -75,3 +75,4 @@ cat ${log_summary}
 tabs
 
 paplay "${alert_sound}"
+notify-send "Command '${command}' is complete!"
