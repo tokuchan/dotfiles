@@ -64,3 +64,6 @@
 [submodule "submodules/wsl-notify-send"]
 	path = submodules/wsl-notify-send
 	url = git@github.com:stuartleeks/wsl-notify-send.git
+[submodule "fzf"]
+	path = submodules/fzf
+	url = git@github.com:junegunn/fzf.git

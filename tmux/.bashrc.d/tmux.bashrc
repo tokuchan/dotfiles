@@ -1,3 +1,8 @@
+# Provide a safe way to get into tmux
+start-tmux() {
+	tmux new -A -s ssh_tmux
+}
+
 # Gracefully handle exiting from tmux
 exit() {
 	if [[ -z $TMUX ]]; then

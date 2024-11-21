@@ -4,9 +4,20 @@
 # Clear the tabs when we're done
 trap 'tabs 8' EXIT INT TERM 
 
+# Change to the supplied directory and run the supplied command.
+function runCmd () {
+  dir=$1
+  shift
+  cd $dir
+  printf '\n\033[0;38;2;255;255;255;1;4m%s\033[0m\n\n' "$dir" 
+  $* | awk '{printf( "\t%s\n", $0 )}'
+}
+export -f runCmd
+
 # Set the base find command we can use to run parallel git commands
 function gitFind () {
-  find . -type d -exec test -e '{}/.git' \; -print -prune | parallel cd "{}" \&\& pwd \&\& $*
+  find $(pwd) -type d -exec test -e '{}/.git' \; -print -prune
 }
+export -f gitFind
 
-gitFind $*
+gitFind | parallel runCmd {} $*
