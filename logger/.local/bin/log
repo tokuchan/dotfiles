@@ -10,7 +10,8 @@ alert_sound="${HOME}/.local/share/logger/JR Osaka Loop 1.mp3"
 log_directory="log-$1-$$"
 log_stdout="${log_directory}/stdout"
 log_stderr="${log_directory}/stderr"
-log_summary="${log_directory}/summary"
+log_combined="${log_directory}/combined"
+log_summary="${log_directory}/summary.tsv"
 
 function logit () {
 	category=$1
@@ -39,12 +40,15 @@ function logfatal () {
 mkdir -p ${log_directory}
 
 loginfo "Create log directory"
-loginfo "Log directory: ${log_directory}"
-loginfo "Stdout: ${log_stdout}"
-loginfo "Stderr: ${log_stderr}"
+loginfo "Log directory: .... ${log_directory}"
+loginfo "Stdout: ........... ${log_stdout}"
+loginfo "Stderr: ........... ${log_stderr}"
+loginfo "Combined: ......... ${log_combined}"
+loginfo "Command: .......... $command"
 
-loginfo "Run command: $command"
-$command > ${log_stdout} 2> ${log_stderr} & pid=$!
+loginfo "Run command"
+
+${command} > >(tee -a ${log_stdout} >> ${log_combined}) 2> >(tee -a ${log_stderr} >> ${log_combined}) & pid=$!
 
 loginfo "Wait"
 i=1
