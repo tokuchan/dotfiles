@@ -70,3 +70,5 @@ loginfo "Display summary"
 printf "\033[s\033[3g%10s\033H%32s\033H%13s\033H\033[u\033[2K\033[38;2;255;255;255m\033[4m\033[1mPID\tTimestamp\tCategory\tMessage\033[0m\n" " " " " " "
 cat ${log_summary}
 tabs
+
+paplay "${alert_sound}"
