@@ -14,6 +14,8 @@ for i, j in zip(range(30, 37 + 1), [47, 38, 38, 38, 38, 38, 38, 38]):
 tabs(40)
 print("\033[39;49m\n\033[4mSequence\tMeaning\033[24m\n")
 
+print("\\033[38;1;<r>;<g>;<b>m\tSelect RGB foreground color.")
+print("\\033[48;1;<r>;<g>;<b>m\tSelect RGB background color.")
 print("\\033[39m\\033[49m\tReset color")
 print("\\033[2K\tClear Line")
 print("\\033[<L>;<C>H or \\033[<L>;<C>f\tPut the cursor at line L and column C.")
