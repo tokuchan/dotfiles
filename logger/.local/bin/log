@@ -4,7 +4,8 @@
 # sound at the end.
 
 command=$* # Get the command to run
-spinner='\|/-' # Set up a spinner
+#spinner='\|/-' # Set up a spinner
+spinner='⡏⠟⠻⢹⣸⣴⣦⣇'
 spinner_length=${#spinner}
 alert_sound="${HOME}/.local/share/logger/JR Osaka Loop 1.mp3"
 log_directory="log-$1-$$"
@@ -40,6 +41,8 @@ function logfatal () {
 mkdir -p ${log_directory}
 
 loginfo "Create log directory"
+#loginfo "spinner: .......... '${spinner}'"
+#loginfo "spinner-length: ... ${spinner_length}"
 loginfo "Log directory: .... ${log_directory}"
 loginfo "Stdout: ........... ${log_stdout}"
 loginfo "Stderr: ........... ${log_stderr}"
@@ -50,14 +53,14 @@ loginfo "Run command"
 
 ${command} > >(tee -a ${log_stdout} >> ${log_combined}) 2> >(tee -a ${log_stderr} >> ${log_combined}) & pid=$!
 
-loginfo "Wait"
 i=1
+printf "\033[?25l"
 while ps -p $pid > /dev/null
 do
-  printf "\b%c" "${spinner:i++%${spinner_length}:1}"
+  printf "\b%s" "${spinner:i++%${spinner_length}:1}"
   sleep 0.1
 done
-printf "\b"
+printf "\b\033[?25h"
 
 if wait $pid; then
   loginfo "Command completed successfully."
