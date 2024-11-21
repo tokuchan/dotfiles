@@ -481,6 +481,14 @@ python-utilities:
 	python3 -m pipx install rich-cli
 	python3 -m pipx install rich-click
 
+#. == Build wsl-notify-send utility, so we can send notifications.
+
+.PHONY: notify-send # Build and install notify-send for windows.
+notify-send: golang submodules
+	cd submodules/wsl-notify-send && make build
+	cp submodules/wsl-notify-send/wsl-notify-send.exe logger/.local/bin/wsl-notify-send
+	cp submodules/wsl-notify-send/wsl-notify-send.exe logger/.local/bin/notify-send
+
 #. == Install default stowage
 
 .PHONY: install-default # Install the default stow packages

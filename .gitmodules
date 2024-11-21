@@ -61,3 +61,6 @@
 [submodule "pass/.config/pass/extensions/pass-fzf"]
 	path = pass/.config/pass/extensions/pass-fzf
 	url = git@github.com:ficoos/pass-fzf.git
+[submodule "submodules/wsl-notify-send"]
+	path = submodules/wsl-notify-send
+	url = git@github.com:stuartleeks/wsl-notify-send.git

@@ -1,0 +1,63 @@
+#!/bin/bash
+# Given a command line, run that command in the background, logging the error
+# and output to files, timing the run, then notifying the user and playing a
+# sound at the end.
+
+command=$* # Get the command to run
+spinner='\|/-' # Set up a spinner
+spinner_length=${#spinner}
+alert_sound="${HOME}/.local/share/logger/JR Osaka Loop 1.mp3"
+log_directory="log-$1-$$"
+log_stdout="${log_directory}/stdout"
+log_stderr="${log_directory}/stderr"
+log_summary="${log_directory}/summary"
+
+function logit () {
+	category=$1
+	shift
+  printf "=$$=\t%s\t%s\t%s\n" "$(date +'%Y%M%DT%h%m%s')" "$category" "$*" >> ${log_summary}
+}
+
+function loginfo () {
+  logit "information" "$*"
+}
+
+function logwarn () {
+  logit "warning" "$*"
+}
+
+function logerror () {
+  logit "error" "$*"
+}
+
+function logfatal () {
+  logit "fatal" "$*"
+  cat ${log_summary}
+  exit 1
+}
+
+function run () {
+
+}
+
+mkdir -p ${log_directory}
+
+loginfo "Create log directory"
+loginfo "Log directory: ${log_directory}"
+loginfo "Stdout: ${log_stdout}"
+loginfo "Stderr: ${log_stderr}"
+
+loginfo "Run command: $command"
+$command > ${log_stdout} 2> ${log_stderr} & pid=$!
+
+loginfo "Wait"
+i=1
+while ps -p $pid > /dev/null
+do
+  printf "\b%c" "${spinner:i++%${spinner_length}:1}"
+  sleep 0.1
+done
+
+loginfo "Display summary"
+
+cat ${log_summary}

@@ -155,3 +155,6 @@ parted
 # git-annex dependencies
 sudo apt-get -yqq build-dep git-annex
 sudo apt-get -yqq install libfuse-dev
+
+# wsl-notify-send dependencies
+sudo apt-get -yqq install golang
