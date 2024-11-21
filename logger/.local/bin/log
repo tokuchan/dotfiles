@@ -36,10 +36,6 @@ function logfatal () {
   exit 1
 }
 
-function run () {
-
-}
-
 mkdir -p ${log_directory}
 
 loginfo "Create log directory"
