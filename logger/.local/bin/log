@@ -8,6 +8,7 @@ command=$* # Get the command to run
 spinner='⡏⠟⠻⢹⣸⣴⣦⣇'
 spinner_length=${#spinner}
 alert_sound="${HOME}/.local/share/logger/JR Osaka Loop 1.mp3"
+fail_sound="${HOME}/.local/share/logger/fail-jingle-stereo-mix-88784.mp3"
 log_directory="log-$1-$$"
 log_stdout="${log_directory}/stdout"
 log_stderr="${log_directory}/stderr"
@@ -65,8 +66,10 @@ done
 printf "\b\033[?25h"
 
 if wait $pid; then
+  paplay "${alert_sound}"
   loginfo "Command completed successfully."
 else
+  paplay "${fail_sound}"
   logerror "Command failed!"
 fi
 
@@ -76,6 +79,5 @@ printf "\033[s\033[3g%10s\033H%32s\033H%13s\033H\033[u\033[2K\033[38;2;255;255;2
 cat ${log_summary}
 tabs
 
-paplay "${alert_sound}"
 notify-send "Command '${command}' is complete!"
 tail ${log_combined}
