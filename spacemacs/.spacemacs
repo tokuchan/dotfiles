@@ -123,7 +123,7 @@ This function should only modify configuration layer settings."
    ;; `:location' property: '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
 
-   dotspacemacs-additional-packages '(nov fira-code-mode gerrit shell-pop org-pivotal sqlite3 exec-path-from-shell ligature)
+   dotspacemacs-additional-packages '(nov fira-code-mode gerrit shell-pop org-pivotal sqlite3 exec-path-from-shell ligature bitbake-mode bitbake-ts-mode)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
