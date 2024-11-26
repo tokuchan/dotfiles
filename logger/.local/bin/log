@@ -51,6 +51,8 @@ loginfo "Command: .......... $command"
 
 loginfo "Run command"
 
+printf "Log file in ${log_combined}\n"
+
 ${command} > >(tee -a ${log_stdout} >> ${log_combined}) 2> >(tee -a ${log_stderr} >> ${log_combined}) & pid=$!
 
 i=1
@@ -76,3 +78,4 @@ tabs
 
 paplay "${alert_sound}"
 notify-send "Command '${command}' is complete!"
+tail ${log_combined}
