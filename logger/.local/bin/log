@@ -67,9 +67,11 @@ printf "\b\033[?25h"
 
 if wait $pid; then
   paplay "${alert_sound}"
+  notify-send "Command '${command}' is complete!"
   loginfo "Command completed successfully."
 else
   paplay "${fail_sound}"
+  notify-send "Command '${command}' failed!"
   logerror "Command failed!"
 fi
 
@@ -79,5 +81,4 @@ printf "\033[s\033[3g%10s\033H%32s\033H%13s\033H\033[u\033[2K\033[38;2;255;255;2
 cat ${log_summary}
 tabs
 
-notify-send "Command '${command}' is complete!"
 tail ${log_combined}
