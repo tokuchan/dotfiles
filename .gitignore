@@ -213,3 +213,4 @@ rclone/.local/bin
 git-annex/.local
 logger/.local/bin/notify-send
 logger/.local/bin/wsl-notify-send
+git/.config/git/gitk
