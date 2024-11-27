@@ -15,10 +15,12 @@ log_stderr="${log_directory}/stderr"
 log_combined="${log_directory}/combined"
 log_summary="${log_directory}/summary.tsv"
 
+pid_color="\033[38;2;255;0;255m\033[4m\033[1m"
+
 function logit () {
 	category=$1
 	shift
-  printf "=$$=\t%s\t%s\t%s\n" "$(date +'%Y%M%DT%h%m%s')" "$category" "$*" >> ${log_summary}
+  printf "=$$=\t%s\t%s\t%s\n" "$(date +'%Y.%M.%DT%H.%M.%S.%N')" "$category" "$*" >> ${log_summary}
 }
 
 function loginfo () {
@@ -52,18 +54,18 @@ loginfo "Command: .......... $command"
 
 loginfo "Run command"
 
-printf "Log file in ${log_combined}\n"
+printf "$pid_color=$$=\033[0m\tLog file in ${log_combined}\n"
 
 ${command} > >(tee -a ${log_stdout} >> ${log_combined}) 2> >(tee -a ${log_stderr} >> ${log_combined}) & pid=$!
 
 i=1
-printf "\033[?25l"
+printf "\033[?25l${spinner:0:1}"
 while ps -p $pid > /dev/null
 do
   printf "\b%s" "${spinner:i++%${spinner_length}:1}"
   sleep 0.1
 done
-printf "\b\033[?25h"
+printf "\b\033[?25h\n"
 
 if wait $pid; then
   paplay "${alert_sound}"
@@ -77,8 +79,8 @@ fi
 
 loginfo "Display summary"
 
-printf "\033[s\033[3g%10s\033H%32s\033H%13s\033H\033[u\033[2K\033[38;2;255;255;255m\033[4m\033[1mPID\tTimestamp\tCategory\tMessage\033[0m\n" " " " " " "
-cat ${log_summary}
+printf "\033[A\033[3g%11s\033H%37s\033H%12s\033H\r$pid_color=$$=\tTimestamp\tCategory\tMessage\033[0m\n" " " " " " "
+cat ${log_summary} | awk -F'\t' '{a=$1; $1=""; printf "'"$pid_color"'%s\033[0m\t%s\n", a, $0}'
 tabs
 
-tail ${log_combined}
+tail ${log_combined} | sed "s,^,=$$=\t," | awk -F'\t' '{a=$1; $1=""; printf "'"$pid_color"'%s\033[0m\t%s\n", a, $0}'
