@@ -77,10 +77,13 @@ else
   logerror "Command failed!"
 fi
 
-loginfo "Display summary"
-
+printf "\n$pid_color=$$=\033[0m\tDisplay summary\n\n"
 printf "\033[A\033[3g%11s\033H%37s\033H%12s\033H\r$pid_color=$$=\tTimestamp\tCategory\tMessage\033[0m\n" " " " " " "
 cat ${log_summary} | awk -F'\t' '{a=$1; $1=""; printf "'"$pid_color"'%s\033[0m\t%s\n", a, $0}'
 tabs
 
+printf "\n$pid_color=$$=\033[0m\tDisplay values\n\n"
+log2tsv ${log_combined}
+
+printf "\n$pid_color=$$=\033[0m\tDisplay end of log\n\n"
 tail ${log_combined} | sed "s,^,=$$=\t," | awk -F'\t' '{a=$1; $1=""; printf "'"$pid_color"'%s\033[0m\t%s\n", a, $0}'
