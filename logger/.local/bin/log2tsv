@@ -1,0 +1,23 @@
+#!/bin/bash
+# Given a log file that may contain lines like this:
+# =PID=\tvalue\tvalue\tvalue..., print those as a table, with colorized
+# columns. Also, if the second column is the string "DATA" colorize the non-PID
+# colums a bright cyan, and if the second column is the string "CALC", color
+# those columns a bright yellow. This allows a program to announce if data are
+# from input or internally calculated. Any other value is printed as normal,
+# with no coloration.
+
+logfile=$* # Get the logfile to parse
+
+pid_color="\033[38;2;255;0;255m\033[4m\033[1m"
+data_color="\033[38;2;0;255;255m"
+calc_color="\033[38;2;255;255;0m"
+
+printf "\033[2K\033[3g%11s\033H%7s\033H\r" " " " "
+printf "$pid_color""PID\tSource\tData\033[0m\n\n"
+cat ${logfile} | awk '/^=[0-9]+=/ {print}' | awk -F'\t' '\
+    {a=$1; b=$2; $1=""; $2=""} \
+    b=="CALC"              {printf "'"$pid_color"'%s\033[0m\t%s\t'"$calc_color"'%s\033[0m\n", a, b, $0}\
+    b=="DATA"              {printf "'"$pid_color"'%s\033[0m\t%s\t'"$data_color"'%s\033[0m\n", a, b, $0}\
+  '
+tabs
