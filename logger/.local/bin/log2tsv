@@ -7,7 +7,7 @@
 # from input or internally calculated. Any other value is printed as normal,
 # with no coloration.
 
-logfile=$* # Get the logfile to parse
+logfile="${1:-/dev/stdin}" # Get the logfile to parse
 
 pid_color="\033[38;2;255;0;255m\033[4m\033[1m"
 data_color="\033[38;2;0;255;255m"
