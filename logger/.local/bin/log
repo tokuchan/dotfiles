@@ -3,6 +3,8 @@
 # and output to files, timing the run, then notifying the user and playing a
 # sound at the end.
 
+trap tabs EXIT
+
 command=$* # Get the command to run
 #spinner='\|/-' # Set up a spinner
 spinner='⡏⠟⠻⢹⣸⣴⣦⣇'

@@ -9,6 +9,8 @@
 
 logfile="${1:-/dev/stdin}" # Get the logfile to parse
 
+trap tabs EXIT
+
 pid_color="\033[38;2;255;0;255m\033[4m\033[1m"
 data_color="\033[38;2;0;255;255m"
 calc_color="\033[38;2;255;255;0m"
@@ -20,4 +22,3 @@ cat ${logfile} | awk '/^=[0-9]+=/ {print}' | awk -F'\t' '\
     b=="CALC"              {printf "'"$pid_color"'%s\033[0m\t%s\t'"$calc_color"'%s\033[0m\n", a, b, $0}\
     b=="DATA"              {printf "'"$pid_color"'%s\033[0m\t%s\t'"$data_color"'%s\033[0m\n", a, b, $0}\
   '
-tabs
