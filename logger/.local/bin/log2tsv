@@ -12,13 +12,16 @@ logfile="${1:-/dev/stdin}" # Get the logfile to parse
 trap tabs EXIT
 
 pid_color="\033[38;2;255;0;255m\033[4m\033[1m"
+key_color="\033[38;2;255;255;255m"
 data_color="\033[38;2;0;255;255m"
 calc_color="\033[38;2;255;255;0m"
 
-printf "\033[2K\033[3g%11s\033H%7s\033H\r" " " " "
+printf "\033[2K\033[3g%11s\033H%7s\033H%40s\033H\r" " " " " " "
 printf "$pid_color""PID\tSource\tData\033[0m\n\n"
 cat ${logfile} | awk '/^=[0-9]+=/ {print}' | awk -F'\t' '\
-    {a=$1; b=$2; $1=""; $2=""} \
-    b=="CALC"              {printf "'"$pid_color"'%s\033[0m\t%s\t'"$calc_color"'%s\033[0m\n", a, b, $0}\
-    b=="DATA"              {printf "'"$pid_color"'%s\033[0m\t%s\t'"$data_color"'%s\033[0m\n", a, b, $0}\
+    {a=$1; b=$2; c=$3; $1=""; $2=""; $3=""} \
+    b=="CALC" && $4=="" {printf "'"$pid_color"'%s\033[0m\t%s\t'"$calc_color"'%s\033[0m\n", a, b, c}\
+    b=="DATA" && $4=="" {printf "'"$pid_color"'%s\033[0m\t%s\t'"$data_color"'%s\033[0m\n", a, b, c}\
+    b=="CALC" && $4!="" {printf "'"$pid_color"'%s\033[0m\t%s\t'"$key_color"'%s\t'"$calc_color"'%s\033[0m\n", a, b, c, $0}\
+    b=="DATA" && $4!="" {printf "'"$pid_color"'%s\033[0m\t%s\t'"$key_color"'%s\t'"$data_color"'%s\033[0m\n", a, b, c, $0}\
   '
