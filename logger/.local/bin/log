@@ -22,7 +22,7 @@ pid_color="\033[38;2;255;0;255m\033[4m\033[1m"
 function logit () {
 	category=$1
 	shift
-  printf "=$$=\t%s\t%s\t%s\n" "$(date +'%Y.%M.%DT%H.%M.%S.%N')" "$category" "$*" >> ${log_summary}
+  env printf "=$$=\t%s\t%s\t%s\n" "$(date +'%Y.%M.%DT%H.%M.%S.%N')" "$category" "$*" >> ${log_summary}
 }
 
 function loginfo () {
@@ -56,18 +56,19 @@ loginfo "Command: .......... $command"
 
 loginfo "Run command"
 
-printf "$pid_color=$$=\033[0m\tLog file in ${log_combined}\n"
+env printf "$pid_color=$$=\033[0m\tLog file in ${log_combined} (and clipboard)\n"
+env printf "${log_combined}" | xclip -selection clipboard 2>&1 > /dev/null
 
 ${command} > >(tee -a ${log_stdout} >> ${log_combined}) 2> >(tee -a ${log_stderr} >> ${log_combined}) & pid=$!
 
 i=1
-printf "\033[?25l${spinner:0:1}"
+env printf "\033[?25l${spinner:0:1}"
 while ps -p $pid > /dev/null
 do
-  printf "\b%s" "${spinner:i++%${spinner_length}:1}"
+  env printf "\b%s" "${spinner:i++%${spinner_length}:1}"
   sleep 0.1
 done
-printf "\b\033[?25h\n"
+env printf "\b\033[?25h\n"
 
 if wait $pid; then
   paplay "${alert_sound}"
