@@ -68,5 +68,5 @@
 	path = submodules/fzf
 	url = git@github.com:junegunn/fzf.git
 [submodule "toolchest"]
-	path = packages/toolchest
+	path = submodules/toolchest
 	url = git@github.com:tokuchan/toolchest.git
