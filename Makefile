@@ -387,6 +387,17 @@ neofetch-clean:
 all:: neofetch
 clean:: neofetch-clean
 
+#. == Install toolchest collection
+
+.PHONY: toolchest
+toolchest: submodules submodules/toolchest/README.md
+	rm -rf toolchest
+	mkdir -p toolchest
+	cp --remove-destination -R submodules/toolchest/local toolchest/.local
+
+all:: toolchest
+clean:: rm -rf toolchest
+
 #. == Install Tmux Package Manager
 
 .PHONY: tmux-package-manager
