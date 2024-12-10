@@ -123,7 +123,7 @@ This function should only modify configuration layer settings."
    ;; `:location' property: '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
 
-   dotspacemacs-additional-packages '(nov fira-code-mode gerrit shell-pop org-pivotal sqlite3 exec-path-from-shell ligature bitbake-mode bitbake-ts-mode)
+   dotspacemacs-additional-packages '(nov fira-code-mode gerrit shell-pop org-pivotal sqlite3 exec-path-from-shell ligature bitbake-mode bitbake-ts-mode linguistic)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -672,6 +672,54 @@ before packages are loaded."
 
   (spacemacs/set-leader-keys "oc" 'insert-change-id)
 
+  ;; Code to produce a word-frequency count table for the current buffer.
+  (require 'cl-lib)
+
+  (defvar punctuation-marks '(","
+                              "."
+                              "'"
+                              "&"
+                              "\"")
+    "List of Punctuation Marks that you want to count.")
+
+  (defun count-raw-word-list (raw-word-list)
+    (cl-loop with result = nil
+             for elt in raw-word-list
+             do (cl-incf (cdr (or (assoc elt result)
+                                  (first (push (cons elt 0) result)))))
+             finally return (sort result
+                                  (lambda (a b) (string< (car a) (car b))))))
+
+  (defun word-stats ()
+    (interactive)
+    (let* ((words (split-string
+                   (downcase (buffer-string))
+                   (format "[ %s\f\t\n\r\v]+"
+                           (mapconcat #'identity punctuation-marks ""))
+                   t))
+           (punctuation-marks (cl-remove-if-not
+                               (lambda (elt) (member elt punctuation-marks))
+                               (split-string (buffer-string) "" t )))
+           (raw-word-list (append punctuation-marks words))
+           (word-list (count-raw-word-list raw-word-list)))
+      (with-current-buffer (get-buffer-create "*word-statistics*")
+        (erase-buffer)
+        (insert "| word | occurrences |
+               |-----------+-------------|\n")
+
+        (dolist (elt word-list)
+          (insert (format "| '%s' | %d |\n" (car elt) (cdr elt))))
+
+        (org-mode)
+        (indent-region (point-min) (point-max))
+        (goto-char 100)
+        (org-cycle)
+        (goto-char 79)
+        (org-table-sort-lines nil ?N)))
+    (pop-to-buffer "*word-statistics*"))
+
+  (spacemacs/set-leader-keys "of" 'word-stats)
+
   ;; Define a line-up function for hanging template arguments
   (defun c++-template-args-cont (langelem)
     "Control indentation of template parameters handling the special case of '>'.
@@ -883,15 +931,15 @@ This function is called at the very end of Spacemacs initialization."
    '(ac-ispell ace-jump-helm-line ace-link ace-window add-node-modules-path
                adoc-mode aggressive-indent aio all-the-icons annalist anzu async
                auto-compile auto-complete auto-dictionary auto-highlight-symbol
-               auto-yasnippet avy bind-key bind-map cargo centered-cursor-mode
-               cfrs clang-format clean-aindent-mode closql cmake-mode
-               column-enforce-mode company company-shell compat counsel
-               counsel-gtags csv-mode dash define-word devdocs diminish
-               dired-quick-sort docker docker-tramp dockerfile-mode dotenv-mode
-               dracula-theme drag-stuff dumb-jump editorconfig elisp-def
-               elisp-slime-nav emacsql emacsql-sqlite emmet-mode emr epl
-               esh-help eshell-git-prompt eshell-prompt-extras eshell-z esxml
-               eval-sexp-fu evil evil-anzu evil-args evil-cleverparens
+               auto-yasnippet avy bind-key bind-map bitbake bitbake-ts-mode
+               cargo centered-cursor-mode cfrs clang-format clean-aindent-mode
+               closql cmake-mode column-enforce-mode company company-shell
+               compat counsel counsel-gtags csv-mode dash define-word devdocs
+               diminish dired-quick-sort docker docker-tramp dockerfile-mode
+               dotenv-mode dracula-theme drag-stuff dumb-jump editorconfig
+               elisp-def elisp-slime-nav emacsql emacsql-sqlite emmet-mode emr
+               epl esh-help eshell-git-prompt eshell-prompt-extras eshell-z
+               esxml eval-sexp-fu evil evil-anzu evil-args evil-cleverparens
                evil-collection evil-easymotion evil-ediff evil-escape
                evil-exchange evil-goggles evil-iedit-state evil-indent-plus
                evil-lion evil-lisp-state evil-matchit evil-mc
@@ -913,9 +961,9 @@ This function is called at the very end of Spacemacs initialization."
                hybrid-mode hydra iedit imenu-list impatient-mode import-js
                indent-guide info+ insert-shebang inspector ivy journalctl-mode
                js-doc js2-mode js2-refactor json-mode json-snatcher kv ligature
-               link-hint list-utils livid-mode lorem-ipsum lsp-mode lsp-origami
-               lsp-treemacs lsp-ui lv macrostep magit magit-section
-               markdown-mode memoize minimap multi-line multi-term
+               linguistic link-hint list-utils livid-mode lorem-ipsum lsp-mode
+               lsp-origami lsp-treemacs lsp-ui lv macrostep magit magit-section
+               markdown-mode memoize minimap mmm-jinja2 multi-line multi-term
                multiple-cursors mwim nameless nodejs-repl nov npm-mode
                open-junk-file org-pivotal org-re-reveal org-superstar origami
                overseer ox-gfm package-lint packed paradox paredit parent-mode
@@ -927,8 +975,8 @@ This function is called at the very end of Spacemacs initialization."
                spaceline-all-the-icons spinner sqlite3 srefactor
                stickyfunc-enhance string-edit string-inflection swiper
                symbol-overlay symon symon-lingr systemd tablist terminal-here
-               tern toc-org toml-mode transient treemacs treemacs-evil
-               treemacs-icons-dired treemacs-magit treemacs-persp
+               tern toc-org toml-mode transient tree-sitter treemacs
+               treemacs-evil treemacs-icons-dired treemacs-magit treemacs-persp
                treemacs-projectile treepy typescript-mode undo-tree unfill
                unkillable-scratch use-package uuidgen vi-tilde-fringe
                visual-fill-column volatile-highlights vterm web-beautify
