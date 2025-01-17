@@ -68,6 +68,19 @@ system-dependencies:
 
 all:: system-dependencies
 
+#. == Build reptyr Package
+
+#. This package provides the reptyr command, which binds a new terminal to a
+# running command. This allows one to e.g. reconnect to a backgrounded process
+# that was lost when it's containing shell died.
+
+.PHONY: reptyr # Build reptyr package
+reptyr: submodules
+	cd submodules/reptyr && make install PREFIX=$(top)/reptyr/.local
+
+reptyr-clean:
+	rm -rf $(top)/reptyr/
+
 #. == Build Autojump Package
 
 #. This package is in a submodule, so I will need submodules to work with it.
