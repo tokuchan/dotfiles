@@ -135,6 +135,21 @@ lazygit: golang
 
 all:: lazygit
 
+#. == Install lazydocker (go package)
+
+.PHONY: lazydocker # Build the lazydocker stow package
+lazydocker: GOBIN := $(top)/lazydocker/.local/bin/
+lazydocker: GO := $(HOME)/.local/go/bin/go
+lazydocker: golang
+	if command -v $(GO); \
+	then \
+		cd submodules/lazydocker && GOBIN=$(GOBIN) $(GO) install; \
+	else \
+		echo 'Go not installed.'; \
+	fi
+
+all:: lazydocker
+
 #. == Build lastpass-cli package for stow
 
 .PHONY: lastpass-cli # Build the lastpass-cli stow package

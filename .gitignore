@@ -216,3 +216,4 @@ logger/.local/bin/wsl-notify-send
 git/.config/git/gitk
 toolchest/.local
 reptyr/.local
+lazydocker/.local/bin
