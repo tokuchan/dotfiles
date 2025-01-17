@@ -113,7 +113,11 @@ git-lfs \
 python3-rich \
 nmap \
 parallel \
-mosh
+mosh \
+bear \
+inotify-tools \
+fswatch \
+incron
 
  # Yocto dependencies
 sudo apt install -yqq \
