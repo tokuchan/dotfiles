@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+# vim: ft=python
+# Convert each line of input to logfmt, injecting fields such as time, process
+# ID, name, hostname; and allowing the user to inject additional fields from
+# either the command line, or within the input message.
+
+import click
+import os
+import datetime
+import socket
+
+@click.command()
+@click.option( "--context", "-c", help="Specify the context to use." )
+@click.option( "--hostname", "-h", default=socket.gethostname(), help="Specify the hostname" )
+@click.option( "--pid", "-p", default=os.getpid(), help="Specify the PID" )
+@click.option( "--input", "-i", default="-", type=click.File( 'r' ), help="Specify input" )
+@click.option( "--output", "-o", default="-", type=click.File( 'w' ), help="Specify output" )
+def main(context: str, hostname: str, pid: str, input, output):
+    """
+    Convert each line of input to logfmt format. By default, that means just
+    putting the entire line into a single key "message". However, if the line
+    contains "key=value" pairs, those are copied to their own key/value entries
+    in the output. Also, the keys "time", "context", "hostname", "message", and
+    "pid" are reserved as they are populated automatically.
+
+    For example, if you were to run the following:
+
+        echo Hello world key=value foo=bar | as-logfmt --context=example
+
+    the output would be e.g.:
+
+        time="20250113T133643.123" context="example" hostname="myhost" pid="1234" key="value" foo="bar" message="Hello world key=value foo=bar"
+
+    Tools such as lnav or splunk should be able to directly parse this output
+    and provide rich query support.
+    """
+
+    for line in input:
+        print( f'time="{datetime.datetime.now()}" context="{context}" hostname="{hostname}" pid="{pid}" message="{line.strip()}"', file=output )
+
+
+if( __name__ == '__main__' ):
+    main()

@@ -70,3 +70,9 @@
 [submodule "toolchest"]
 	path = submodules/toolchest
 	url = git@github.com:tokuchan/toolchest.git
+[submodule "lazydocker"]
+	path = submodules/lazydocker
+	url = git@github.com:jesseduffield/lazydocker.git
+[submodule "submodules/reptyr"]
+	path = submodules/reptyr
+	url = git@github.com:nelhage/reptyr.git
