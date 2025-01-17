@@ -8,6 +8,23 @@ import click
 import os
 import datetime
 import socket
+import re
+
+def splitQuote( line: str ) -> [str]:
+    pattern= re.compile(r'''((?:[^ "']|"[^"]*"|'[^']*')+)''')
+    return pattern.split( line )[1::2]
+
+def extractKeys( line: str ) -> str:
+    keys= []
+    tokens= splitQuote( line.strip() )
+    for i in range( 1, len( tokens ) - 1 ):
+        prev= tokens[ i - 1 ].strip()
+        cur= tokens[ i ].strip()
+        next= tokens[ i + 1 ].strip()
+
+        if cur == '=':
+            keys.append( f'''{prev}={next}''' )
+    return " ".join( keys )
 
 @click.command()
 @click.option( "--context", "-c", help="Specify the context to use." )
@@ -36,7 +53,8 @@ def main(context: str, hostname: str, pid: str, input, output):
     """
 
     for line in input:
-        print( f'time="{datetime.datetime.now()}" context="{context}" hostname="{hostname}" pid="{pid}" message="{line.strip()}"', file=output )
+        message= re.sub( '"', '\\"', line.strip() )
+        print( f'time="{datetime.datetime.now()}" context="{context}" hostname="{hostname}" pid="{pid}" message="{message}" { extractKeys( line ) }', file=output )
 
 
 if( __name__ == '__main__' ):
