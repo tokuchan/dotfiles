@@ -5,6 +5,8 @@
 
 trap tabs EXIT
 
+set -o pipefail
+
 command=$* # Get the command to run
 #spinner='\|/-' # Set up a spinner
 spinner='⡏⠟⠻⢹⣸⣴⣦⣇'
@@ -59,7 +61,7 @@ loginfo "Run command"
 env printf "$pid_color=$$=\033[0m\tLog file in ${log_combined} (and clipboard)\n"
 env printf "${log_combined}" | xclip -selection clipboard 2>&1 > /dev/null
 
-${command} > >(tee -a ${log_stdout} >> ${log_combined}) 2> >(tee -a ${log_stderr} >> ${log_combined}) & pid=$!
+(${command} | as-logfmt --context="${command}") > >(tee -a ${log_stdout} >> ${log_combined}) 2> >(tee -a ${log_stderr} >> ${log_combined}) & pid=$!
 
 i=1
 env printf "\033[?25l${spinner:0:1}"
