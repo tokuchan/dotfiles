@@ -15,9 +15,13 @@ def splitQuote( line: str ) -> [str]:
     pattern= re.compile(r'''((?:[^ "']|"[^"]*"|'[^']*')+)''')
     return pattern.split( line )[1::2]
 
+def splitStrip( line: str ) -> [str]:
+    return [ x.strip('"\'') for x in splitQuote( line.strip() ) ]
+
+
 def extractItems( line: str ) -> dict[str, str]:
     items= {}
-    tokens= [ x.strip('"\'') for x in splitQuote( line.strip() ) ]
+    tokens= splitStrip( line )
     for i in range( 1, len( tokens ) - 1 ):
         prev= tokens[ i - 1 ].strip()
         cur= tokens[ i ].strip()
@@ -27,9 +31,34 @@ def extractItems( line: str ) -> dict[str, str]:
             items[prev]= next
     return items
 
+def extractLevel( line: str ) -> str:
+    tokens= splitStrip( line )
+    critical= re.compile('''critical''')
+    error= re.compile('''error''')
+    warning= re.compile('''warning''')
+    info= re.compile('''info''')
+    debug= re.compile('''debug''')
+    trace= re.compile('''trace''')
+
+    if critical.match( tokens[0].lower() ) and not warning.match( tokens[1].lower() ):
+        return "critical"
+    if error.match( tokens[0].lower() ):
+        return "error"
+    if warning.match( tokens[0].lower() ):
+        return "warning"
+    if critical.match( tokens[0].lower() ) and warning.match( tokens[1].lower() ):
+        return "warning"
+    if info.match( tokens[0].lower() ):
+        return "info"
+    if debug.match( tokens[0].lower() ):
+        return "debug"
+    if trace.match( tokens[0].lower() ):
+        return "trace"
+    return "info"
+
 @click.command()
 @click.option( "--context", "-c", help="Specify the context to use." )
-@click.option( "--level", "-l", type=click.Choice( [ "critical", "error", "warning", "info", "debug", "trace" ] ), default="info", help="Specify log level for messages." )
+@click.option( "--level", "-l", type=click.Choice( [ "auto", "critical", "error", "warning", "info", "debug", "trace" ] ), default="auto", help="Specify log level for messages. Auto derives level from the input line." )
 @click.option( "--hostname", "-h", default=socket.gethostname(), help="Specify the hostname" )
 @click.option( "--pid", "-p", default=os.getpid(), help="Specify the PID" )
 @click.option( "--oid", "-O", default=0, help="Specify an operation ID to denote particular operations." )
@@ -80,12 +109,13 @@ def main(context: str, level: str, hostname: str, pid: int, oid: int, input, out
         line= line.strip()
         timestamp= datetime.datetime.now( tz=datetime.timezone.utc ).strftime( '%Y-%m-%d %H:%M:%S.%f' )
         detailItems= extractItems( line )
+        logLevel= extractLevel( line ) if level == 'auto' else level
 
         if as_json:
-            print( json.dumps( {"timestamp":timestamp, "level":level, "hostname":hostname, "context":context, "pid":pid, "oid":oid, "body":line, "detail":detailItems } ) )
+            print( json.dumps( {"timestamp":timestamp, "level":logLevel, "hostname":hostname, "context":context, "pid":pid, "oid":oid, "body":line, "detail":detailItems } ) )
         else:
             message= re.sub( '"', '\\"', line.strip() )
-            print( f'timestamp="{timestamp}" level="{level}" hostname="{hostname}" context="{context}" pid={pid} oid={oid} body="{message}" detail={ json.dumps( detailItems ) }', file=output )
+            print( f'timestamp="{timestamp}" level="{logLevel}" hostname="{hostname}" context="{context}" pid={pid} oid={oid} body="{message}" detail={ json.dumps( detailItems ) }', file=output )
 
 
 if( __name__ == '__main__' ):
