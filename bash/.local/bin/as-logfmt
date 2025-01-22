@@ -9,30 +9,34 @@ import os
 import datetime
 import socket
 import re
+import json
 
 def splitQuote( line: str ) -> [str]:
     pattern= re.compile(r'''((?:[^ "']|"[^"]*"|'[^']*')+)''')
     return pattern.split( line )[1::2]
 
-def extractKeys( line: str ) -> str:
-    keys= []
-    tokens= splitQuote( line.strip() )
+def extractItems( line: str ) -> dict[str, str]:
+    items= {}
+    tokens= [ x.strip('"\'') for x in splitQuote( line.strip() ) ]
     for i in range( 1, len( tokens ) - 1 ):
         prev= tokens[ i - 1 ].strip()
         cur= tokens[ i ].strip()
         next= tokens[ i + 1 ].strip()
 
         if cur == '=':
-            keys.append( f'''{prev}={next}''' )
-    return " ".join( keys )
+            items[prev]= next
+    return items
 
 @click.command()
 @click.option( "--context", "-c", help="Specify the context to use." )
+@click.option( "--level", "-l", type=click.Choice( [ "critical", "error", "warning", "info", "debug", "trace" ] ), default="info", help="Specify log level for messages." )
 @click.option( "--hostname", "-h", default=socket.gethostname(), help="Specify the hostname" )
 @click.option( "--pid", "-p", default=os.getpid(), help="Specify the PID" )
+@click.option( "--oid", "-O", default=0, help="Specify an operation ID to denote particular operations." )
 @click.option( "--input", "-i", default="-", type=click.File( 'r' ), help="Specify input" )
 @click.option( "--output", "-o", default="-", type=click.File( 'w' ), help="Specify output" )
-def main(context: str, hostname: str, pid: str, input, output):
+@click.option( "--as-json/--no-as-json", "-j/-J", help="Render the output as JSON instead of logfmt.")
+def main(context: str, level: str, hostname: str, pid: int, oid: int, input, output, as_json: bool):
     """
     Convert each line of input to logfmt format. By default, that means just
     putting the entire line into a single key "message". However, if the line
@@ -50,11 +54,38 @@ def main(context: str, hostname: str, pid: str, input, output):
 
     Tools such as lnav or splunk should be able to directly parse this output
     and provide rich query support.
+
+    Levels are a choice of:
+
+     * critical - the program cannot continue at all and must immediately
+     terminate.
+     
+     * error - the program has encountered a state that is guaranteed to result
+     in bad output, but may either terminate or try to continue.
+
+     * warning - the program has encountered a state that could result in bad
+     output, but may be able to recover and continue. (Upgrade to error if the
+     program cannot continue after all.)
+
+     * info - the normal progress of the program through notable states.
+
+     * debug - the normal progress of the program through additional states,
+     usually at a finer-grained level of detail.
+
+     * trace - the values of individual variables and other parts of program
+     state. Can be _very_ verbose.
     """
 
     for line in input:
-        message= re.sub( '"', '\\"', line.strip() )
-        print( f'time="{datetime.datetime.now()}" context="{context}" hostname="{hostname}" pid="{pid}" message="{message}" { extractKeys( line ) }', file=output )
+        line= line.strip()
+        timestamp= datetime.datetime.now( tz=datetime.timezone.utc ).strftime( '%Y-%m-%d %H:%M:%S.%f' )
+        detailItems= extractItems( line )
+
+        if as_json:
+            print( json.dumps( {"timestamp":timestamp, "level":level, "hostname":hostname, "context":context, "pid":pid, "oid":oid, "body":line, "detail":detailItems } ) )
+        else:
+            message= re.sub( '"', '\\"', line.strip() )
+            print( f'timestamp="{timestamp}" level="{level}" hostname="{hostname}" context="{context}" pid={pid} oid={oid} body="{message}" detail={ json.dumps( detailItems ) }', file=output )
 
 
 if( __name__ == '__main__' ):
