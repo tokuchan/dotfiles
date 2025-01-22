@@ -22,7 +22,6 @@ function gst --wraps='g st' --description 'alias gst=g st'
   display --title="Changes" (for l in (g changes -n 15); echo "$l\\n"; end)
 
   if git branch | grep patches
-  then
     hr
     display --title="Patches" (for l in (g patches -n 15); echo "$l\\n"; end)
   end
