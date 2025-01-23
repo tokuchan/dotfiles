@@ -73,7 +73,8 @@ def extractLevel( line: str ) -> str:
 @click.option( "--input", "-i", default="-", type=click.File( 'r' ), help="Specify input" )
 @click.option( "--output", "-o", default="-", type=click.File( 'w' ), help="Specify output" )
 @click.option( "--as-json/--no-as-json", "-j/-J", help="Render the output as JSON instead of logfmt.")
-def main(context: str, level: str, hostname: str, pid: int, oid: int, input, output, as_json: bool):
+@click.option( "--detect-duplicate-lines/--no-detect-duplicate-lines", "-d/-D", default=True, help="Add detail key 'duplicate: true' if a duplicate line is detected.")
+def main(context: str, level: str, hostname: str, pid: int, oid: int, input, output, as_json: bool, detect_duplicate_lines: bool):
     """
     Convert each line of input to logfmt format. By default, that means just
     putting the entire line into a single key "message". However, if the line
@@ -113,11 +114,19 @@ def main(context: str, level: str, hostname: str, pid: int, oid: int, input, out
      state. Can be _very_ verbose.
     """
 
+    oldLine= ""
     for line in input:
         line= line.strip()
         timestamp= datetime.datetime.now( tz=datetime.timezone.utc ).strftime( '%Y-%m-%d %H:%M:%S.%f' )
         detailItems= extractItems( line )
         logLevel= extractLevel( line ) if level == 'auto' else level
+        if detect_duplicate_lines:
+            duplicated= line == oldLine
+            if line != oldLine:
+                oldLine= line
+                duplicated= False
+
+            detailItems['duplicate']= duplicated
 
         if as_json:
             print( json.dumps( {"timestamp":timestamp, "level":logLevel, "hostname":hostname, "context":context, "pid":pid, "oid":oid, "body":line, "detail":detailItems } ) )
