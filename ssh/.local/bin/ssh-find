@@ -1,0 +1,123 @@
+#!/usr/bin/env python3
+# vim: set syntax=python
+
+import click
+import sh
+import re
+import socket
+
+from rich import print
+
+
+def __probe(server: str, port: int) -> bool:
+    """Try to open a connection to the specifed server and port, and return whether successful."""
+    try:
+        sh.nc("-z", "-w1", server, port)
+        return True
+    except sh.CommandNotFound:
+        try:
+            sh.telnet("-e", "X", server, port, _in=sh.echo("X"))
+            return True
+        except sh.ErrorReturnCode:
+            return False
+    except sh.ErrorReturnCode:
+        return False
+
+
+def __getHostIP() -> str:
+    """Return the host's private IP."""
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.settimeout(0)
+    try:
+        # doesn't even have to be reachable
+        s.connect(("10.254.254.254", 1))
+        IP = s.getsockname()[0]
+    except Exception:
+        IP = "127.0.0.1"
+    finally:
+        s.close()
+    return IP
+
+
+def __getAsgardIP() -> [str]:
+    """Return the value output of part of ipconfig for the asgard-windows host."""
+    data = [
+        (x.strip().split(" : "))
+        for x in sh.awk(
+            "/Wireless LAN adapter Wi-Fi:/,/^Ethernet adapter/{print}",
+            _in=sh.ssh("asgard-windows", "ipconfig.exe"),
+        ).split("\n")
+    ][4:6]
+    return list(list(zip(*data))[1])
+
+
+def __getAsgardIPCIDR() -> str:
+    """Return the IP in CIDR form for the asgard-windows host."""
+    ipAndMask = __getAsgardIP()
+    netmask = sum(bin(int(x)).count("1") for x in ipAndMask[1].split("."))
+    return f"{ipAndMask[0]}/{netmask}"
+
+
+def __scan(address_range: str, port: int) -> [str]:
+    """Scan a range of IP addresses for any servers with the specified port open."""
+    return [
+        x for x in sh.nmap( "--send-eth" , '-oG', '-' , '--min-rate=10000' , f'-p{port}' , '-T5' , address_range).split('\n')
+    ]
+
+
+@click.group()
+def cli():
+    pass
+
+
+@cli.command()
+@click.option(
+    "--server",
+    "-s",
+    default="127.0.0.1",
+    help="Specify the server name or IP address to probe.",
+)
+@click.option(
+    "--port", "-p", type=int, default=22, help="Specify the port number to probe."
+)
+def probe(server: str, port: int):
+    print(f"Probing: {server}:{port}")
+    status = __probe(server, port)
+    print(f"Server is reachable: {status}")
+    exit(0 if status else 1)
+
+
+@cli.command()
+@click.option(
+    "--ip-range",
+    "-i",
+    default=__getHostIP() + "/16",
+    help="Specify the IP range to search. [Default= host's IP with 16-bit mask.]",
+)
+@click.option(
+    "--port", "-p", type=int, default=22, help="Specify the port number to probe."
+)
+def scan(ip_range: str, port: int):
+    print(f"Scanning: {ip_range} for open port {port}.")
+    print(f"Host IP: {__getHostIP()}.")
+    print("\n".join(__scan(ip_range, port)))
+
+@cli.command()
+@click.option(
+    "--port", "-p", type=int, default=22, help="Specify the port number to probe."
+)
+def scan_asgard(port:int):
+    '''Run scan using the CIDR IP gleaned from SSH host asgard-windows.'''
+    target=__getAsgardIPCIDR()
+    pattern= re.compile(f'''{port}/open/tcp''')
+    print("\n".join((x for x in __scan(target, port) if pattern.search(x))))
+
+
+@cli.command()
+def asgard_IP_CIDR():
+    """Return the CIDR-form IP address for the SSH host asgard-windows."""
+    print(__getAsgardIPCIDR())
+
+
+if __name__ == "__main__":
+    cli()
