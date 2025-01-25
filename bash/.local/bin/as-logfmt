@@ -11,6 +11,8 @@ import socket
 import re
 import json
 
+from collections import deque
+
 def splitQuote( line: str ) -> [str]:
     pattern= re.compile(r'''((?:[^ "']|"[^"]*"|'[^']*')+)''')
     return pattern.split( line )[1::2]
@@ -73,8 +75,8 @@ def extractLevel( line: str ) -> str:
 @click.option( "--input", "-i", default="-", type=click.File( 'r' ), help="Specify input" )
 @click.option( "--output", "-o", default="-", type=click.File( 'w' ), help="Specify output" )
 @click.option( "--as-json/--no-as-json", "-j/-J", help="Render the output as JSON instead of logfmt.")
-@click.option( "--detect-duplicate-lines/--no-detect-duplicate-lines", "-d/-D", default=True, help="Add detail key 'duplicate: true' if a duplicate line is detected.")
-def main(context: str, level: str, hostname: str, pid: int, oid: int, input, output, as_json: bool, detect_duplicate_lines: bool):
+@click.option( "--detect-duplicate-lines", "-d", type=int, default=1, help="Add detail key 'duplicate: true' if a duplicate line is detected. Specify how many lines of context to keep. Set to 0 to disable. [Default=1]")
+def main(context: str, level: str, hostname: str, pid: int, oid: int, input, output, as_json: bool, detect_duplicate_lines: int):
     """
     Convert each line of input to logfmt format. By default, that means just
     putting the entire line into a single key "message". However, if the line
@@ -114,17 +116,17 @@ def main(context: str, level: str, hostname: str, pid: int, oid: int, input, out
      state. Can be _very_ verbose.
     """
 
-    oldLine= ""
+    oldLines= deque(maxlen= detect_duplicate_lines)
     for line in input:
         line= line.strip()
         timestamp= datetime.datetime.now( tz=datetime.timezone.utc ).strftime( '%Y-%m-%d %H:%M:%S.%f' )
         detailItems= extractItems( line )
         logLevel= extractLevel( line ) if level == 'auto' else level
-        if detect_duplicate_lines:
-            duplicated= line == oldLine
-            if line != oldLine:
-                oldLine= line
-                duplicated= False
+        if detect_duplicate_lines > 0:
+            dups= set(oldLines)
+            duplicated= line in dups
+            if not duplicated:
+                oldLines.append(line)
 
             detailItems['duplicate']= duplicated
 
