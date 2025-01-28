@@ -76,3 +76,6 @@
 [submodule "submodules/reptyr"]
 	path = submodules/reptyr
 	url = git@github.com:nelhage/reptyr.git
+[submodule "submodules/lnav"]
+	path = submodules/lnav
+	url = git@github.com:tstack/lnav.git
