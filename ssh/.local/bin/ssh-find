@@ -143,5 +143,12 @@ def install_ssh_key(host:str, port:int, password:str):
     print(f'Installing key on {host}:{port}')
     return sh.ssh_copy_id('-p', port, host, _out=ssh_interact, _out_bufsize=0, _tty_in=True, _unify_ttys=True)
 
+
+@cli.command()
+@click.argument('host')
+def scan_ports(host:str) -> None:
+    """Run nmap to scan for open ports on the given host."""
+    print(sh.nmap( '-v', '-T5', '-oG', '-', host))
+
 if __name__ == "__main__":
     cli()
