@@ -117,7 +117,8 @@ mosh \
 bear \
 inotify-tools \
 fswatch \
-incron
+incron \
+moreutils
 
  # Yocto dependencies
 sudo apt install -yqq \
