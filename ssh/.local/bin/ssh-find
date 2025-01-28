@@ -5,6 +5,7 @@ import click
 import sh
 import re
 import socket
+import sys
 
 from rich import print
 
@@ -120,6 +121,27 @@ def asgard_IP_CIDR():
     """Return the CIDR-form IP address for the SSH host asgard-windows."""
     print(__getAsgardIPCIDR())
 
+@cli.command()
+@click.argument('host')
+@click.option(
+    "--port", "-p", type=int, default=22, help="Specify the port number to connect to."
+)
+@click.option( "--password", prompt=True, hide_input=True)
+def install_ssh_key(host:str, port:int, password:str):
+    """Install the SSH public key on the host."""
+    aggregated=""
+    def ssh_interact(char, stdin):
+        nonlocal aggregated
+        aggregated+=char 
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        if aggregated.endswith("Are you sure you want to continue connecting (yes/no/[fingerprint])?"):
+            stdin.put("yes\n")
+        elif aggregated.endswith("password:"):
+            stdin.put(f'{password}\n')
+        
+    print(f'Installing key on {host}:{port}')
+    return sh.ssh_copy_id('-p', port, host, _out=ssh_interact, _out_bufsize=0, _tty_in=True, _unify_ttys=True)
 
 if __name__ == "__main__":
     cli()
