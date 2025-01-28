@@ -62,7 +62,16 @@ def __getAsgardIPCIDR() -> str:
 def __scan(address_range: str, port: int) -> [str]:
     """Scan a range of IP addresses for any servers with the specified port open."""
     return [
-        x for x in sh.nmap( "--send-eth" , '-oG', '-' , '--min-rate=10000' , f'-p{port}' , '-T5' , address_range).split('\n')
+        x
+        for x in sh.nmap(
+            "--send-eth",
+            "-oG",
+            "-",
+            "--min-rate=10000",
+            f"-p{port}",
+            "-T5",
+            address_range,
+        ).split("\n")
     ]
 
 
@@ -105,14 +114,15 @@ def scan(ip_range: str, port: int):
     print(f"Host IP: {__getHostIP()}.")
     print("\n".join(__scan(ip_range, port)))
 
+
 @cli.command()
 @click.option(
     "--port", "-p", type=int, default=22, help="Specify the port number to probe."
 )
-def scan_asgard(port:int):
-    '''Run scan using the CIDR IP gleaned from SSH host asgard-windows.'''
-    target=__getAsgardIPCIDR()
-    pattern= re.compile(f'''{port}/open/tcp''')
+def scan_asgard(port: int):
+    """Run scan using the CIDR IP gleaned from SSH host asgard-windows."""
+    target = __getAsgardIPCIDR()
+    pattern = re.compile(f"""{port}/open/tcp""")
     print("\n".join((x for x in __scan(target, port) if pattern.search(x))))
 
 
@@ -121,34 +131,47 @@ def asgard_IP_CIDR():
     """Return the CIDR-form IP address for the SSH host asgard-windows."""
     print(__getAsgardIPCIDR())
 
+
 @cli.command()
-@click.argument('host')
+@click.argument("host")
 @click.option(
     "--port", "-p", type=int, default=22, help="Specify the port number to connect to."
 )
-@click.option( "--password", prompt=True, hide_input=True)
-def install_ssh_key(host:str, port:int, password:str):
+@click.option("--password", prompt=True, hide_input=True)
+def install_ssh_key(host: str, port: int, password: str):
     """Install the SSH public key on the host."""
-    aggregated=""
+    aggregated = ""
+
     def ssh_interact(char, stdin):
         nonlocal aggregated
-        aggregated+=char 
+        aggregated += char
         sys.stdout.write(char)
         sys.stdout.flush()
-        if aggregated.endswith("Are you sure you want to continue connecting (yes/no/[fingerprint])?"):
+        if aggregated.endswith(
+            "Are you sure you want to continue connecting (yes/no/[fingerprint])?"
+        ):
             stdin.put("yes\n")
         elif aggregated.endswith("password:"):
-            stdin.put(f'{password}\n')
-        
-    print(f'Installing key on {host}:{port}')
-    return sh.ssh_copy_id('-p', port, host, _out=ssh_interact, _out_bufsize=0, _tty_in=True, _unify_ttys=True)
+            stdin.put(f"{password}\n")
+
+    print(f"Installing key on {host}:{port}")
+    return sh.ssh_copy_id(
+        "-p",
+        port,
+        host,
+        _out=ssh_interact,
+        _out_bufsize=0,
+        _tty_in=True,
+        _unify_ttys=True,
+    )
 
 
 @cli.command()
-@click.argument('host')
-def scan_ports(host:str) -> None:
+@click.argument("host")
+def scan_ports(host: str) -> None:
     """Run nmap to scan for open ports on the given host."""
-    print(sh.nmap( '-v', '-T5', '-oG', '-', host))
+    print(sh.nmap("-v", "-T5", "-oG", "-", host))
+
 
 if __name__ == "__main__":
     cli()
