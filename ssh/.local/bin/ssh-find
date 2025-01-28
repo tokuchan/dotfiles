@@ -81,6 +81,7 @@ def cli():
     "--port", "-p", type=int, default=22, help="Specify the port number to probe."
 )
 def probe(server: str, port: int):
+    """Determine if the specified port is open on the specified server."""
     print(f"Probing: {server}:{port}")
     status = __probe(server, port)
     print(f"Server is reachable: {status}")
@@ -98,6 +99,7 @@ def probe(server: str, port: int):
     "--port", "-p", type=int, default=22, help="Specify the port number to probe."
 )
 def scan(ip_range: str, port: int):
+    """Scan the given IP range for instances of the open port given."""
     print(f"Scanning: {ip_range} for open port {port}.")
     print(f"Host IP: {__getHostIP()}.")
     print("\n".join(__scan(ip_range, port)))
