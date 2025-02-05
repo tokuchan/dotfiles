@@ -1,0 +1,158 @@
+#!/usr/bin/env python3
+# vim: ft=python
+# Convert each line of input to W3C log format, injecting fields such as time,
+# process ID, name, hostname; and allowing the user to inject additional fields
+# from either the command line, or within the input message.
+
+import click
+import os
+import datetime
+import socket
+import re
+import json
+
+from collections import deque
+
+def splitQuote( line: str ) -> [str]:
+    pattern= re.compile(r'''((?:[^ "']|"[^"]*"|'[^']*')+)''')
+    return pattern.split( line )[1::2]
+
+def splitStrip( line: str ) -> [str]:
+    return [ x.strip('"\'') for x in splitQuote( line.strip() ) ]
+
+
+def extractItems( line: str ) -> dict[str, str]:
+    items= {}
+    tokens= splitStrip( line )
+    for i in range( 1, len( tokens ) - 1 ):
+        prev= tokens[ i - 1 ].strip()
+        cur= tokens[ i ].strip()
+        next= tokens[ i + 1 ].strip()
+
+        if cur == '=':
+            items[prev]= next
+    return items
+
+def removeSGR( line: str ) -> str:
+    pattern = re.compile( r'\x1b[^m]*m' )
+    return pattern.sub( '', line )
+
+def extractLevel( line: str ) -> str:
+    critical_warning= re.compile( '''^[\S\W]*critical\swarning''')
+    critical= re.compile( '''^[\S\W]*critical''' )
+    error= re.compile( '''^[\S\W]*error''' )
+    warning= re.compile( '''^[\S\W]*warning''' )
+    info= re.compile( '''^[\S\W]*info''' )
+    debug= re.compile( '''^[\S\W]*debug''' )
+    trace= re.compile( '''^[\S\W]*trace''' )
+    line= removeSGR( line.lower() )
+
+    try:
+        if critical_warning.match( line ):
+            return "warning"
+        if critical.match( line ):
+            return "critical"
+        if error.match( line ):
+            return "error"
+        if warning.match( line ):
+            return "warning"
+        if info.match( line ):
+            return "info"
+        if debug.match( line ):
+            return "debug"
+        if trace.match( line ):
+            return "trace"
+    except:
+        return "warning"
+    return "info"
+
+def getTimestamp() -> str:
+    return datetime.datetime.now( tz=datetime.timezone.utc ).strftime( '%Y-%m-%d %H:%M:%S.%f' )
+
+def quote(input:str) -> str:
+    """Quote the input string by replacing any '"' characters with '""'."""
+    pattern= re.compile(r'"')
+    if input is None:
+        return ""
+    return pattern.sub('""', input)
+
+@click.command()
+@click.option( "--context", "-c", help="Specify the context to use." )
+@click.option( "--level", "-l", type=click.Choice( [ "auto", "critical", "error", "warning", "info", "debug", "trace" ] ), default="auto", help="Specify log level for messages. Auto derives level from the input line." )
+@click.option( "--hostname", "-h", default=socket.gethostname(), help="Specify the hostname" )
+@click.option( "--pid", "-p", default=os.getpid(), help="Specify the PID" )
+@click.option( "--oid", "-O", default=0, help="Specify an operation ID to denote particular operations." )
+@click.option( "--input", "-i", default="-", type=click.File( 'r' ), help="Specify input" )
+@click.option( "--output", "-o", default="-", type=click.File( 'w' ), help="Specify output" )
+@click.option( "--as-json/--no-as-json", "-j/-J", help="Render the output as JSON instead of logfmt.")
+@click.option( "--detect-duplicate-lines", "-d", type=int, default=1, help="Add detail key 'duplicate: true' if a duplicate line is detected. Specify how many lines of context to keep. Set to 0 to disable. [Default=1]")
+def main(context: str, level: str, hostname: str, pid: int, oid: int, input, output, as_json: bool, detect_duplicate_lines: int):
+    """
+    Convert each line of input to logfmt format. By default, that means just
+    putting the entire line into a single key "message". However, if the line
+    contains "key=value" pairs, those are copied to their own key/value entries
+    in the output. Also, the keys "time", "context", "hostname", "message", and
+    "pid" are reserved as they are populated automatically.
+
+    For example, if you were to run the following:
+
+        echo Hello world key=value foo=bar | as-logfmt --context=example
+
+    the output would be e.g.:
+
+        time="20250113T133643.123" context="example" hostname="myhost" pid="1234" key="value" foo="bar" message="Hello world key=value foo=bar"
+
+    Tools such as lnav or splunk should be able to directly parse this output
+    and provide rich query support.
+
+    Levels are a choice of:
+
+     * critical - the program cannot continue at all and must immediately
+     terminate.
+     
+     * error - the program has encountered a state that is guaranteed to result
+     in bad output, but may either terminate or try to continue.
+
+     * warning - the program has encountered a state that could result in bad
+     output, but may be able to recover and continue. (Upgrade to error if the
+     program cannot continue after all.)
+
+     * info - the normal progress of the program through notable states.
+
+     * debug - the normal progress of the program through additional states,
+     usually at a finer-grained level of detail.
+
+     * trace - the values of individual variables and other parts of program
+     state. Can be _very_ verbose.
+    """
+
+    oldLines= deque(maxlen= detect_duplicate_lines)
+    context= quote(context)
+
+    if not as_json:
+        print( f"#Version: 1.0\n#Date: {getTimestamp()}\n#Fields: date time x-level x-host x-context x-pid x-oid x-body x-detail", file=output)
+
+    for line in input:
+        line= line.strip()
+        timestamp= getTimestamp()
+        detailItems= extractItems( line )
+        logLevel= extractLevel( line ) if level == 'auto' else level
+        if detect_duplicate_lines > 0:
+            dups= set(oldLines)
+            duplicated= line in dups
+            if not duplicated:
+                oldLines.append(line)
+
+            detailItems['duplicate']= duplicated
+
+        body= quote(line)
+
+        if as_json:
+            print( json.dumps( {"timestamp":timestamp, "level":logLevel, "hostname":hostname, "context":context, "pid":pid, "oid":oid, "body":line, "detail":detailItems } ) )
+        else:
+            message= re.sub( '"', '\\"', line.strip() )
+            print( f'{timestamp} {logLevel} {hostname} "{context}" {pid} {oid} "{message}" "{ quote( json.dumps( detailItems ) ) }"', file=output )
+
+
+if( __name__ == '__main__' ):
+    main()
