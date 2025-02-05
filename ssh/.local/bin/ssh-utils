@@ -13,7 +13,8 @@ from rich import print
 from pathlib import Path
 from textwrap import dedent
 
-log=logging.getLogger(__name__)
+log = logging.getLogger(__name__)
+
 
 def getLocalLogger():
     """Return a logger named for the calling function"""
@@ -23,21 +24,21 @@ def getLocalLogger():
 
 def __probe() -> bool:
     """Try to open a connection to the specifed server and port, and return whether successful."""
-    log= getLocalLogger()
-    ctx= click.get_current_context()
-    host= ctx.obj['host']
-    port= ctx.obj['port']
+    log = getLocalLogger()
+    ctx = click.get_current_context()
+    host = ctx.obj["host"]
+    port = ctx.obj["port"]
 
-    log.info( f"Probing server. {host=!s}, {port=!s}." )
+    log.info(f"Probing server. {host=!s}, {port=!s}.")
     try:
-        nc= sh.nc.bake("-z", "-w1", host, port)
-        log.debug( f'Trying {nc=!s}.' )
+        nc = sh.nc.bake("-z", "-w1", host, port)
+        log.debug(f"Trying {nc=!s}.")
         nc()
         return True
     except sh.CommandNotFound:
         try:
-            telnet= sh.telnet.bake("-e", "X", host, port, _in=sh.echo("X"))
-            log.debug( f"Trying {telnet}." )
+            telnet = sh.telnet.bake("-e", "X", host, port, _in=sh.echo("X"))
+            log.debug(f"Trying {telnet}.")
             return True
         except sh.ErrorReturnCode:
             return False
@@ -47,7 +48,7 @@ def __probe() -> bool:
 
 def __getHostIP() -> str:
     """Return the host's private IP."""
-    log= getLocalLogger()
+    log = getLocalLogger()
     log.info("Get this host's ip.")
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.settimeout(0)
@@ -59,13 +60,13 @@ def __getHostIP() -> str:
         IP = "127.0.0.1"
     finally:
         s.close()
-    log.debug(f'{IP=}')
+    log.debug(f"{IP=}")
     return IP
 
 
 def __getAsgardIP() -> [str]:
     """Return the value output of part of ipconfig for the asgard-windows host."""
-    log= getLocalLogger()
+    log = getLocalLogger()
     log.info(f"Get Asgard host IP.")
     data = [
         (x.strip().split(" : "))
@@ -74,8 +75,8 @@ def __getAsgardIP() -> [str]:
             _in=sh.ssh("asgard-windows", "ipconfig.exe"),
         ).split("\n")
     ][4:6]
-    IP= list(list(zip(*data))[1])
-    log.debug(f'{IP=}')
+    IP = list(list(zip(*data))[1])
+    log.debug(f"{IP=}")
     return IP
 
 
@@ -111,42 +112,60 @@ def __scan(address_range: str, port: int) -> [str]:
     help="Specify the host to copy the key to. [Default: the first IP returned by scan-asgard.]",
 )
 @click.option(
-    "--port", "-p", type=int, default=22, help="Specify the port number to connect to. [Default: 22.]"
+    "--port",
+    "-p",
+    type=int,
+    default=22,
+    help="Specify the port number to connect to. [Default: 22.]",
 )
 @click.option(
     "--dry-run/--no-dry-run",
     "-d/-D",
     help="Don't actually write anything, just log what I would have done.",
 )
-@click.option("--verbose", '-v', count=True, help="Increase logging verbosity.")
+@click.option("--verbose", "-v", count=True, help="Increase logging verbosity.")
 @click.option("--quiet", "-q", count=True, help="Decrease logging verbosity.")
 @click.pass_context
-def cli(ctx, user:str | None, host:str | None, port:int | None, dry_run:bool, verbose: int, quiet: int):
-    logLevel=logging.WARN+(10*quiet-10*verbose)
-    logging.basicConfig(format='%(asctime)s %(filename)s %(funcName)s %(levelname)s %(message)s', level=logLevel)
+def cli(
+    ctx,
+    user: str | None,
+    host: str | None,
+    port: int | None,
+    dry_run: bool,
+    verbose: int,
+    quiet: int,
+):
+    logLevel = logging.WARN + (10 * quiet - 10 * verbose)
+    logging.basicConfig(
+        format="%(asctime)s %(filename)s %(funcName)s %(levelname)s %(message)s",
+        level=logLevel,
+    )
     if quiet != 0 or verbose != 0:
-        print('# version 1.0\n# fields x-date x-time x-filename x-function-name x-level x-message', file=sys.stderr)
+        print(
+            "# version 1.0\n# fields x-date x-time x-filename x-function-name x-level x-message",
+            file=sys.stderr,
+        )
     ctx.ensure_object(dict)
-    ctx.obj['port']= port if port != None else 22
-    ctx.obj['dry_run']= dry_run
+    ctx.obj["port"] = port if port != None else 22
+    ctx.obj["dry_run"] = dry_run
 
     try:
         if host == None:
             host = __scanAsgard()[0]
     except IndexError:
         print("Error: Unable to discover new host. Is it plugged in?")
-        return
+        exit(1)
 
-    ctx.obj['user']= user
-    ctx.obj['host']= host if host != None else '127.0.0.1'
-    ctx.obj['userHost']= host if user == None else f'{user}@{host}'
+    ctx.obj["user"] = user
+    ctx.obj["host"] = host if host != None else "127.0.0.1"
+    ctx.obj["userHost"] = host if user == None else f"{user}@{host}"
     pass
 
 
 @cli.command()
 def probe():
     """Determine if the specified port is open on the specified server."""
-    log= getLocalLogger()
+    log = getLocalLogger()
     status = __probe()
     print(f"Server is reachable: {status}")
     exit(0 if status else 1)
@@ -162,14 +181,14 @@ def probe():
 @click.pass_context
 def scan(ctx, ip_range: str):
     """Scan the given IP range for instances of the open port given."""
-    log= getLocalLogger()
+    log = getLocalLogger()
     log.info(f"Scanning: {ip_range} for open port {ctx.obj['port']}.")
     log.info(f"Host IP: {__getHostIP()}.")
-    print("\n".join(__scan(ip_range, ctx.obj['port'])))
+    print("\n".join(__scan(ip_range, ctx.obj["port"])))
 
 
 def __scanAsgard() -> list:
-    ctx= click.get_current_context()
+    ctx = click.get_current_context()
     target = __getAsgardIPCIDR()
     pattern = re.compile(f"""{ctx.obj['port']}/open/tcp""")
     host = str(__getHostIP())
@@ -182,7 +201,7 @@ def __scanAsgard() -> list:
     ips = set(
         (
             re.sub(r"""Host:\s+(\S+)\s+.*""", repl, x)
-            for x in __scan(target, ctx.obj['port'])
+            for x in __scan(target, ctx.obj["port"])
             if pattern.search(x)
         )
     )
@@ -207,10 +226,10 @@ def asgard_IP_CIDR():
 
 
 def __install_ssh_key(password: str) -> None:
-    log= getLocalLogger()
-    log.info('Install SSH key on target.')
+    log = getLocalLogger()
+    log.info("Install SSH key on target.")
     aggregated = ""
-    ctx= click.get_current_context()
+    ctx = click.get_current_context()
 
     def ssh_interact(char, stdin):
         nonlocal aggregated
@@ -222,36 +241,37 @@ def __install_ssh_key(password: str) -> None:
         elif aggregated.endswith("password:"):
             stdin.put(f"{password}\n")
 
-    copyId= sh.ssh_copy_id.bake(
-            "-p",
-            ctx.obj['port'],
-            ctx.obj['userHost'],
-            _out=ssh_interact,
-            _out_bufsize=0,
-            _tty_in=True,
-            _unify_ttys=True,
-        )
+    copyId = sh.ssh_copy_id.bake(
+        "-p",
+        ctx.obj["port"],
+        ctx.obj["userHost"],
+        _out=ssh_interact,
+        _out_bufsize=0,
+        _tty_in=True,
+        _unify_ttys=True,
+    )
 
-    cleanKey= sh.ssh_keygen.bake(
-            "-f", (Path.home() / ".ssh" / "known_hosts").resolve(), "-R", ctx.obj['host']
-        )
+    cleanKey = sh.ssh_keygen.bake(
+        "-f", (Path.home() / ".ssh" / "known_hosts").resolve(), "-R", ctx.obj["host"]
+    )
 
-    log.debug(f'{copyId}')
-    log.debug(f'{cleanKey}')
+    log.debug(f"{copyId}")
+    log.debug(f"{cleanKey}")
 
     log.info(f"Installing key on {ctx.obj['userHost']}:{ctx.obj['port']}")
-    if not ctx.obj['dry_run']:
+    if not ctx.obj["dry_run"]:
         try:
             copyId()
-            log.debug(f'{aggregated=}')
+            log.debug(f"{aggregated=}")
         except sh.ErrorReturnCode_1:
-            log.warning(f"Removing any existing host keys for {ctx.obj['host']} and trying again.")
+            log.warning(
+                f"Removing any existing host keys for {ctx.obj['host']} and trying again."
+            )
             log.debug(f"{cleanKey=!s}")
             cleanKey()
             log.debug(f"{copyId=!s}")
             copyId()
-            log.debug(f'{aggregated=}')
-
+            log.debug(f"{aggregated=}")
 
 
 @cli.command()
@@ -262,11 +282,11 @@ def install_ssh_key(password: str) -> None:
 
 
 def __update_helix_ssh_config() -> None:
-    log= getLocalLogger()
+    log = getLocalLogger()
     log.info("Update Helix SSH config.")
     sshConfDir = (Path.home() / ".ssh" / "config.d").resolve()
-    ctx= click.get_current_context()
-    if not ctx.obj['dry_run']:
+    ctx = click.get_current_context()
+    if not ctx.obj["dry_run"]:
         with (sshConfDir / "01-helix-local").open("w") as fout:
             print(
                 dedent(
@@ -287,11 +307,11 @@ def __update_helix_ssh_config() -> None:
 
 def __rebuild_ssh_config() -> None:
     """Build the ~/.ssh/config file from ~/.ssh/config.in and the files in ~/.ssh/config.d."""
-    log= getLocalLogger()
-    log.info('Rebuild SSH configuration.')
+    log = getLocalLogger()
+    log.info("Rebuild SSH configuration.")
     sshDir = (Path.home() / ".ssh").resolve()
-    ctx= click.get_current_context()
-    if not ctx.obj['dry_run']:
+    ctx = click.get_current_context()
+    if not ctx.obj["dry_run"]:
         with tempfile.NamedTemporaryFile(delete=False) as tmp:
             tmpPath = Path(tmp.name)
             with (sshDir / "config.in").open() as configIn:
@@ -304,13 +324,15 @@ def __rebuild_ssh_config() -> None:
             (sshDir / "config").replace(sshDir / "config~")
             tmpPath.replace(sshDir / "config")
 
+
 def __update_shell() -> None:
     """Write a simple .bashrc file to the target."""
-    log= getLocalLogger()
+    log = getLocalLogger()
     log.info("Update .bashrc on target.")
-    ctx= click.get_current_context()
+    ctx = click.get_current_context()
 
-    bashrc = dedent(rf"""
+    bashrc = dedent(
+        rf"""
         export MINER_IP={ctx.obj['host']}
         function testAPI() {{
             echo echo '{{"command": "asc", "parameter": "0"}}' \| nc $MINER_IP 4028 \| jq
@@ -332,16 +354,19 @@ def __update_shell() -> None:
         # alias cp='cp -i'
         # alias mv='mv -i'
     
-    """)
+    """
+    )
 
     with tempfile.NamedTemporaryFile(delete=False) as tmp:
         tmpPath = Path(tmp.name)
         tmp.write(bashrc.encode())
 
-    scp = sh.scp.bake(tmpPath, f'scp://{ctx.obj["userHost"]}:{ctx.obj["port"]}/~/.bashrc')
+    scp = sh.scp.bake(
+        tmpPath, f'scp://{ctx.obj["userHost"]}:{ctx.obj["port"]}/~/.bashrc'
+    )
 
-    log.debug(f'{scp=!s}')
-    if not ctx.obj['dry_run']:
+    log.debug(f"{scp=!s}")
+    if not ctx.obj["dry_run"]:
         scp()
 
 
@@ -350,13 +375,12 @@ def __update_shell() -> None:
 @click.pass_context
 def reskel(ctx, password: str) -> None:
     """Detect the new board, reconfigure ssh/config, then install the key on the board."""
-    log= getLocalLogger()
+    log = getLocalLogger()
     log.info("Reskel target.")
     __update_helix_ssh_config()
     __rebuild_ssh_config()
     __install_ssh_key(password)
     __update_shell()
-
 
 
 @cli.command()
