@@ -31,7 +31,8 @@ This function should only modify configuration layer settings."
    dotspacemacs-configuration-layer-path '()
 
    ;; List of configuration layers to load.
-   dotspacemacs-configuration-layers '(systemd
+   dotspacemacs-configuration-layers '(nginx
+                                       systemd
                                        typescript
                                        javascript
                                        ;; ----------------------------------------------------------------
@@ -964,24 +965,24 @@ This function is called at the very end of Spacemacs initialization."
                linguistic link-hint list-utils livid-mode lorem-ipsum lsp-mode
                lsp-origami lsp-treemacs lsp-ui lv macrostep magit magit-section
                markdown-mode memoize minimap mmm-jinja2 multi-line multi-term
-               multiple-cursors mwim nameless nodejs-repl nov npm-mode
-               open-junk-file org-pivotal org-re-reveal org-superstar origami
-               overseer ox-gfm package-lint packed paradox paredit parent-mode
-               password-generator pcre2el persistent-scratch persp-mode pfuture
-               pkg-info popup popwin pos-tip posframe powerline prettier-js
-               projectile queue quickrun racer rainbow-delimiters reformatter
-               request restart-emacs ron-mode rust-mode s shell-pop shfmt
-               shut-up simple-httpd skewer-mode smartparens smeargle spaceline
-               spaceline-all-the-icons spinner sqlite3 srefactor
-               stickyfunc-enhance string-edit string-inflection swiper
-               symbol-overlay symon symon-lingr systemd tablist terminal-here
-               tern toc-org toml-mode transient tree-sitter treemacs
-               treemacs-evil treemacs-icons-dired treemacs-magit treemacs-persp
-               treemacs-projectile treepy typescript-mode undo-tree unfill
-               unkillable-scratch use-package uuidgen vi-tilde-fringe
-               visual-fill-column volatile-highlights vterm web-beautify
-               web-mode which-key window-purpose winum with-editor
-               writeroom-mode ws-butler xterm-color yaml yasnippet
+               multiple-cursors mwim nameless nginx-mode nodejs-repl nov
+               npm-mode open-junk-file org-pivotal org-re-reveal org-superstar
+               origami overseer ox-gfm package-lint packed paradox paredit
+               parent-mode password-generator pcre2el persistent-scratch
+               persp-mode pfuture pkg-info popup popwin pos-tip posframe
+               powerline prettier-js projectile queue quickrun racer
+               rainbow-delimiters reformatter request restart-emacs ron-mode
+               rust-mode s shell-pop shfmt shut-up simple-httpd skewer-mode
+               smartparens smeargle spaceline spaceline-all-the-icons spinner
+               sqlite3 srefactor stickyfunc-enhance string-edit
+               string-inflection swiper symbol-overlay symon symon-lingr systemd
+               tablist terminal-here tern toc-org toml-mode transient
+               tree-sitter treemacs treemacs-evil treemacs-icons-dired
+               treemacs-magit treemacs-persp treemacs-projectile treepy
+               typescript-mode undo-tree unfill unkillable-scratch use-package
+               uuidgen vi-tilde-fringe visual-fill-column volatile-highlights
+               vterm web-beautify web-mode which-key window-purpose winum
+               with-editor writeroom-mode ws-butler xterm-color yaml yasnippet
                yasnippet-snippets))
  '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
  '(scroll-bar-mode 'right)
