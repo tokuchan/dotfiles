@@ -225,6 +225,13 @@ def asgard_IP_CIDR():
     print(__getAsgardIPCIDR())
 
 
+def __print_host_ident() -> None:
+    """Print the current host IP to screen."""
+    ctx = click.get_current_context()
+    print(f"""Host connection info: {ctx.obj["userHost"]}""")
+    print(f"""Host URL: http://{ctx.obj["host"]}""")
+
+
 def __install_ssh_key(password: str) -> None:
     log = getLocalLogger()
     log.info("Install SSH key on target.")
@@ -381,6 +388,7 @@ def reskel(ctx, password: str) -> None:
     __rebuild_ssh_config()
     __install_ssh_key(password)
     __update_shell()
+    __print_host_ident()
 
 
 @cli.command()
