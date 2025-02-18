@@ -119,7 +119,8 @@ inotify-tools \
 fswatch \
 incron \
 moreutils \
-btop
+btop \
+feh
 
  # Yocto dependencies
 sudo apt install -yqq \
