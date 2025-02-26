@@ -120,7 +120,10 @@ fswatch \
 incron \
 moreutils \
 btop \
-feh
+feh \
+kcachegrind \
+qt5-style-kvantum \
+qt5ct
 
  # Yocto dependencies
 sudo apt install -yqq \
