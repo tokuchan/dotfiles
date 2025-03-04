@@ -1,0 +1,3 @@
+#!/bin/bash
+# Given a program name, search PATH for it, then cat the contents of the program file to output.
+cat $(which $1)
