@@ -1,0 +1,60 @@
+#!/bin/bash
+# Dump all thread's current backtraces to output, formatted as TSV for readability and processing.
+
+function dumpTraces() {
+  gdb -q --batch -ex 'thread apply all bt' -ex 'detach' -p "${1}" 2>&1
+}
+
+stanzaDetector='
+# Detect start of a stanza
+/^Thread [0-9]+ / {
+    threadID = $2;  # Extract Thread ID
+    in_stanza = 1;
+    next;  # Skip this line (do not print it)
+}
+
+# Detect end of stanza (blank line)
+/^$/ {
+    in_stanza = 0;
+    next;
+}
+
+# Extract frame information within a stanza
+in_stanza {
+    # Match the frame pattern
+    match($0, /#([0-9]+)[ \t]+(0x[0-9a-fA-F]+)?[ \t]*((in[ \t]+)?([^ \t(]+)[ \t]+\(([^)]*)\))?[ \t]*(at[ \t]+([^:]+):(.*))?/, groups)
+
+    if (RSTART > 0) {
+        frameNumber = groups[1]
+        memoryLocation = groups[2] ? groups[2] : ""
+        functionName = groups[5] ? groups[5] : ""
+        functionArgs = groups[6] ? groups[6] : ""
+        path = groups[8] ? groups[8] : ""
+        fileName = path
+        gsub(/^.*\//, "", fileName)  # Removes everything up to the last '/'
+        line = groups[9] ? groups[9] : ""
+
+        # Print as TSV
+        print threadID "\t" frameNumber "\t" memoryLocation "\t" fileName "\t" line "\t" functionName "\t" functionArgs 
+    }
+}
+'
+
+function formatTraces() {
+  awk "${stanzaDetector}"
+}
+
+# Clear tab stops
+printf "\033[3g;"
+
+# Set tab stops
+printf "%3s\033H%4s\033H%20s\033H%20s\033H%5s\033H%60s\033H%65s\033H\r" " " " " " " " " " " " " " "
+
+# Print column heads
+printf "Th\tFr\tLocation\tFile Name\tLine\tFunction\tArguments\n"
+
+# Dump data
+dumpTraces $(pgrep $1) | formatTraces
+
+# Reset tab stops
+tabs 8
