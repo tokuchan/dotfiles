@@ -1,0 +1,89 @@
+#!/bin/bash
+
+getHash() {
+    echo "$1" | sha256sum | cut -d' ' -f1
+}
+
+# Default values
+shouldClear=false
+args=()
+receiptPath="$(pwd)/.runonce"
+options_parsed=false
+
+# Parse command-line arguments
+while [[ "$#" -gt 0 ]]; do
+    if [ "$options_parsed" = true ]; then
+        args+=("$1")
+    else
+        case "$1" in
+            -h|--help)
+                show_help
+                exit 1
+                ;;
+            -c|--clear)
+                shouldClear=true
+                shift
+                continue
+                ;;
+            --)
+                options_parsed=true
+                shift
+                continue
+                ;;
+            *)
+                args+=("$1")
+                ;;
+        esac
+    fi
+    shift
+done
+
+command="${args[*]}"
+commandHash=$(getHash "${command}")
+commandReceipt="${receiptPath}/${commandHash}"
+
+touchReceipt() {
+    touch "${commandReceipt}"
+}
+
+clearReceipt() {
+    printf "==runonce==\tClear\t${command}\n"
+    rm -f "${commandReceipt}"
+}
+
+noReceipt() {
+    test \! -e "${commandReceipt}"
+    return $?
+}
+
+runCommand() {
+    noReceipt && printf "==runonce==\tRun\t${command}\n" || printf "==runonce==\tSkip\t${command}\n"
+    noReceipt && ${command} && touchReceipt
+}
+
+# Function to show help
+show_help() {
+    echo "Usage: $0 [OPTIONS] [ARGS]"
+    echo
+    echo "Run a command just once."
+    echo
+    echo "Options:"
+    echo "  -h, --help    Show this help message"
+    echo "  -c, --clear   Set shouldClear to true"
+    echo "Arguments after -- will be run just once."
+}
+
+# Function to perform the main operation
+doit() {
+    if [ "$shouldClear" = true ]; then
+        clearReceipt
+    else
+        runCommand
+    fi
+}
+
+# Ensure receipts directory is available.
+mkdir -p "${receiptPath}"
+
+# Call the doit function
+doit
