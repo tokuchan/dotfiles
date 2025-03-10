@@ -869,143 +869,146 @@ nil : Otherwise, return nil and run next lineup function."
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ansi-color-faces-vector
-   [default default default italic underline success warning error])
- '(ansi-color-names-vector
-   ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
- '(c-doc-comment-style
-   '((c-mode . doxygen) (c++-mode . doxygen) (java-mode . javadoc)
-     (pike-mode . autodoc)))
- '(clang-format-style "file")
- '(company-idle-delay 0.02)
- '(compilation-always-kill t)
- '(compilation-ask-about-save nil)
- '(compilation-auto-jump-to-first-error nil)
- '(compilation-max-output-line-length nil)
- '(compilation-scroll-output 'first-error)
- '(custom-enabled-themes '(spacemacs-dark))
- '(custom-safe-themes
-   '("603a831e0f2e466480cdc633ba37a0b1ae3c3e9a4e90183833bc4def3421a961"
-     "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088"
-     "ce17f0b935cb4cf9167b384c8fefcff5448f039b89dbd1e45029400bc52b9b33"
-     "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default))
- '(desktop-save-mode t)
- '(display-line-numbers-type 'visual)
- '(evil-want-Y-yank-to-eol t)
- '(expand-region-smart-cursor nil)
- '(expand-region-subword-enabled t)
- '(explicit-shell-file-name "/usr/bin/fish")
- '(flycheck-gcc-args '("--std=c++2a"))
- '(focus-follows-mouse t)
- '(git-gutter:diff-option "-w")
- '(global-flycheck-mode nil)
- '(hl-todo-keyword-faces
-   '(("TODO" . "#dc752f") ("NEXT" . "#dc752f") ("THEM" . "#2d9574")
-     ("PROG" . "#4f97d7") ("OKAY" . "#4f97d7") ("DONT" . "#f2241f")
-     ("FAIL" . "#f2241f") ("DONE" . "#86dc2f") ("NOTE" . "#b1951d")
-     ("KLUDGE" . "#b1951d") ("HACK" . "#b1951d") ("TEMP" . "#b1951d")
-     ("FIXME" . "#dc752f") ("XXX+" . "#dc752f") ("\\?\\?\\?+" . "#dc752f")))
- '(ispell-dictionary "american")
- '(lsp-enable-indentation nil)
- '(lsp-enable-on-type-formatting nil)
- '(lsp-semgrep-scan-jobs 2)
- '(lsp-semgrep-server-command
-   '("/home/seans/dotfiles/spacemacs/python-support/semgrep.sh" "lsp"))
- '(minimap-major-modes '(compilation-mode prog-mode))
- '(minimap-mode t)
- '(minimap-window-location 'right)
- '(mouse-autoselect-window t)
- '(next-error-recenter '(4))
- '(org-agenda-files '("~/dev/helix-project/helix/helix.org"))
- '(org-agenda-include-diary t)
- '(org-duration-format '(("h") (special . h:mm)))
- '(org-fontify-done-headline nil)
- '(org-fontify-todo-headline nil)
- '(org-log-into-drawer t)
- '(org-log-note-clock-out t)
- '(org-log-refile 'note)
- '(package-selected-packages
-   '(ac-ispell ace-jump-helm-line ace-link ace-window add-node-modules-path
-               adoc-mode aggressive-indent aio all-the-icons annalist anzu async
-               auto-compile auto-complete auto-dictionary auto-highlight-symbol
-               auto-yasnippet avy bind-key bind-map bitbake bitbake-ts-mode
-               cargo centered-cursor-mode cfrs clang-format clean-aindent-mode
-               closql cmake-mode column-enforce-mode company company-shell
-               compat counsel counsel-gtags csv-mode dash define-word devdocs
-               diminish dired-quick-sort docker docker-tramp dockerfile-mode
-               dotenv-mode dracula-theme drag-stuff dumb-jump editorconfig
-               elisp-def elisp-slime-nav emacsql emacsql-sqlite emmet-mode emr
-               epl esh-help eshell-git-prompt eshell-prompt-extras eshell-z
-               esxml eval-sexp-fu evil evil-anzu evil-args evil-cleverparens
-               evil-collection evil-easymotion evil-ediff evil-escape
-               evil-exchange evil-goggles evil-iedit-state evil-indent-plus
-               evil-lion evil-lisp-state evil-matchit evil-mc
-               evil-nerd-commenter evil-numbers evil-surround
-               evil-terminal-cursor-changer evil-textobj-line evil-tutor
-               evil-unimpaired evil-visual-mark-mode evil-visualstar
-               exec-path-from-shell expand-region eyebrowse f fancy-battery
-               fira-code-mode fireplace fish-mode flx flx-ido flycheck
-               flycheck-bashate flycheck-elsa flycheck-package flycheck-pos-tip
-               flycheck-rust flyspell-correct flyspell-correct-helm font-lock+
-               forge fuzzy gerrit ggtags ghub git-commit git-link git-messenger
-               git-modes git-timemachine gitignore-templates golden-ratio
-               google-translate goto-chg grizzl helm helm-ag helm-c-yasnippet
-               helm-company helm-core helm-descbinds helm-flx helm-git-grep
-               helm-gtags helm-ls-git helm-lsp helm-make helm-mode-manager
-               helm-org helm-projectile helm-purpose helm-swoop helm-themes
-               helm-xref hide-comnt highlight-indentation highlight-numbers
-               highlight-parentheses hl-todo ht htmlize hungry-delete
-               hybrid-mode hydra iedit imenu-list impatient-mode import-js
-               indent-guide info+ insert-shebang inspector ivy journalctl-mode
-               js-doc js2-mode js2-refactor json-mode json-snatcher kv ligature
-               linguistic link-hint list-utils livid-mode lorem-ipsum lsp-mode
-               lsp-origami lsp-treemacs lsp-ui lv macrostep magit magit-section
-               markdown-mode memoize minimap mmm-jinja2 multi-line multi-term
-               multiple-cursors mwim nameless nginx-mode nodejs-repl nov
-               npm-mode open-junk-file org-pivotal org-re-reveal org-superstar
-               origami overseer ox-gfm package-lint packed paradox paredit
-               parent-mode password-generator pcre2el persistent-scratch
-               persp-mode pfuture pkg-info popup popwin pos-tip posframe
-               powerline prettier-js projectile queue quickrun racer
-               rainbow-delimiters reformatter request restart-emacs ron-mode
-               rust-mode s shell-pop shfmt shut-up simple-httpd skewer-mode
-               smartparens smeargle spaceline spaceline-all-the-icons spinner
-               sqlite3 srefactor stickyfunc-enhance string-edit
-               string-inflection swiper symbol-overlay symon symon-lingr systemd
-               tablist terminal-here tern toc-org toml-mode transient
-               tree-sitter treemacs treemacs-evil treemacs-icons-dired
-               treemacs-magit treemacs-persp treemacs-projectile treepy
-               typescript-mode undo-tree unfill unkillable-scratch use-package
-               uuidgen vi-tilde-fringe visual-fill-column volatile-highlights
-               vterm web-beautify web-mode which-key window-purpose winum
-               with-editor writeroom-mode ws-butler xterm-color yaml yasnippet
-               yasnippet-snippets))
- '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
- '(scroll-bar-mode 'right)
- '(shell-pop-full-span t)
- '(shell-pop-shell-type
-   '("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell))))
- '(shell-pop-term-shell "/usr/bin/fish")
- '(shell-pop-universal-key "C-a")
- '(shell-pop-window-position 'top)
- '(warning-suppress-log-types '((comp)))
- '(warning-suppress-types '((lsp-mode)))
- '(yas-snippet-dirs
-   '("/home/seans/.emacs.d/core/../private/snippets/"
-     "/home/seans/.emacs.d/layers/+completion/auto-completion/local/snippets"
-     yasnippet-snippets-dir "/home/seans/.config/yas/snippets/")))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(company-preview ((t (:background "#34323e" :foreground "#9a9aba" :height 1.25))))
- '(compilation-warning ((t (:inherit warning :foreground "yellow"))))
- '(completions-highlight ((t nil)))
- '(cursor ((t (:background "DarkGoldenrod2" :distant-foreground "black" :foreground "black" :weight heavy)))))
-)
+  (custom-set-variables
+   ;; custom-set-variables was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(ansi-color-faces-vector
+     [default default default italic underline success warning error])
+   '(ansi-color-names-vector
+     ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
+   '(c-doc-comment-style
+     '((c-mode . doxygen) (c++-mode . doxygen) (java-mode . javadoc)
+       (pike-mode . autodoc)))
+   '(clang-format-style "file")
+   '(company-idle-delay 0.02)
+   '(compilation-always-kill t)
+   '(compilation-ask-about-save nil)
+   '(compilation-auto-jump-to-first-error nil)
+   '(compilation-max-output-line-length nil)
+   '(compilation-scroll-output 'first-error)
+   '(custom-enabled-themes '(spacemacs-dark))
+   '(custom-safe-themes
+     '("603a831e0f2e466480cdc633ba37a0b1ae3c3e9a4e90183833bc4def3421a961"
+       "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088"
+       "ce17f0b935cb4cf9167b384c8fefcff5448f039b89dbd1e45029400bc52b9b33"
+       "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default))
+   '(desktop-save-mode t)
+   '(display-line-numbers-type 'visual)
+   '(evil-want-Y-yank-to-eol t)
+   '(expand-region-smart-cursor nil)
+   '(expand-region-subword-enabled t)
+   '(explicit-shell-file-name "/usr/bin/fish")
+   '(flycheck-gcc-args '("--std=c++2a"))
+   '(focus-follows-mouse t)
+   '(git-gutter:diff-option "-w")
+   '(global-flycheck-mode nil)
+   '(hl-todo-keyword-faces
+     '(("TODO" . "#dc752f") ("NEXT" . "#dc752f") ("THEM" . "#2d9574")
+       ("PROG" . "#4f97d7") ("OKAY" . "#4f97d7") ("DONT" . "#f2241f")
+       ("FAIL" . "#f2241f") ("DONE" . "#86dc2f") ("NOTE" . "#b1951d")
+       ("KLUDGE" . "#b1951d") ("HACK" . "#b1951d") ("TEMP" . "#b1951d")
+       ("FIXME" . "#dc752f") ("XXX+" . "#dc752f") ("\\?\\?\\?+" . "#dc752f")))
+   '(ispell-dictionary "american")
+   '(lsp-enable-indentation nil)
+   '(lsp-enable-on-type-formatting nil)
+   '(lsp-semgrep-scan-jobs 2)
+   '(lsp-semgrep-server-command
+     '("/home/seans/dotfiles/spacemacs/python-support/semgrep.sh" "lsp"))
+   '(minimap-major-modes '(compilation-mode prog-mode))
+   '(minimap-mode t)
+   '(minimap-window-location 'right)
+   '(mouse-autoselect-window t)
+   '(next-error-recenter '(4))
+   '(org-agenda-files '("~/dev/helix-project/helix/helix.org"))
+   '(org-agenda-include-diary t)
+   '(org-duration-format '(("h") (special . h:mm)))
+   '(org-fontify-done-headline nil)
+   '(org-fontify-todo-headline nil)
+   '(org-log-into-drawer t)
+   '(org-log-note-clock-out t)
+   '(org-log-refile 'note)
+   '(package-selected-packages
+     '(ac-ispell ace-jump-helm-line ace-link ace-window add-node-modules-path
+                 adoc-mode aggressive-indent aio all-the-icons annalist anzu async
+                 auto-compile auto-complete auto-dictionary auto-highlight-symbol
+                 auto-yasnippet avy bind-key bind-map bitbake bitbake-ts-mode
+                 cargo centered-cursor-mode cfrs clang-format clean-aindent-mode
+                 closql cmake-mode column-enforce-mode company company-shell
+                 company-web compat composer counsel counsel-css counsel-gtags
+                 csv-mode dash define-word devdocs diminish dired-quick-sort
+                 docker docker-tramp dockerfile-mode dotenv-mode dracula-theme
+                 drag-stuff dumb-jump editorconfig elisp-def elisp-slime-nav
+                 emacsql emacsql-sqlite emmet-mode emr epl esh-help
+                 eshell-git-prompt eshell-prompt-extras eshell-z esxml
+                 eval-sexp-fu evil evil-anzu evil-args evil-cleverparens
+                 evil-collection evil-easymotion evil-ediff evil-escape
+                 evil-exchange evil-goggles evil-iedit-state evil-indent-plus
+                 evil-lion evil-lisp-state evil-matchit evil-mc
+                 evil-nerd-commenter evil-numbers evil-surround
+                 evil-terminal-cursor-changer evil-textobj-line evil-tutor
+                 evil-unimpaired evil-visual-mark-mode evil-visualstar
+                 exec-path-from-shell expand-region eyebrowse f fancy-battery
+                 fira-code-mode fireplace fish-mode flx flx-ido flycheck
+                 flycheck-bashate flycheck-elsa flycheck-package flycheck-pos-tip
+                 flycheck-rust flyspell-correct flyspell-correct-helm font-lock+
+                 forge fuzzy gerrit ggtags ghub git-commit git-link git-messenger
+                 git-modes git-timemachine gitignore-templates golden-ratio
+                 google-translate goto-chg gptel grizzl haml-mode helm helm-ag
+                 helm-c-yasnippet helm-company helm-core helm-css-scss
+                 helm-descbinds helm-flx helm-git-grep helm-gtags helm-ls-git
+                 helm-lsp helm-make helm-mode-manager helm-org helm-projectile
+                 helm-purpose helm-swoop helm-themes helm-xref hide-comnt
+                 highlight-indentation highlight-numbers highlight-parentheses
+                 hl-todo ht htmlize hungry-delete hybrid-mode hydra iedit
+                 imenu-list impatient-mode import-js indent-guide info+
+                 insert-shebang inspector ivy journalctl-mode js-doc js2-mode
+                 js2-refactor json-mode json-snatcher kv ligature linguistic
+                 link-hint list-utils livid-mode lorem-ipsum lsp-mode lsp-origami
+                 lsp-treemacs lsp-ui lv macrostep magit magit-section
+                 markdown-mode memoize minimap mmm-jinja2 multi-line multi-term
+                 multiple-cursors mwim nameless nginx-mode nodejs-repl nov
+                 npm-mode open-junk-file org-pivotal org-re-reveal org-superstar
+                 origami overseer ox-gfm package-lint packed paradox paredit
+                 parent-mode password-generator pcre2el persistent-scratch
+                 persp-mode pfuture pkg-info popup popwin pos-tip posframe
+                 powerline prettier-js projectile pug-mode queue quickrun racer
+                 rainbow-delimiters reformatter request restart-emacs ron-mode
+                 rust-mode s sass-mode scss-mode shell-pop shfmt shut-up
+                 simple-httpd skewer-mode slim-mode smartparens smeargle spaceline
+                 spaceline-all-the-icons spinner sqlite3 srefactor
+                 stickyfunc-enhance string-edit string-inflection swiper
+                 symbol-overlay symon symon-lingr systemd tablist tagedit
+                 terminal-here tern toc-org toml-mode transient tree-sitter
+                 treemacs treemacs-evil treemacs-icons-dired treemacs-magit
+                 treemacs-persp treemacs-projectile treepy typescript-mode
+                 undo-tree unfill unkillable-scratch use-package uuidgen
+                 vi-tilde-fringe visual-fill-column volatile-highlights vterm
+                 web-beautify web-completion-data web-mode which-key
+                 window-purpose winum with-editor writeroom-mode ws-butler
+                 xterm-color yaml yasnippet yasnippet-snippets))
+   '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
+   '(scroll-bar-mode 'right)
+   '(shell-pop-full-span t)
+   '(shell-pop-shell-type
+     '("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell))))
+   '(shell-pop-term-shell "/usr/bin/fish")
+   '(shell-pop-universal-key "C-a")
+   '(shell-pop-window-position 'top)
+   '(warning-suppress-log-types '((comp)))
+   '(warning-suppress-types '((lsp-mode)))
+   '(yas-snippet-dirs
+     '("/home/seans/.emacs.d/core/../private/snippets/"
+       "/home/seans/.emacs.d/layers/+completion/auto-completion/local/snippets"
+       yasnippet-snippets-dir "/home/seans/.config/yas/snippets/")))
+  (custom-set-faces
+   ;; custom-set-faces was added by Custom.
+   ;; If you edit it by hand, you could mess it up, so be careful.
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(company-preview ((t (:background "#34323e" :foreground "#9a9aba" :height 1.25))))
+   '(compilation-warning ((t (:inherit warning :foreground "yellow"))))
+   '(completions-highlight ((t nil)))
+   '(cursor ((t (:background "DarkGoldenrod2" :distant-foreground "black" :foreground "black" :weight heavy)))))
+  )
