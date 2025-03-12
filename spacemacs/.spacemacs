@@ -37,83 +37,86 @@ This function should only modify configuration layer settings."
                                        typescript
                                        javascript
                                        ;; ----------------------------------------------------------------
-     ;; Example of useful layers you may want to use right away.
-     ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
-     ;; `M-m f e R' (Emacs style) to install them.
-     ;; ----------------------------------------------------------------
-     rust
-     (auto-completion :variables
-                      ;;auto-completion-return-key-behavior nil
-                      auto-completion-tab-key-behavior 'cycle
-                      auto-completion-complete-with-key-sequence "jk"
-                      auto-completion-complete-with-key-sequence-delay 0.1)
-     better-defaults
-     csv
-     shell-scripts
-     asciidoc
-     emacs-lisp
-     git
-     helm
-     (lsp :variables
-          lsp-lens-enable nil
-          lsp-headerline-breadcrumb-enable t
-          lsp-headerline-breadcrumb-segments '(project file symbols)
-          lsp-use-plists nil
-          lsp-log-io nil
-          lsp-file-watch-threshold 5000
-          lsp-enable-file-watchers nil
-          lsp-modeline-code-actions-segments '(count icon)
-          lsp-ui-doc-enable nil
-          lsp-use-lsp-ui nil
-          )
-     ;; markdown
-     multiple-cursors
-     ;;(org :variables
-     ;;     ;; Bullets from Mayan numbers
-     ;;     ;;org-superstar-headline-bullets-list '("𝋡","𝋢","𝋣","𝋤")
-     ;;     ;; Bullets from Kaktovik Inuit numbers
-     ;;     ;;org-superstar-headline-bullets-list '("𝋁","𝋂","𝋃","𝋄")
-     ;;     org-projectile-file "~/org/TODOS.org"
-     ;;     org-agenda-files (list "~/org/work.org"
-     ;;                            "~/org/personal.org")
-     ;;     org-log-done t
-     ;;     org-enable-github-support t
-     ;;     org-enable-reveal-js-support t
-     ;;     org-reveal-js "~/.config/reveal/reveal.js"
-     ;;     org-todo-keywords '((sequence "TODO" "WAIT" "DOING" "|" "DONE" "WONTDO"))
-     ;;     )
-     (shell :variables
-            shell-default-height 30
-            shell-default-position 'bottom)
-     spell-checking
-     syntax-checking
-     (version-control :variables
-                      version-control-diff-side 'left)
-     semantic
-     ;treemacs
+                                       ;; Example of useful layers you may want to use right away.
+                                       ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
+                                       ;; `M-m f e R' (Emacs style) to install them.
+                                       ;; ----------------------------------------------------------------
+                                       rust
+                                       (auto-completion :variables
+                                                        ;;auto-completion-return-key-behavior nil
+                                                        auto-completion-tab-key-behavior 'cycle
+                                                        auto-completion-complete-with-key-sequence "jk"
+                                                        auto-completion-complete-with-key-sequence-delay 0.1)
+                                       better-defaults
+                                       csv
+                                       shell-scripts
+                                       asciidoc
+                                       emacs-lisp
+                                       git
+                                       helm
+                                       (lsp :variables
+                                            lsp-lens-enable nil
+                                            lsp-headerline-breadcrumb-enable t
+                                            lsp-headerline-breadcrumb-segments '(project file symbols)
+                                            lsp-use-plists nil
+                                            lsp-log-io nil
+                                            lsp-file-watch-threshold 5000
+                                            lsp-enable-file-watchers nil
+                                            lsp-modeline-code-actions-segments '(count icon)
+                                            lsp-ui-doc-enable nil
+                                            lsp-use-lsp-ui nil
+                                            )
+                                       ;; markdown
+                                       multiple-cursors
+                                       ;;(org :variables
+                                       ;;     ;; Bullets from Mayan numbers
+                                       ;;     ;;org-superstar-headline-bullets-list '("𝋡","𝋢","𝋣","𝋤")
+                                       ;;     ;; Bullets from Kaktovik Inuit numbers
+                                       ;;     ;;org-superstar-headline-bullets-list '("𝋁","𝋂","𝋃","𝋄")
+                                       ;;     org-projectile-file "~/org/TODOS.org"
+                                       ;;     org-agenda-files (list "~/org/work.org"
+                                       ;;                            "~/org/personal.org")
+                                       ;;     org-log-done t
+                                       ;;     org-enable-github-support t
+                                       ;;     org-enable-reveal-js-support t
+                                       ;;     org-reveal-js "~/.config/reveal/reveal.js"
+                                       ;;     org-todo-keywords '((sequence "TODO" "WAIT" "DOING" "|" "DONE" "WONTDO"))
+                                       ;;     )
+                                       (shell :variables
+                                              shell-default-height 30
+                                              shell-default-position 'bottom)
+                                       spell-checking
+                                       syntax-checking
+                                       (version-control :variables
+                                                        version-control-diff-side 'left)
+                                       semantic
+                                        ;treemacs
 
-     ;; Additional layers for programming languages
-     (c-c++ :variables
-            c-c++-backend 'lsp-clangd
-            ;c-c++-adopt-subprojects t
-            c-c++-enable-clang-support t
-            c-c++-lsp-enable-semantic-highlighting 'rainbow
-            c-c++-default-mode-for-headers 'c++-mode)
+                                       ;; Additional layers for programming languages
+                                       (c-c++ :variables
+                                              c-c++-backend 'lsp-clangd
+                                        ;c-c++-adopt-subprojects t
+                                              c-c++-enable-clang-support t
+                                              c-c++-lsp-enable-semantic-highlighting 'rainbow
+                                              c-c++-default-mode-for-headers 'c++-mode)
 
-     (python :variables
-             python-backend 'lsp
-             python-lsp-server 'pyright)
+                                       (python :variables
+                                               python-backend 'lsp
+                                               python-lsp-server 'pyright)
 
-     (docker :variables
-             docker-dockerfile-backend 'lsp)
+                                       (docker :variables
+                                               docker-dockerfile-backend 'lsp)
 
-     ;; Customize themes a little
-     ;;(theming :variables
-     ;; theming-modifications
-     ;; '((spacemacs-dark (hl-line :background "000"))
-     ;;   (spacemacs-light (hl-line :background "ccc"))))
+                                       ;; Customize themes a little
+                                       ;;(theming :variables
+                                       ;; theming-modifications
+                                       ;; '((spacemacs-dark (hl-line :background "000"))
+                                       ;;   (spacemacs-light (hl-line :background "ccc"))))
 
-     cmake)
+                                       cmake
+                                       (llm-client :variables
+                                                   llm-client-enable-gptel t
+                                                   llm-client-enable-ellama t))
 
 
    ;; List of additional packages that will be installed without being wrapped
@@ -608,7 +611,7 @@ See the header of this file for more information."
 
   ;; Set TZ properly
   (setenv "TZ" "America/New_York")
-)
+  )
 
 (defun dotspacemacs/user-init ()
   "Initialization for user code:
@@ -616,7 +619,7 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
-)
+  )
 
 
 (defun dotspacemacs/user-load ()
@@ -624,7 +627,7 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
 This function is called only while dumping Spacemacs configuration. You can
 `require' or `load' the libraries of your choice that will be included in the
 dump."
-)
+  )
 
 
 (defun dotspacemacs/user-config ()
@@ -734,21 +737,21 @@ nil : Otherwise, return nil and run next lineup function."
           0)))
 
   ;; Define a line-up function for braced blocks under braceless ones
-;;  (defun c++-braced-under-braceless-block (langelem)
-;;    "Control indentation of braced blocks that sit under braceless ones. For example:
-;;
-;;  if ( condition ) try
-;;  {
-;;    // Do something
-;;  }
-;;
-;;would be correct indentation.
-;;
-;;Possible Values:
-;;0   : The first non-ws character is '{'. Line it up under
-;;nil :
-;;"
-;;    )
+  ;;  (defun c++-braced-under-braceless-block (langelem)
+  ;;    "Control indentation of braced blocks that sit under braceless ones. For example:
+  ;;
+  ;;  if ( condition ) try
+  ;;  {
+  ;;    // Do something
+  ;;  }
+  ;;
+  ;;would be correct indentation.
+  ;;
+  ;;Possible Values:
+  ;;0   : The first non-ws character is '{'. Line it up under
+  ;;nil :
+  ;;"
+  ;;    )
 
   ;; Define a custom C++ mode hook, so I can fix indentation and a few other things.
   (defun my-c++-mode-hook ()
@@ -859,8 +862,37 @@ nil : Otherwise, return nil and run next lineup function."
   (spacemacs/set-leader-keys "w-" 'split-window-below-and-focus)
   (spacemacs/set-leader-keys "w/" nil)
   (spacemacs/set-leader-keys "w/" 'split-window-right-and-focus)
-)
 
+  ;; Configure ellama to use chatgpt.
+  ;;(setenv "OPENAI_API_KEY" "")
+
+  ;; Redefine the 'gf' shortcut to try using find-file-in-project first, then fall back to find-file-at-point.
+  (defun my/helm-projectile-find-file-dwim-or-ffap ()
+    "Try to open the file under cursor using helm-projectile-find-file-dwim, fallback to find-file-at-point."
+    (interactive)
+    (let ((file (thing-at-point 'filename t))
+          (include-paths '("/usr/include/c++/14" "/usr/include/c++/13" "/usr/include" "/usr/local/include")))
+      (let ((full-path (expand-file-name file (seq-find (lambda (dir) (expand-file-name file dir)) include-paths))))
+        (if (file-readable-p full-path)
+            (find-file full-path)
+          (if (and file (projectile-project-p))
+              (helm-projectile-find-file-dwim)
+            (message "File not found in project or system includes"))))))
+
+  ;; Remap 'gf' to use the new function
+  (define-key evil-normal-state-map (kbd "gf") 'my/helm-projectile-find-file-dwim-or-ffap)
+
+  (defun my/goto-alternate-file ()
+    "Switch between C/C++ source and header files."
+    (interactive)
+    (if (projectile-project-p)
+        (projectile-find-related-file)
+      (message "Not in a projectile project.")))
+
+  ;; Remap 'ga' to switch between header and source files
+  (define-key evil-normal-state-map (kbd "gA") 'what-cursor-position)
+  (define-key evil-normal-state-map (kbd "ga") 'my/goto-alternate-file)
+  )
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
@@ -989,6 +1021,9 @@ This function is called at the very end of Spacemacs initialization."
                  window-purpose winum with-editor writeroom-mode ws-butler
                  xterm-color yaml yasnippet yasnippet-snippets))
    '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
+   '(projectile-other-file-alist
+     '(("cpp" "h" "hpp" "H") ("c" "h" "hpp" "H") ("h" "c" "cpp" "C")
+       ("hpp" "cpp" "c" "C") ("H" "c" "cpp" "C") ("C" "h" "hpp" "H")))
    '(scroll-bar-mode 'right)
    '(shell-pop-full-span t)
    '(shell-pop-shell-type
