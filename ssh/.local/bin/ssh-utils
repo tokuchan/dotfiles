@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # vim: set syntax=python
 
+# --- Imports ---
+
 import click
 import sh
 import re
@@ -13,7 +15,11 @@ from rich import print
 from pathlib import Path
 from textwrap import dedent
 
+# --- Global Variables ---
+
 log = logging.getLogger(__name__)
+
+# --- Support / Logging ---
 
 
 def getLocalLogger():
@@ -22,28 +28,7 @@ def getLocalLogger():
     return log.getChild(sys._getframe().f_back.f_code.co_name)
 
 
-def __probe() -> bool:
-    """Try to open a connection to the specifed server and port, and return whether successful."""
-    log = getLocalLogger()
-    ctx = click.get_current_context()
-    host = ctx.obj["host"]
-    port = ctx.obj["port"]
-
-    log.info(f"Probing server. {host=!s}, {port=!s}.")
-    try:
-        nc = sh.nc.bake("-z", "-w1", host, port)
-        log.debug(f"Trying {nc=!s}.")
-        nc()
-        return True
-    except sh.CommandNotFound:
-        try:
-            telnet = sh.telnet.bake("-e", "X", host, port, _in=sh.echo("X"))
-            log.debug(f"Trying {telnet}.")
-            return True
-        except sh.ErrorReturnCode:
-            return False
-    except sh.ErrorReturnCode:
-        return False
+# --- Support / IP Discovery ---
 
 
 def __getHostIP() -> str:
@@ -80,6 +65,9 @@ def __getAsgardIP() -> [str]:
     return IP
 
 
+# --- Support / Scanning ---
+
+
 def __getAsgardIPCIDR() -> str:
     """Return the IP in CIDR form for the asgard-windows host."""
     ipAndMask = __getAsgardIP()
@@ -87,13 +75,37 @@ def __getAsgardIPCIDR() -> str:
     return f"{ipAndMask[0]}/{netmask}"
 
 
+def __probe() -> bool:
+    """Try to open a connection to the specifed server and port, and return whether successful."""
+    log = getLocalLogger()
+    ctx = click.get_current_context()
+    host = ctx.obj["host"]
+    port = ctx.obj["port"]
+
+    log.info(f"Probing server. {host=!s}, {port=!s}.")
+    try:
+        nc = sh.nc.bake("-z", "-w1", host, port)
+        log.debug(f"Trying {nc=!s}.")
+        nc()
+        return True
+    except sh.CommandNotFound:
+        try:
+            telnet = sh.telnet.bake("-e", "X", host, port, _in=sh.echo("X"))
+            log.debug(f"Trying {telnet}.")
+            return True
+        except sh.ErrorReturnCode:
+            return False
+    except sh.ErrorReturnCode:
+        return False
+
+
 def __scan(address_range: str, port: int) -> [str]:
     """Scan a range of IP addresses for any servers with the specified port open."""
-    log=getLocalLogger()
-    log.debug(f'{address_range=}')
-    log.debug(f'{port=}')
+    log = getLocalLogger()
+    log.debug(f"{address_range=}")
+    log.debug(f"{port=}")
 
-    scanResults= [
+    scanResults = [
         x
         for x in sh.nmap(
             "--send-eth",
@@ -106,8 +118,188 @@ def __scan(address_range: str, port: int) -> [str]:
         ).split("\n")
     ]
 
-    log.debug(f'{scanResults=}')
+    log.debug(f"{scanResults=}")
     return scanResults
+
+
+def __scanAsgard() -> list:
+    ctx = click.get_current_context()
+    target = __getAsgardIPCIDR()
+    pattern = re.compile(f"""{ctx.obj['port']}/open/tcp""")
+    host = str(__getHostIP())
+    asgard = str(__getAsgardIP()[0])
+    filterIps = {host, asgard}
+
+    log = getLocalLogger()
+
+    def repl(m):
+        return str(m.group(1))
+
+    ips = set(
+        (
+            re.sub(r"""Host:\s+(\S+)\s+.*""", repl, x)
+            for x in __scan(target, ctx.obj["port"])
+            if pattern.search(x)
+        )
+    )
+
+    log.debug(f"{ips=}")
+
+    ips -= filterIps
+    log.debug(f"{ips=}")
+
+    return sorted(list(ips))
+
+
+# --- Support / Miscellaneous ---
+
+
+def __print_host_ident() -> None:
+    """Print the current host IP to screen."""
+    ctx = click.get_current_context()
+    print(f"""Host connection info: {ctx.obj["userHost"]}""")
+    print(f"""Host URL: http://{ctx.obj["host"]}""")
+
+
+def __install_ssh_key(password: str) -> None:
+    log = getLocalLogger()
+    log.info("Install SSH key on target.")
+    aggregated = ""
+    ctx = click.get_current_context()
+
+    def ssh_interact(char, stdin):
+        nonlocal aggregated
+        aggregated += char
+        if aggregated.endswith(
+            "Are you sure you want to continue connecting (yes/no/[fingerprint])?"
+        ):
+            stdin.put("yes\n")
+        elif aggregated.endswith("password:"):
+            stdin.put(f"{password}\n")
+
+    copyId = sh.ssh_copy_id.bake(
+        "-p",
+        ctx.obj["port"],
+        ctx.obj["userHost"],
+        _out=ssh_interact,
+        _out_bufsize=0,
+        _tty_in=True,
+        _unify_ttys=True,
+    )
+
+    cleanKey = sh.ssh_keygen.bake(
+        "-f", (Path.home() / ".ssh" / "known_hosts").resolve(), "-R", ctx.obj["host"]
+    )
+
+    log.debug(f"{copyId}")
+    log.debug(f"{cleanKey}")
+
+    log.info(f"Installing key on {ctx.obj['userHost']}:{ctx.obj['port']}")
+    if not ctx.obj["dry_run"]:
+        try:
+            copyId()
+            log.debug(f"{aggregated=}")
+        except sh.ErrorReturnCode_1:
+            log.warning(
+                f"Removing any existing host keys for {ctx.obj['host']} and trying again."
+            )
+            log.debug(f"{cleanKey=!s}")
+            cleanKey()
+            log.debug(f"{copyId=!s}")
+            copyId()
+            log.debug(f"{aggregated=}")
+
+
+def __update_helix_ssh_config() -> None:
+    log = getLocalLogger()
+    log.info("Update Helix SSH config.")
+    sshConfDir = (Path.home() / ".ssh" / "config.d").resolve()
+    ctx = click.get_current_context()
+    if not ctx.obj["dry_run"]:
+        with (sshConfDir / "01-helix-local").open("w") as fout:
+            print(
+                dedent(
+                    f"""
+                # Local Helix controlboard
+                Host kelvin-local
+                  Hostname {ctx.obj['host']}
+                  User helix
+                  IdentityFile ~/.ssh/id_ed25519
+                  ProxyCommand ssh -W %h:%p tokuc@$(ip route show | grep -i default | awk '{{print $3}}')
+                  ForwardAgent yes
+
+            """
+                ),
+                file=fout,
+            )
+
+
+def __rebuild_ssh_config() -> None:
+    """Build the ~/.ssh/config file from ~/.ssh/config.in and the files in ~/.ssh/config.d."""
+    log = getLocalLogger()
+    log.info("Rebuild SSH configuration.")
+    sshDir = (Path.home() / ".ssh").resolve()
+    ctx = click.get_current_context()
+    if not ctx.obj["dry_run"]:
+        with tempfile.NamedTemporaryFile(delete=False) as tmp:
+            tmpPath = Path(tmp.name)
+            with (sshDir / "config.in").open() as configIn:
+                for line in configIn:
+                    tmp.write(line.encode())
+            for configPath in (sshDir / "config.d").iterdir():
+                with configPath.open() as configIn:
+                    for line in configIn:
+                        tmp.write(line.encode())
+            (sshDir / "config").replace(sshDir / "config~")
+            tmpPath.replace(sshDir / "config")
+
+
+def __update_shell() -> None:
+    """Write a simple .bashrc file to the target."""
+    log = getLocalLogger()
+    log.info("Update .bashrc on target.")
+    ctx = click.get_current_context()
+
+    bashrc = dedent(
+        rf"""
+        export MINER_IP={ctx.obj['host']}
+        function testAPI() {{
+            echo echo '{{"command": "asc", "parameter": "0"}}' \| nc $MINER_IP 4028 \| jq
+            echo '{{"command": "asc", "parameter": "0"}}' | nc $MINER_IP 4028 | jq
+        }}
+
+        export PS1='(controlboard) \h:\w\$ '
+        umask 022
+
+        # You may uncomment the following lines if you want `ls' to be colorized:
+        export LS_OPTIONS='--color=auto'
+        eval `dircolors`
+        alias ls='ls $LS_OPTIONS'
+        alias ll='ls $LS_OPTIONS -lsa'
+        # alias l='ls $LS_OPTIONS -lA'
+        #
+        # Some more alias to avoid making mistakes:
+        # alias rm='rm -i'
+        # alias cp='cp -i'
+        # alias mv='mv -i'
+
+    """
+    )
+
+    with tempfile.NamedTemporaryFile(delete=False) as tmp:
+        tmpPath = Path(tmp.name)
+        tmp.write(bashrc.encode())
+
+    scp = sh.scp.bake(
+        tmpPath, f'scp://{ctx.obj["userHost"]}:{ctx.obj["port"]}/~/.bashrc'
+    )
+
+    log.debug(f"{scp=!s}")
+    if not ctx.obj["dry_run"]:
+        scp()
+
+
+# --- CLI ---
 
 
 @click.group()
@@ -201,35 +393,6 @@ def scan(ctx, ip_range: str):
     print("\n".join(__scan(ip_range, ctx.obj["port"])))
 
 
-def __scanAsgard() -> list:
-    ctx = click.get_current_context()
-    target = __getAsgardIPCIDR()
-    pattern = re.compile(f"""{ctx.obj['port']}/open/tcp""")
-    host = str(__getHostIP())
-    asgard = str(__getAsgardIP()[0])
-    filterIps = {host, asgard}
-
-    log=getLocalLogger()
-
-    def repl(m):
-        return str(m.group(1))
-
-    ips = set(
-        (
-            re.sub(r"""Host:\s+(\S+)\s+.*""", repl, x)
-            for x in __scan(target, ctx.obj["port"])
-            if pattern.search(x)
-        )
-    )
-
-    log.debug(f'{ips=}')
-
-    ips -= filterIps
-    log.debug(f'{ips=}')
-
-    return sorted(list(ips))
-
-
 @cli.command()
 def scan_asgard():
     """Run scan using the CIDR IP gleaned from SSH host asgard-windows.
@@ -245,156 +408,11 @@ def asgard_IP_CIDR():
     print(__getAsgardIPCIDR())
 
 
-def __print_host_ident() -> None:
-    """Print the current host IP to screen."""
-    ctx = click.get_current_context()
-    print(f"""Host connection info: {ctx.obj["userHost"]}""")
-    print(f"""Host URL: http://{ctx.obj["host"]}""")
-
-
-def __install_ssh_key(password: str) -> None:
-    log = getLocalLogger()
-    log.info("Install SSH key on target.")
-    aggregated = ""
-    ctx = click.get_current_context()
-
-    def ssh_interact(char, stdin):
-        nonlocal aggregated
-        aggregated += char
-        if aggregated.endswith(
-            "Are you sure you want to continue connecting (yes/no/[fingerprint])?"
-        ):
-            stdin.put("yes\n")
-        elif aggregated.endswith("password:"):
-            stdin.put(f"{password}\n")
-
-    copyId = sh.ssh_copy_id.bake(
-        "-p",
-        ctx.obj["port"],
-        ctx.obj["userHost"],
-        _out=ssh_interact,
-        _out_bufsize=0,
-        _tty_in=True,
-        _unify_ttys=True,
-    )
-
-    cleanKey = sh.ssh_keygen.bake(
-        "-f", (Path.home() / ".ssh" / "known_hosts").resolve(), "-R", ctx.obj["host"]
-    )
-
-    log.debug(f"{copyId}")
-    log.debug(f"{cleanKey}")
-
-    log.info(f"Installing key on {ctx.obj['userHost']}:{ctx.obj['port']}")
-    if not ctx.obj["dry_run"]:
-        try:
-            copyId()
-            log.debug(f"{aggregated=}")
-        except sh.ErrorReturnCode_1:
-            log.warning(
-                f"Removing any existing host keys for {ctx.obj['host']} and trying again."
-            )
-            log.debug(f"{cleanKey=!s}")
-            cleanKey()
-            log.debug(f"{copyId=!s}")
-            copyId()
-            log.debug(f"{aggregated=}")
-
-
 @cli.command()
 @click.option("--password", prompt=True, hide_input=True)
 def install_ssh_key(password: str) -> None:
     """Install the SSH public key on the host."""
     __install_ssh_key(password)
-
-
-def __update_helix_ssh_config() -> None:
-    log = getLocalLogger()
-    log.info("Update Helix SSH config.")
-    sshConfDir = (Path.home() / ".ssh" / "config.d").resolve()
-    ctx = click.get_current_context()
-    if not ctx.obj["dry_run"]:
-        with (sshConfDir / "01-helix-local").open("w") as fout:
-            print(
-                dedent(
-                    f"""
-                # Local Helix controlboard
-                Host kelvin-local
-                  Hostname {ctx.obj['host']}
-                  User helix
-                  IdentityFile ~/.ssh/id_ed25519
-                  ProxyCommand ssh -W %h:%p tokuc@$(ip route show | grep -i default | awk '{{print $3}}')
-                  ForwardAgent yes
-                
-            """
-                ),
-                file=fout,
-            )
-
-
-def __rebuild_ssh_config() -> None:
-    """Build the ~/.ssh/config file from ~/.ssh/config.in and the files in ~/.ssh/config.d."""
-    log = getLocalLogger()
-    log.info("Rebuild SSH configuration.")
-    sshDir = (Path.home() / ".ssh").resolve()
-    ctx = click.get_current_context()
-    if not ctx.obj["dry_run"]:
-        with tempfile.NamedTemporaryFile(delete=False) as tmp:
-            tmpPath = Path(tmp.name)
-            with (sshDir / "config.in").open() as configIn:
-                for line in configIn:
-                    tmp.write(line.encode())
-            for configPath in (sshDir / "config.d").iterdir():
-                with configPath.open() as configIn:
-                    for line in configIn:
-                        tmp.write(line.encode())
-            (sshDir / "config").replace(sshDir / "config~")
-            tmpPath.replace(sshDir / "config")
-
-
-def __update_shell() -> None:
-    """Write a simple .bashrc file to the target."""
-    log = getLocalLogger()
-    log.info("Update .bashrc on target.")
-    ctx = click.get_current_context()
-
-    bashrc = dedent(
-        rf"""
-        export MINER_IP={ctx.obj['host']}
-        function testAPI() {{
-            echo echo '{{"command": "asc", "parameter": "0"}}' \| nc $MINER_IP 4028 \| jq
-            echo '{{"command": "asc", "parameter": "0"}}' | nc $MINER_IP 4028 | jq
-        }}
-        
-        export PS1='(controlboard) \h:\w\$ '
-        umask 022
-        
-        # You may uncomment the following lines if you want `ls' to be colorized:
-        export LS_OPTIONS='--color=auto'
-        eval `dircolors`
-        alias ls='ls $LS_OPTIONS'
-        alias ll='ls $LS_OPTIONS -lsa'
-        # alias l='ls $LS_OPTIONS -lA'
-        #
-        # Some more alias to avoid making mistakes:
-        # alias rm='rm -i'
-        # alias cp='cp -i'
-        # alias mv='mv -i'
-    
-    """
-    )
-
-    with tempfile.NamedTemporaryFile(delete=False) as tmp:
-        tmpPath = Path(tmp.name)
-        tmp.write(bashrc.encode())
-
-    scp = sh.scp.bake(
-        tmpPath, f'scp://{ctx.obj["userHost"]}:{ctx.obj["port"]}/~/.bashrc'
-    )
-
-    log.debug(f"{scp=!s}")
-    if not ctx.obj["dry_run"]:
-        scp()
 
 
 @cli.command()
