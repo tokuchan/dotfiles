@@ -12,12 +12,16 @@ import tempfile
 import logging
 
 from rich import print
+from rich.traceback import install
+from rich.logging import RichHandler
+from rich.console import Console
 from pathlib import Path
 from textwrap import dedent
 
-# --- Global Variables ---
+# --- Global Variables & Setup ---
 
 log = logging.getLogger(__name__)
+install(show_locals=True)
 
 # --- Support / Logging ---
 
@@ -105,7 +109,7 @@ def __scan(address_range: str, port: int) -> [str]:
     log.debug(f"{address_range=}")
     log.debug(f"{port=}")
 
-    scanResults = [
+    return [
         x
         for x in sh.nmap(
             "--send-eth",
@@ -117,9 +121,6 @@ def __scan(address_range: str, port: int) -> [str]:
             address_range,
         ).split("\n")
     ]
-
-    log.debug(f"{scanResults=}")
-    return scanResults
 
 
 def __scanAsgard() -> list:
@@ -340,12 +341,20 @@ def cli(
 
     logLevel = logging.WARN + (10 * quiet - 10 * verbose)
     logging.basicConfig(
-        format="%(asctime)s %(filename)s %(funcName)s %(levelname)s %(message)s",
+        format=" [bold yellow]%(funcName)-30s[/] %(message)s",
         level=logLevel,
+        handlers=[
+            RichHandler(
+                markup=True,
+                rich_tracebacks=True,
+                log_time_format="%Y-%m-%d %H:%M:%S,%f",
+                level=logLevel,
+            )
+        ],
     )
     if quiet != 0 or verbose != 0:
         print(
-            "# version 1.0\n# fields x-date x-time x-filename x-function-name x-level x-message",
+            "# version 1.0\n# fields x-date x-time x-level x-function-name x-message x-location",
             file=sys.stderr,
         )
 
