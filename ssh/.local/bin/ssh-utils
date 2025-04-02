@@ -89,7 +89,11 @@ def __getAsgardIPCIDR() -> str:
 
 def __scan(address_range: str, port: int) -> [str]:
     """Scan a range of IP addresses for any servers with the specified port open."""
-    return [
+    log=getLocalLogger()
+    log.debug(f'{address_range=}')
+    log.debug(f'{port=}')
+
+    scanResults= [
         x
         for x in sh.nmap(
             "--send-eth",
@@ -101,6 +105,9 @@ def __scan(address_range: str, port: int) -> [str]:
             address_range,
         ).split("\n")
     ]
+
+    log.debug(f'{scanResults=}')
+    return scanResults
 
 
 @click.group()
@@ -156,7 +163,9 @@ def cli(
 
     try:
         if host == None:
-            host = __scanAsgard()[0]
+            hosts = __scanAsgard()[0]
+            log.debug(f"{hosts=}")
+            host = hosts[0]
     except IndexError:
         print("Error: Unable to discover new host. Is it plugged in?")
         exit(1)
@@ -200,6 +209,8 @@ def __scanAsgard() -> list:
     asgard = str(__getAsgardIP()[0])
     filterIps = {host, asgard}
 
+    log=getLocalLogger()
+
     def repl(m):
         return str(m.group(1))
 
@@ -210,7 +221,11 @@ def __scanAsgard() -> list:
             if pattern.search(x)
         )
     )
+
+    log.debug(f'{ips=}')
+
     ips -= filterIps
+    log.debug(f'{ips=}')
 
     return sorted(list(ips))
 
