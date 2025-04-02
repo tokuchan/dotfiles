@@ -53,20 +53,25 @@ def __getHostIP() -> str:
     return IP
 
 
-def __getAsgardIP() -> [str]:
+def __getAsgardIP(theRetryCount: int = 10) -> [str]:
     """Return the value output of part of ipconfig for the asgard-windows host."""
     log = getLocalLogger()
     log.info(f"Get Asgard host IP.")
-    data = [
-        (x.strip().split(" : "))
-        for x in sh.awk(
-            "/Wireless LAN adapter Wi-Fi:/,/^Ethernet adapter/{print}",
-            _in=sh.ssh("asgard-windows", "ipconfig.exe"),
-        ).split("\n")
-    ][4:6]
-    IP = list(list(zip(*data))[1])
-    log.debug(f"{IP=}")
-    return IP
+    for i in range(0, theRetryCount):
+        try:
+            data = [
+                (x.strip().split(" : "))
+                for x in sh.awk(
+                    "/Wireless LAN adapter Wi-Fi:/,/^Ethernet adapter/{print}",
+                    _in=sh.ssh("asgard-windows", "ipconfig.exe"),
+                ).split("\n")
+            ][4:6]
+            IP = list(list(zip(*data))[1])
+            log.debug(f"{IP=}")
+            return IP
+        except sh.ErrorReturnCode:
+            continue
+    return []
 
 
 # --- Support / Scanning ---
