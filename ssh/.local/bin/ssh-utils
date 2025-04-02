@@ -173,6 +173,8 @@ def __install_ssh_key(password: str) -> None:
     aggregated = ""
     ctx = click.get_current_context()
 
+    log.debug(f'{ctx.obj=}')
+
     def ssh_interact(char, stdin):
         nonlocal aggregated
         aggregated += char
@@ -197,8 +199,8 @@ def __install_ssh_key(password: str) -> None:
         "-f", (Path.home() / ".ssh" / "known_hosts").resolve(), "-R", ctx.obj["host"]
     )
 
-    log.debug(f"{copyId}")
-    log.debug(f"{cleanKey}")
+    log.debug(f"{copyId=}")
+    log.debug(f"{cleanKey=}")
 
     log.info(f"Installing key on {ctx.obj['userHost']}:{ctx.obj['port']}")
     if not ctx.obj["dry_run"]:
@@ -369,7 +371,7 @@ def cli(
 
     try:
         if host == None:
-            hosts = __scanAsgard()[0]
+            hosts = __scanAsgard()
             log.debug(f"{hosts=}")
             host = hosts[0]
     except IndexError:
