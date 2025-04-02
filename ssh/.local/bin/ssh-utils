@@ -125,6 +125,7 @@ def __scan(address_range: str, port: int) -> [str]:
 )
 @click.option("--verbose", "-v", count=True, help="Increase logging verbosity.")
 @click.option("--quiet", "-q", count=True, help="Decrease logging verbosity.")
+@click.option("--verbose-sh", help="Allow logging from the sh.py library.")
 @click.pass_context
 def cli(
     ctx,
@@ -134,7 +135,10 @@ def cli(
     dry_run: bool,
     verbose: int,
     quiet: int,
+    verbose_sh: bool,
 ):
+    logging.getLogger("sh").setLevel(logging.DEBUG if verbose_sh else logging.WARN)
+
     logLevel = logging.WARN + (10 * quiet - 10 * verbose)
     logging.basicConfig(
         format="%(asctime)s %(filename)s %(funcName)s %(levelname)s %(message)s",
@@ -145,6 +149,7 @@ def cli(
             "# version 1.0\n# fields x-date x-time x-filename x-function-name x-level x-message",
             file=sys.stderr,
         )
+
     ctx.ensure_object(dict)
     ctx.obj["port"] = port if port != None else 22
     ctx.obj["dry_run"] = dry_run
