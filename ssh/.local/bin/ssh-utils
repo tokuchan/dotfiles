@@ -432,6 +432,12 @@ def install_ssh_key(password: str) -> None:
 
 
 @cli.command()
+def rebuild_ssh_config():
+    """Rebuild the .ssh/config file from the components in .ssh/config.d and .ssh/config.in."""
+    __rebuild_ssh_config()
+
+
+@cli.command()
 @click.option("--password", "-P", prompt=True, hide_input=True)
 @click.pass_context
 def reskel(ctx, password: str) -> None:
