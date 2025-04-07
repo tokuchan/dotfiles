@@ -1,9 +1,8 @@
 #!/bin/bash
 # Smart wrapper for ls.
 
-set +x
 if command -v exa && (( $(command exa >/dev/null 2>&1; echo $?) == 0 )); then
-  exa -lbah --sort=name --icons --colour-scale --colour=always $@ | less -RF
+  exa -lbah --sort=name --icons --colour-scale --colour=always $@ | lnav -q -c":goto 0"
 elif command -v lsd && (( $(command lsd >/dev/null 2>&1; echo $?) == 0 )); then
   lsd -alGg --group-dirs=first --hyperlink=always --color=always --date=+%y-%m-%dT%H:%M:%S $@ | \
     awk '
