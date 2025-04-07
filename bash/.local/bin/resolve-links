@@ -1,0 +1,71 @@
+#!/bin/bash
+
+# Converts all relative symlinks to absolute symlinks under the given root.
+# Options:
+#   --dry-run           Print what would be changed without modifying anything
+#   --only-resolvable   Skip symlinks that point to non-existent targets
+
+set -x
+
+set -euo pipefail
+
+# Defaults
+dryRun= false
+onlyResolvable= false
+
+# Logging function (to stderr only)
+log() {
+    echo "$@" >&2
+}
+
+# Parse options
+args=()
+for arg in "$@"; do
+    case "$arg" in
+        --dry-run) dryRun= true ;;
+        --only-resolvable) onlyResolvable= true ;;
+        *) args+=( "$arg" ) ;;
+    esac
+done
+
+# Must provide one positional argument: the root directory
+if [ ${#args[@]} -ne 1 ]; then
+    echo "Usage: $0 [--dry-run] [--only-resolvable] /path/to/root" >&2
+    exit 1
+fi
+
+rootDir="$(realpath "${args[0]}")"
+
+log "Starting symlink conversion in: $rootDir"
+$dryRun && log "Dry-run mode enabled"
+$onlyResolvable && log "Only converting resolvable symlinks"
+
+# Find all symlinks and process them
+find "$rootDir" -type l | while IFS= read -r symlink; do
+    linkTarget="$(readlink "$symlink")"
+
+    # Skip already-absolute symlinks
+    if [[ "$linkTarget" = /* ]]; then
+        continue
+    fi
+
+    symlinkDir="$(dirname "$symlink")"
+    absTarget="$(realpath -m "$symlinkDir/$linkTarget")"
+
+    # Skip if target doesn't resolve and onlyResolvable is enabled
+    if $onlyResolvable && [ ! -e "$absTarget" ]; then
+        log "Skipping (unresolvable): $symlink -> $linkTarget"
+        continue
+    fi
+
+    if $dryRun; then
+        log "[DRY-RUN] Would convert: $symlink -> $absTarget"
+    else
+        log "Converting: $symlink -> $absTarget"
+        rm "$symlink"
+        ln -s "$absTarget" "$symlink"
+    fi
+done
+
+log "Done."
+

@@ -1,0 +1,172 @@
+#!/bin/bash
+
+#. #let title = [ Link Rehomer ]
+# #let author = [ Sean R. Spillane ]
+# #let tagline = [ Make a relative symlink in a destination point to the same absolute location as one in a source directory. ]
+# #align(center, text(17pt)[
+#   *#title*
+# ]
+# #align(center)[
+#   #author
+# ]
+# #align(center)[
+#   *#tagline*
+# ]
+# #outline()
+# #show: rest => columns(2, rest)
+
+
+#. = Introduction
+#
+# This script defines a simple "rehomer" for symlinks, written in Bash. Other
+# than some very basic option processing, the magic is described below in How to
+# "rehome" a symlink.
+
+
+#. = Option Processing
+#
+# Options are processed using a very simple case-statement-in-while-loop
+# approach. First, we set up the shell to error out if we reference undefined
+# variables, or if any part of a pipeline fails:
+
+set -euo pipefail
+
+#. Next, we define the help function, to display user help.
+
+print_help() {
+  cat <<EOF
+Usage: $(basename "$0") [--dry-run|-d] [--help|-h] <original_dir> [new_dir]
+
+Re-home relative symlinks inside a moved directory so they continue pointing to the same targets.
+
+Arguments:
+  original_dir     The original full path of the directory before it was moved.
+  new_dir          The new full path where the directory now resides. Defaults to current directory if omitted.
+
+Options:
+  -d, --dry-run    Show what would be done, but don't modify anything.
+  -h, --help       Display this help message.
+
+Example:
+  $(basename "$0") -d /old/path/dir /new/path/dir
+  $(basename "$0") /old/path/dir     # Uses current dir as new path
+EOF
+}
+
+#. Now, we can parse the options themselves.
+
+# --- Parse arguments ---
+dry_run=false
+
+args=()
+while (( $# )); do
+  case "$1" in
+    -d|--dry-run)
+      dry_run=true
+      ;;
+    -h|--help)
+      print_help
+      exit 0
+      ;;
+    -*)
+      echo "Unknown option: $1" >&2
+      print_help
+      exit 1
+      ;;
+    *)
+      args+=("$1")
+      ;;
+  esac
+  shift
+done
+
+#. We need to handle the case where we were passed the wrong number of
+#  arguments.
+
+if (( ${#args[@]} < 1 || ${#args[@]} > 2 )); then
+  echo "❌ Invalid number of arguments." >&2
+  print_help
+  exit 1
+fi
+
+#. Next, we compute the canonical paths to the source and destination
+#  directories, called `orig_dir` and `new_dir` respectively.
+
+orig_dir="$(realpath -s "${args[0]}")"
+new_dir="$(realpath -s "${args[1]:-$(pwd)}")"
+
+#. One last check, just in case the destination directory doesn't exist, as we
+#  can't rehome nonexistent links.
+
+if [[ ! -d "$new_dir" ]]; then
+  echo "❌ New directory does not exist: $new_dir" >&2
+  exit 1
+fi
+
+
+#. = How to "rehome" a symlink
+#
+# Given a symlink with a relative target within a subdirectory of the source
+# path, we are to find a new relative symlink that points to the same target,
+# but from within a corresponding subdirectory of a destination path.
+#
+# To do this, all we have to do is get the canonical path to the symlink target,
+# then get the relative path between that and the destination directory. Then,
+# we can just make a symlink.
+
+# --- Main logic ---
+echo "📦 Re-homing symlinks in: $new_dir"
+echo "🔗 Original base path: $orig_dir"
+echo "📁 New base path:      $new_dir"
+$dry_run && echo "🧪 Dry run mode enabled"
+
+find "$new_dir" -type l | while read -r symlink; do
+  link_target="$(readlink --canonicalize "$symlink")"
+
+  echo "🔍 Candidate: $link_target"
+
+  # Only consider links that point to actual files
+  if test -e "$link_target"; then
+
+    # Only adjust relative links
+    if [[ "$link_target" != /* ]]; then
+      abs_old_target=$(readlink --canonicalize "$symlink")
+      rel_new_target="$(realpath --relative-to="$(dirname "$symlink")" "$abs_old_target")"
+
+      if [[ "$link_target" != "$rel_new_target" ]]; then
+        echo "🔧 Updating: $symlink"
+        echo "   🧭 Old → $link_target"
+        echo "   🚀 New → $rel_new_target"
+        if ! $dry_run; then
+          ln -snf "$rel_new_target" "$symlink"
+          echo "   ✅ Re-homed!"
+        else
+          echo "   💡 Would re-home (dry-run)"
+        fi
+      else
+        echo "⏭️  No change needed: $symlink"
+      fi
+    else
+      echo "❎ Skipping absolute symlink: $symlink"
+    fi
+  else
+      echo "❎ Skipping nonexistent target: $symlink -> $link_target"
+  fi
+done
+
+echo "🎉 Done!"
+
+
+#. = Appendix: How to build internal PDF documentation
+
+#. To turn this file into a nice PDF document, pipe this source through:
+# ````
+# cat <this-file> | \
+#   sed 's,^#[^.] ?,,g' | \
+#   awk -v RS= -v ORS="\n\n" \
+#     '!/#\. /{print "``""`bash\n"$0"\n`""``\n"}; \
+#      /^#\./{gsub("#\. ", "", $0); print $0}' \
+#   > /tmp/rehome.typst
+# ````
+#
+# Then, run `typst /tmp/rehome.typst /tmp/rehome.pdf` to build the final output.
