@@ -1,9 +1,9 @@
 #!/bin/bash
 # Smart wrapper for ls.
 
-if command -v exa && (( $(command exa >/dev/null 2>&1; echo $?) == 0 )); then
+if (( $(command exa >/dev/null 2>&1; echo $?) == 0 )); then
   exa -lbah --sort=name --icons --colour-scale --colour=always $@ | lnav -q -c":goto 0"
-elif command -v lsd && (( $(command lsd >/dev/null 2>&1; echo $?) == 0 )); then
+elif (( $(command lsd >/dev/null 2>&1; echo $?) == 0 )); then
   lsd -alGg --group-dirs=first --hyperlink=always --color=always --date=+%y-%m-%dT%H:%M:%S $@ | \
     awk '
       BEGIN {printf "\033[3g             \033H           \033H           \033H        \033H                   \033H     \033H         \033H         \033H\rPermissions\tUser\tGroup\tSize\tModified Time\tGit\tName\n"};
