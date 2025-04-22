@@ -252,6 +252,11 @@ keybinding:
         switchToEditor: <c-o>
 disableStartupPopups: false
 customCommands:
+  - key: "<c-c>"
+    context: "remotes"
+    description: "Copy remote URL to clipboard"
+    command: "git remote get-url {{ .SelectedRemote.Name }} | xclip -i -selection clipboard"
+    subprocess: true
   - key: "o"
     command: "gh pr create --fill --web"
     context: "global"
