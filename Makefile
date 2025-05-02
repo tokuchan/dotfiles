@@ -135,6 +135,15 @@ lazygit: golang
 
 all:: lazygit
 
+#. == Set up dark theme for gitk
+
+.PHONY: gitk # Install dark theme for gitk 
+gitk: submodules 
+	mkdir -p $(top)/git-config/.config/git
+	cp $(top)/submodules/dracula-gitk/gitk $(top)/git-config/.config/git/
+
+all:: gitk
+
 #. == Install lazydocker (go package)
 
 .PHONY: lazydocker # Build the lazydocker stow package
