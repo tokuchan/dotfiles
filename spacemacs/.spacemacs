@@ -907,6 +907,69 @@ nil : Otherwise, return nil and run next lineup function."
      'flyspell-post-command-hook   ; the function that lives in post-command-hook
      :around
      #'my/flyspell-skip-in-visual-block))
+
+  ;; ------------------------------------------------------------------------
+  ;; Add command vibe-document, which inserts a Doxygen-compliant comment.
+  ;; ------------------------------------------------------------------------
+
+  ;; Generate an elisp interactive function for Spacemacs named vibe-document
+  ;; which only works if called when the point is inside a C++ function body.
+  ;; This function should read the entire function body, plus any Doxygen
+  ;; comment that may be above the function declaration, and pipe it to an
+  ;; external command named "ai", preceded by the prompt "generate a valid
+  ;; Doxygen comment block, using the /// comment style, for this function.
+  ;; Include full documentation for parameters, return type, exceptions, and a
+  ;; description of what the function does. Use any existing Doxygen comment as
+  ;; a starting point for the new comment."
+  (defun vibe-document ()
+    "Generate a Doxygen comment for the C++ function at point and copy it to the clipboard.
+
+Only works when point is inside a C++ function declaration. Reads any existing Doxygen
+comment above the declaration and the function signature/body, sends it to 'ai', and
+copies the generated comment to the kill ring (clipboard)."
+    (interactive)
+    ;; Ensure we're in C++ mode
+    (unless (derived-mode-p 'c++-mode)
+      (user-error "vibe-document: Not in C++ mode"))
+    (let* ((orig (point))
+           ;; Locate function boundaries
+           (defun-start (save-excursion (c-beginning-of-defun 1) (point)))
+           (defun-end   (save-excursion (c-end-of-defun       1) (point)))
+           ;; Determine existing comment start
+           (comment-start
+            (save-excursion
+              (goto-char defun-start)
+              (skip-chars-backward " \t\n")
+              (if (looking-at "[ \t]*\\(///\\|/\\*\\*\\)")
+                  (let ((cs (point)))
+                    (while (and (not (bobp))
+                                (progn (forward-line -1)
+                                       (looking-at "[ \t]*\\(///\\|/\\*\\*\\)")))
+                      (setq cs (point)))
+                    cs)
+                defun-start)))
+           ;; Instructions for AI (preserve formatting including markdown and whitespace)
+           (instructions
+            "Trigger: the user submits C++ source code.
+          Instruction: Generate a complete Doxygen /// comment block for the code provided.
+          Trigger: doxygen comment generated.
+          Instruction: Print only the comment, **do not print the original input**. **Do not print any extra text or markdown**. **Write valid C++ code**.")
+           ;; Extract code for AI
+           (function-code (buffer-substring-no-properties defun-start defun-end))
+           ai-output)
+      ;; Verify point is inside the function
+      (unless (and (>= orig defun-start) (<= orig defun-end))
+        (user-error "vibe-document: Point is not inside a C++ function body"))
+      ;; Call external AI with instructions, feeding only the function code
+      (with-temp-buffer
+        (insert function-code)
+        (call-process-region (point-min) (point-max)
+                             "ai" nil t nil
+                             "--instructions" instructions)
+        (setq ai-output (buffer-string)))
+      ;; Copy AI output to clipboard
+      (kill-new ai-output)
+      (message "vibe-document: Generated Doxygen comment copied to clipboard.")))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
