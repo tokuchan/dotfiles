@@ -893,6 +893,20 @@ nil : Otherwise, return nil and run next lineup function."
   ;; Remap 'ga' to switch between header and source files
   (define-key evil-normal-state-map (kbd "gA") 'what-cursor-position)
   (define-key evil-normal-state-map (kbd "ga") 'my/goto-alternate-file)
+
+  ;; ----------------------------------------------------------------------
+  ;; Skip flyspell’s expensive post-command hook while in C-v block mode
+  ;; ----------------------------------------------------------------------
+  (with-eval-after-load 'flyspell
+    (defun my/flyspell-skip-in-visual-block (orig-fn &rest args)
+      "Run ORIG-FN (flyspell-post-command-hook) only if not in visual-block."
+      (unless (eq evil-visual-selection 'block)
+        (apply orig-fn args)))
+
+    (advice-add
+     'flyspell-post-command-hook   ; the function that lives in post-command-hook
+     :around
+     #'my/flyspell-skip-in-visual-block))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
