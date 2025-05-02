@@ -1034,7 +1034,7 @@ This function is called at the very end of Spacemacs initialization."
                  vi-tilde-fringe visual-fill-column volatile-highlights vterm
                  web-beautify web-completion-data web-mode which-key
                  window-purpose winum with-editor writeroom-mode ws-butler
-                 xterm-color yaml yasnippet yasnippet-snippets))
+                 xterm-color yaml yaml-mode yasnippet yasnippet-snippets))
    '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
    '(projectile-other-file-alist
      '(("cpp" "h" "hpp" "H") ("c" "h" "hpp" "H") ("h" "c" "cpp" "C")
