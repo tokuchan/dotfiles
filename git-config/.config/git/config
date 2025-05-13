@@ -47,6 +47,11 @@
 [url "git@github.com:helixcompute/"]
 	insteadOf = "helix:"
 
+[status]
+	branch = true
+	showStash = true
+	showUntrackedFiles = all
+
 [alias]
 	aliases = !$HOME/.local/bin/aliases.py
 	attach = "!f () { git branch --force $1 && git checkout $1; }; f"
