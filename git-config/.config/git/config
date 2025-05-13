@@ -34,6 +34,19 @@
 	quotepath = false
 	editor = nvim -O
 
+# URL shortcuts
+[url "git@github.com:tokuchan/"]
+	insteadOf = "srs:"
+
+[url "git@github.com:"]
+	insteadOf = "gh:"
+
+[url "git@github.com:keplercompute/"]
+	insteadOf = "kepler:"
+
+[url "git@github.com:helixcompute/"]
+	insteadOf = "helix:"
+
 [alias]
 	aliases = !$HOME/.local/bin/aliases.py
 	attach = "!f () { git branch --force $1 && git checkout $1; }; f"
