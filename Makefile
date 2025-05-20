@@ -226,6 +226,8 @@ clean:: rust-clean
 jujitsu: rust
 	$(call run-cargo,install --locked --bin jj jj-cli)
 
+all:: jujitsu
+
 #. == Install typest text processor
 
 .PHONY: typest # Build and install the typest document processor
