@@ -128,6 +128,17 @@ function fish_prompt
     # New line
     echo
 
+    # JJ current description
+    set -l jj_log (jj log 2>/dev/null --ignore-working-copy --color=always -T 'description.first_line()' -n 1)
+    test -n "$jj_log"
+    and set_color $retc
+    and echo -n '| '
+    and set_color green
+    and echo "$jj_log"
+    and set_color $retc
+    and echo '| '
+    set_color normal
+
     # Background jobs
     set_color normal
 
