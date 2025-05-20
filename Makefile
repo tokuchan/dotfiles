@@ -30,6 +30,9 @@ SHELL := /bin/bash
 
 #. Default Target
 
+.PHONY: help # Show help for this Makefile
+help::
+
 .PHONY: all # Run all registered build rules
 all::
 
@@ -561,7 +564,17 @@ list-targets:
 		| sort -u
 
 .PHONY: help # Generate list of phony targets with descriptions
-help:
+help::
+	@bash -c 'eval "$$(printf "%s\\n" "$$@" | sed "s,\\\\$$,,")"' _ '\
+	cat <<-HELP \
+	# Makefile for dotfiles \
+	\
+	Used to build stow packages. \
+	\
+	# Available targets: \
+	\
+	HELP\
+	'
 	@grep '^.PHONY: .* #' Makefile \
 		| sed 's/\.PHONY: \(.*\) # \(.*\)/\1\t\2/' \
 		| expand -t20
