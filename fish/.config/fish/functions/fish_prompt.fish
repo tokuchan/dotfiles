@@ -129,12 +129,12 @@ function fish_prompt
     echo
 
     # JJ current description
-    set -l jj_log (jj log 2>/dev/null --ignore-working-copy --color=always -T 'description.first_line()' -n 1)
+    set -l jj_log (jj log 2>/dev/null --ignore-working-copy --color=always -T 'description.first_line()' -n 1 -r '@' --no-graph)
     test -n "$jj_log"
     and set_color $retc
     and echo -n '| '
     and set_color green
-    and echo "$jj_log"
+    and echo "@ $jj_log"
     and set_color $retc
     and echo '| '
     set_color normal
