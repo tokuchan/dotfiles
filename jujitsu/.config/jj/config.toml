@@ -1,0 +1,60 @@
+"$schema" = "https://jj-vcs.github.io/jj/latest/config-schema.json"
+
+[user]
+name = "Sean R. Spillane"
+email = "sean@spillane.us"
+
+[ui]
+pager = "less -FRX"
+default-command = ['log', '-n', '10', '-r', 'ancestors(@,5)::descendants(@,5)']
+
+[aliases]
+aliases = ["util", "exec", "--", "bash", "-c", """
+#!/bin/bash 
+set -euo pipefail
+jj config list aliases | pygmentize -l toml -f 16m -O style=dracula
+""", ""]
+
+up = ["util", "exec", "--", "bash", "-c", """
+#!/bin/bash
+set -euo pipefail
+if [ $# -gt 1 ]; then
+  cat >&2 <<-'EOF'
+  Usage: jj up [n=1]
+
+  Go forward 1 or more commits.
+EOF
+  exit 1
+fi
+n=${1:-1}
+rev=$(
+  jj log \
+    -r "descendants(@,$((n+1))) ~ descendants(@,$n)" \
+    --template 'self.change_id()' \
+    --no-graph
+)
+
+jj edit "$rev"
+""", ""]
+
+down = ["util", "exec", "--", "bash", "-c", """
+#!/bin/bash
+set -euo pipefail
+if [ $# -gt 1 ]; then
+  cat >&2 <<-'EOF'
+  Usage: jj down [n=1]
+
+  Go back 1 or more commits.
+EOF
+  exit 1
+fi
+n=${1:-1}
+rev=$(
+  jj log \
+    -r "ancestors(@,$((n+1))) ~ ancestors(@,$n)" \
+    --template 'self.change_id()' \
+    --no-graph
+)
+
+jj edit "$rev"
+""", ""]
