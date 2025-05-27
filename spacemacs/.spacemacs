@@ -66,6 +66,7 @@ This function should only modify configuration layer settings."
                                             lsp-modeline-code-actions-segments '(count icon)
                                             lsp-ui-doc-enable nil
                                             lsp-use-lsp-ui nil
+                                            lsp-clients-clangd-args '("--all-scopes-completion=false")
                                             )
                                        ;; markdown
                                        multiple-cursors
@@ -621,7 +622,23 @@ configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
   ;; Follow symlinks to VC-controlled files without asking.
-  (setq vc-follow-symlinks t))
+  (setq vc-follow-symlinks t)
+
+  ;; Completely disable semantic so that it stops hanging emacs
+  ;; 1) Neutralize the commands so nobody can turn it on
+  (fset 'semantic-mode              #'ignore)
+  (fset 'global-semantic-idle-scheduler-mode #'ignore)
+  (fset 'semantic-idle-scheduler-mode        #'ignore)
+  (fset 'global-semantic-idle-summary-mode   #'ignore)
+  (fset 'global-semantic-idle-completions-mode #'ignore)
+  (fset 'global-semantic-idle-local-symbol-highlight-mode #'ignore)
+
+  ;; 2) Prevent any submode from being auto-enabled if something slips through
+  (setq semantic-default-submodes nil)
+
+  ;; 3) Just in case something manually calls semantic-mode
+  (setq semantic-init-functions nil)
+  )
 
 
 (defun dotspacemacs/user-load ()
@@ -1104,6 +1121,7 @@ This function is called at the very end of Spacemacs initialization."
      '(("cpp" "h" "hpp" "H") ("c" "h" "hpp" "H") ("h" "c" "cpp" "C")
        ("hpp" "cpp" "c" "C") ("H" "c" "cpp" "C") ("C" "h" "hpp" "H")))
    '(scroll-bar-mode 'right)
+   '(semantic-idle-scheduler-idle-time 10)
    '(shell-pop-full-span t)
    '(shell-pop-shell-type
      '("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell))))
