@@ -6,7 +6,11 @@ email = "sean@spillane.us"
 
 [ui]
 pager = "less -FRX"
-default-command = ['log', '-n', '10', '-r', 'ancestors(@,5)::descendants(@,5)']
+default-command = ['util', 'exec', '--', 'bash', '-c', """
+jj status
+echo Log:
+jj log -n 10 -r 'ancestors(@,5)::descendants(@,5)'
+""", ""]
 
 [aliases]
 aliases = ["util", "exec", "--", "bash", "-c", """
