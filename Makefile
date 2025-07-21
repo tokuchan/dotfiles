@@ -30,6 +30,9 @@ SHELL := /bin/bash
 
 #. Default Target
 
+.PHONY: help # Show help for this Makefile
+help::
+
 .PHONY: all # Run all registered build rules
 all::
 
@@ -135,6 +138,15 @@ lazygit: golang
 
 all:: lazygit
 
+#. == Set up dark theme for gitk
+
+.PHONY: gitk # Install dark theme for gitk 
+gitk: submodules 
+	mkdir -p $(top)/git-config/.config/git
+	cp $(top)/submodules/dracula-gitk/gitk $(top)/git-config/.config/git/
+
+all:: gitk
+
 #. == Install lazydocker (go package)
 
 .PHONY: lazydocker # Build the lazydocker stow package
@@ -213,6 +225,8 @@ clean:: rust-clean
 .PHONY: jujitsu # Build and install the jujitsu repo manager
 jujitsu: rust
 	$(call run-cargo,install --locked --bin jj jj-cli)
+
+all:: jujitsu
 
 #. == Install typest text processor
 
@@ -552,7 +566,17 @@ list-targets:
 		| sort -u
 
 .PHONY: help # Generate list of phony targets with descriptions
-help:
+help::
+	@bash -c 'eval "$$(printf "%s\\n" "$$@" | sed "s,\\\\$$,,")"' _ '\
+	cat <<-HELP \
+	# Makefile for dotfiles \
+	\
+	Used to build stow packages. \
+	\
+	# Available targets: \
+	\
+	HELP\
+	'
 	@grep '^.PHONY: .* #' Makefile \
 		| sed 's/\.PHONY: \(.*\) # \(.*\)/\1\t\2/' \
 		| expand -t20

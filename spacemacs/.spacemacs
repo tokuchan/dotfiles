@@ -66,6 +66,7 @@ This function should only modify configuration layer settings."
                                             lsp-modeline-code-actions-segments '(count icon)
                                             lsp-ui-doc-enable nil
                                             lsp-use-lsp-ui nil
+                                            lsp-clients-clangd-args '("--all-scopes-completion=false")
                                             )
                                        ;; markdown
                                        multiple-cursors
@@ -620,6 +621,23 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
+  ;; Follow symlinks to VC-controlled files without asking.
+  (setq vc-follow-symlinks t)
+
+  ;; Completely disable semantic so that it stops hanging emacs
+  ;; 1) Neutralize the commands so nobody can turn it on
+  (fset 'semantic-mode              #'ignore)
+  (fset 'global-semantic-idle-scheduler-mode #'ignore)
+  (fset 'semantic-idle-scheduler-mode        #'ignore)
+  (fset 'global-semantic-idle-summary-mode   #'ignore)
+  (fset 'global-semantic-idle-completions-mode #'ignore)
+  (fset 'global-semantic-idle-local-symbol-highlight-mode #'ignore)
+
+  ;; 2) Prevent any submode from being auto-enabled if something slips through
+  (setq semantic-default-submodes nil)
+
+  ;; 3) Just in case something manually calls semantic-mode
+  (setq semantic-init-functions nil)
   )
 
 
@@ -893,6 +911,83 @@ nil : Otherwise, return nil and run next lineup function."
   ;; Remap 'ga' to switch between header and source files
   (define-key evil-normal-state-map (kbd "gA") 'what-cursor-position)
   (define-key evil-normal-state-map (kbd "ga") 'my/goto-alternate-file)
+
+  ;; ----------------------------------------------------------------------
+  ;; Skip flyspell’s expensive post-command hook while in C-v block mode
+  ;; ----------------------------------------------------------------------
+  (with-eval-after-load 'flyspell
+    (defun my/flyspell-skip-in-visual-block (orig-fn &rest args)
+      "Run ORIG-FN (flyspell-post-command-hook) only if not in visual-block."
+      (unless (eq evil-visual-selection 'block)
+        (apply orig-fn args)))
+
+    (advice-add
+     'flyspell-post-command-hook   ; the function that lives in post-command-hook
+     :around
+     #'my/flyspell-skip-in-visual-block))
+
+  ;; ------------------------------------------------------------------------
+  ;; Add command vibe-document, which inserts a Doxygen-compliant comment.
+  ;; ------------------------------------------------------------------------
+
+  ;; Generate an elisp interactive function for Spacemacs named vibe-document
+  ;; which only works if called when the point is inside a C++ function body.
+  ;; This function should read the entire function body, plus any Doxygen
+  ;; comment that may be above the function declaration, and pipe it to an
+  ;; external command named "ai", preceded by the prompt "generate a valid
+  ;; Doxygen comment block, using the /// comment style, for this function.
+  ;; Include full documentation for parameters, return type, exceptions, and a
+  ;; description of what the function does. Use any existing Doxygen comment as
+  ;; a starting point for the new comment."
+  (defun vibe-document ()
+    "Generate a Doxygen comment for the C++ function at point and copy it to the clipboard.
+
+Only works when point is inside a C++ function declaration. Reads any existing Doxygen
+comment above the declaration and the function signature/body, sends it to 'ai', and
+copies the generated comment to the kill ring (clipboard)."
+    (interactive)
+    ;; Ensure we're in C++ mode
+    (unless (derived-mode-p 'c++-mode)
+      (user-error "vibe-document: Not in C++ mode"))
+    (let* ((orig (point))
+           ;; Locate function boundaries
+           (defun-start (save-excursion (c-beginning-of-defun 1) (point)))
+           (defun-end   (save-excursion (c-end-of-defun       1) (point)))
+           ;; Determine existing comment start
+           (comment-start
+            (save-excursion
+              (goto-char defun-start)
+              (skip-chars-backward " \t\n")
+              (if (looking-at "[ \t]*\\(///\\|/\\*\\*\\)")
+                  (let ((cs (point)))
+                    (while (and (not (bobp))
+                                (progn (forward-line -1)
+                                       (looking-at "[ \t]*\\(///\\|/\\*\\*\\)")))
+                      (setq cs (point)))
+                    cs)
+                defun-start)))
+           ;; Instructions for AI (preserve formatting including markdown and whitespace)
+           (instructions
+            "Trigger: the user submits C++ source code.
+          Instruction: Generate a complete Doxygen /// comment block for the code provided.
+          Trigger: doxygen comment generated.
+          Instruction: Print only the comment, **do not print the original input**. **Do not print any extra text or markdown**. **Write valid C++ code**.")
+           ;; Extract code for AI
+           (function-code (buffer-substring-no-properties defun-start defun-end))
+           ai-output)
+      ;; Verify point is inside the function
+      (unless (and (>= orig defun-start) (<= orig defun-end))
+        (user-error "vibe-document: Point is not inside a C++ function body"))
+      ;; Call external AI with instructions, feeding only the function code
+      (with-temp-buffer
+        (insert function-code)
+        (call-process-region (point-min) (point-max)
+                             "ai" nil t nil
+                             "--instructions" instructions)
+        (setq ai-output (buffer-string)))
+      ;; Copy AI output to clipboard
+      (kill-new ai-output)
+      (message "vibe-document: Generated Doxygen comment copied to clipboard.")))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -1020,12 +1115,13 @@ This function is called at the very end of Spacemacs initialization."
                  vi-tilde-fringe visual-fill-column volatile-highlights vterm
                  web-beautify web-completion-data web-mode which-key
                  window-purpose winum with-editor writeroom-mode ws-butler
-                 xterm-color yaml yasnippet yasnippet-snippets))
+                 xterm-color yaml yaml-mode yasnippet yasnippet-snippets))
    '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
    '(projectile-other-file-alist
      '(("cpp" "h" "hpp" "H") ("c" "h" "hpp" "H") ("h" "c" "cpp" "C")
        ("hpp" "cpp" "c" "C") ("H" "c" "cpp" "C") ("C" "h" "hpp" "H")))
    '(scroll-bar-mode 'right)
+   '(semantic-idle-scheduler-idle-time 10)
    '(shell-pop-full-span t)
    '(shell-pop-shell-type
      '("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell))))

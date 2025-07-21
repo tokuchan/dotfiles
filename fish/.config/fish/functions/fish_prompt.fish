@@ -116,8 +116,9 @@ function fish_prompt
 
     # jujitsu
     #set -l prompt_jj (jj status --ignore-working-copy --color=always 2>/dev/null | sed -n 's/Working copy : //p')
-    #test -n "$prompt_jj"
-    #and _nim_prompt_wrapper $retc J $prompt_jj
+    set -l prompt_jj (fish_jj_prompt)
+    test -n "$prompt_jj"
+    and _nim_prompt_wrapper $retc J $prompt_jj
 
     # Battery status
     type -q acpi
@@ -126,6 +127,17 @@ function fish_prompt
 
     # New line
     echo
+
+    # JJ current description
+    set -l jj_log (jj log 2>/dev/null --ignore-working-copy --color=always -T 'description.first_line()' -n 1 -r '@' --no-graph)
+    test -n "$jj_log"
+    and set_color $retc
+    and echo -n '| '
+    and set_color green
+    and echo "@ $jj_log"
+    and set_color $retc
+    and echo '| '
+    set_color normal
 
     # Background jobs
     set_color normal

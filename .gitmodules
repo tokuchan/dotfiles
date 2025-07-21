@@ -79,3 +79,6 @@
 [submodule "submodules/lnav"]
 	path = submodules/lnav
 	url = git@github.com:tstack/lnav.git
+[submodule "dracula-gitk"]
+	path = submodules/dracula-gitk
+	url = git@github.com:dracula/gitk.git

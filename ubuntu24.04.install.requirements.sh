@@ -123,7 +123,9 @@ btop \
 feh \
 kcachegrind \
 qt5-style-kvantum \
-qt5ct
+qt5ct \
+asciinema \
+wormhole
 
  # Yocto dependencies
 sudo apt install -yqq \

@@ -12,9 +12,14 @@
 	pager = true
 
 [color "branch"]
-	current = blue reverse
-	local = blue
-	remote = green
+	# current = blue reverse
+	# local = blue
+	# remote = green
+	current = magenta reverse
+	local = default
+	remote = yellow reverse
+	upstream = green reverse
+	plain = blue
 
 [color "diff"]
 	meta = yellow bold
@@ -27,12 +32,53 @@
 	changed = magenta
 	untracked = cyan
 
+[color "decorate"]
+	HEAD = red
+	branch = cyan
+	tag = yellow
+	remoteBranch = magenta
+
 [core]
 	pager = less -FRSX
 	whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
 	autocrlf = input
 	quotepath = false
 	editor = nvim -O
+
+# URL shortcuts
+[url "git@github.com:tokuchan/"]
+	insteadOf = "srs:"
+
+[url "git@github.com:"]
+	insteadOf = "gh:"
+
+[url "git@github.com:keplercompute/"]
+	insteadOf = "kepler:"
+
+[url "git@github.com:helixcompute/"]
+	insteadOf = "helix:"
+
+[url "ssh://git@github.com"]
+	insteadOf = https://github.com
+
+[status]
+	branch = true
+	showStash = true
+	showUntrackedFiles = all
+
+[log]
+	abbrevCommit = true
+	graphColors = blue,yellow,cyan,magenta,green,red
+
+[branch]
+	sort = -committerdate
+
+[tag]
+	sort = -taggerdate
+
+[pager]
+	branch = false
+	tag = false
 
 [alias]
 	aliases = !$HOME/.local/bin/aliases.py
@@ -89,9 +135,23 @@
 
 [pull]
 	rebase = false
+	default = current
+
+[push]
+	autoSetupRemote = true
+	default = current
+	followTags = true
+
+[rebase]
+	autoStash = true
+	missingCommitsCheck = warn
 
 [diff]
-	tool = vimdiff
+	#tool = vimdiff
+	context = 3
+	renames = copies
+	interHunkContxt = 10
+
 [difftool]
 	prompt = false
 [difftool "nvimdiff"]
@@ -132,5 +192,3 @@
 	gpgsign = true
 [gpg]
 	format = ssh
-[url "ssh://git@github.com"]
-	insteadOf = https://github.com

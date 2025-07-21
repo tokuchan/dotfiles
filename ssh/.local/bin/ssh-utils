@@ -306,6 +306,22 @@ def __update_shell() -> None:
     if not ctx.obj["dry_run"]:
         scp()
 
+def __ensureHost():
+    """Ensure that the host scan is completed and ctx.obj['host'] is set."""
+    ctx= click.get_current_context()
+    try:
+        hosts = __scanAsgard()
+        log.debug(f"{hosts=}")
+        host = hosts[0]
+    except IndexError:
+        print("Error: Unable to discover new host. Is it plugged in?")
+        exit(1)
+
+    user= ctx.obj["user"]
+    ctx.obj["host"] = host if host != None else "127.0.0.1"
+    ctx.obj["userHost"] = host if user == None else f"{user}@{host}"
+
+
 
 # --- CLI ---
 
@@ -368,19 +384,10 @@ def cli(
     ctx.ensure_object(dict)
     ctx.obj["port"] = port if port != None else 22
     ctx.obj["dry_run"] = dry_run
-
-    try:
-        if host == None:
-            hosts = __scanAsgard()
-            log.debug(f"{hosts=}")
-            host = hosts[0]
-    except IndexError:
-        print("Error: Unable to discover new host. Is it plugged in?")
-        exit(1)
-
     ctx.obj["user"] = user
-    ctx.obj["host"] = host if host != None else "127.0.0.1"
-    ctx.obj["userHost"] = host if user == None else f"{user}@{host}"
+    if host != None:
+        ctx.obj["host"] = host
+        ctx.obj["userHost"] = host if user == None else f"{user}@{host}"
     pass
 
 
@@ -428,6 +435,7 @@ def asgard_IP_CIDR():
 @click.option("--password", prompt=True, hide_input=True)
 def install_ssh_key(password: str) -> None:
     """Install the SSH public key on the host."""
+    __ensureHost()
     __install_ssh_key(password)
 
 
@@ -444,6 +452,7 @@ def reskel(ctx, password: str) -> None:
     """Detect the new board, reconfigure ssh/config, then install the key on the board."""
     log = getLocalLogger()
     log.info("Reskel target.")
+    __ensureHost()
     __update_helix_ssh_config()
     __rebuild_ssh_config()
     __install_ssh_key(password)

@@ -1,5 +1,6 @@
 # Ensure that dotfiles packages are available to run
-set -gx PATH $PATH ~/.local/bin
+set -gx PATH ~/.local/bin $PATH
+set -gx PATH ~/.nix-profile/bin/ $PATH
 set -gx MANPATH $MANPATH ~/.local/man:
 
 # Tell subprograms to use bash
