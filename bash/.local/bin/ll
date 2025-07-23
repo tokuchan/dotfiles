@@ -2,7 +2,7 @@
 # Smart wrapper for ls.
 
 if (( $(command exa >/dev/null 2>&1; echo $?) == 0 )); then
-  exa -lbah --sort=name --icons --colour-scale --colour=always $@ | lnav -q -c":goto 0"
+  exa -lbah --sort=name --icons --colour-scale --colour=always $@ | less -FR
 elif (( $(command lsd >/dev/null 2>&1; echo $?) == 0 )); then
   lsd -alGg --group-dirs=first --hyperlink=always --color=always --date=+%y-%m-%dT%H:%M:%S $@ | \
     awk '
