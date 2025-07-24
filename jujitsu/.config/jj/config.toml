@@ -6,7 +6,29 @@ email = "sean@spillane.us"
 
 [ui]
 pager = "less -FRX"
-default-command = ['log', '-n', '10', '-r', 'ancestors(@,5)::descendants(@,5)']
+default-command = ['util', 'exec', '--', 'bash', '-c', """
+jj status
+echo Log:
+jj log -n 10 -r 'ancestors(@,5)::descendants(@,5)'
+""", ""]
+
+[templates]
+draft_commit_description = '''
+concat(
+  description,
+  surround(
+    "\nJJ: This commit contains the following changes:\n", "",
+    indent("JJ:     ", diff.summary()),
+  ),
+  surround(
+    "\nJJ: This commit contains the following changes:\n", "",
+    indent("JJ:     ", diff.stat(72)),
+  ),
+  "\n",
+  "JJ: ignore-rest\n",
+  diff.git(),
+)
+'''
 
 [aliases]
 aliases = ["util", "exec", "--", "bash", "-c", """

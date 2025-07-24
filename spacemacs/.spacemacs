@@ -755,6 +755,12 @@ nil : Otherwise, return nil and run next lineup function."
       (if (re-search-forward "^[\t ]*>" (line-end-position) t)
           0)))
 
+  ;; Force function parameters to indent like normal code, and not align with ().
+  (defun my-c-arglist-indent ()
+    (c-set-offset 'arglist-intro '+)
+    (c-set-offset 'arglist-close 0))
+  (add-hook 'c-mode-common-hook 'my-c-arglist-indent)
+
   ;; Define a line-up function for braced blocks under braceless ones
   ;;  (defun c++-braced-under-braceless-block (langelem)
   ;;    "Control indentation of braced blocks that sit under braceless ones. For example:
