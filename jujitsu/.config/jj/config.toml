@@ -31,6 +31,22 @@ concat(
 '''
 
 [aliases]
+pullup = [
+  "util", "exec", "--",
+  "bash", "-c", """
+    set -euo pipefail
+    if [ $# -ge 1 ]; then
+      branch=$1
+    else
+      # List the bookmarks on the working-copy commit and take the first
+      names=$(jj log --template 'bookmarks ++ "\n"' --no-graph | grep . | head -1)
+      branch=${names%%,*}
+    fi
+    # Move that bookmark back one commit
+    jj bookmark move --from "$branch" --to @-
+  """,
+  "_"  # placeholder for $0
+]
 aliases = ["util", "exec", "--", "bash", "-c", """
 #!/bin/bash 
 set -euo pipefail
