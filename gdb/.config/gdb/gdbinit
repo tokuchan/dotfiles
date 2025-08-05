@@ -2369,43 +2369,11 @@ set print pretty on
 set print array off
 set print array-indexes on
 set python print-stack full
+set debuginfod enabled on
 
 # Start ------------------------------------------------------------------------
 
 #python Dashboard.start()
-
-# Define xxd command to dump memory --------------------------------------------
-
-define xxd
-dump binary memory dump.bin $arg0 $arg0+$arg1
-shell xxd dump.bin
-
-document xxd
-  Dump memory to file dump.bin and examine with xxd program.
-end
-
-# Define catch_json_extra_data command -----------------------------------------
-
-define catch_json_extra_data
-  # 1) Break on any boost::json::system_error being thrown
-  set $cp = catch throw boost::json::system_error
-  # 2) Only stop if its error_code==boost::json::error::extra_data
-  condition $cp \
-    ((boost::json::system_error*) thrown_exception)->code().value() \
-      == static_cast<int>(boost::json::error::extra_data)
-  printf "Catchpoint %d: boost::json extra_data parse error\n", $cp
-end
-
-document catch_json_extra_data
-  Catch boost::json extra_data errors:
-  Sets a catchpoint on boost::json::system_error and only stops
-  if the exception’s error code is boost::json::error::extra_data.
-end
-
-# Set the split layout by default ----------------------------------------------
-
-layout split
-focus cmd
 
 # File variables ---------------------------------------------------------------
 
