@@ -43,6 +43,7 @@ pullup = [
       branch=${names%%,*}
     fi
     # Move that bookmark back one commit
+    echo jj bookmark move --from "$branch" --to @-
     jj bookmark move --from "$branch" --to @-
   """,
   "_"  # placeholder for $0
