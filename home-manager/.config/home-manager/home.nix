@@ -39,6 +39,14 @@ in
   # release notes.
   home.stateVersion = "25.05"; # Please read the comment before changing.
 
+  # Install proprietary software.
+  nixpkgs.config = {
+    allowUnfree = true;
+    allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+      "obsidian"
+    ];
+  };
+
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = [
@@ -60,6 +68,7 @@ in
     # '')
 
     pkgs.stow
+    pkgs.obsidian
   ];
 
   programs.bash.enable = true;
@@ -80,6 +89,10 @@ in
   programs.uv.enable = true;
   programs.eza.enable = true;
   programs.lsd.enable = true;
+  programs.zoxide.enableBashIntegration = true;
+  programs.zoxide.enableFishIntegration = true;
+  programs.zoxide.enableNushellIntegration = true;
+  programs.zoxide.options = [ "--cmd cd" ];
 
   # (Optional) basic neovim shim (AstroNvim will provide the config)
   programs.neovim = {
@@ -129,7 +142,8 @@ in
   };
 
   # Load fish functions
-  xdg.configFile."fish".source = "${myDotfiles}/fish/.config/fish";
+  xdg.configFile."fish/functions".source = config.lib.file.mkOutOfStoreSymlink "${myDotfiles}/fish/.config/fish/functions";
+  #xdg.configFile."fish/config.fish".source = config.lib.file.mkOutOfStoreSymlink "${myDotfiles}/fish/.config/fish/config.fish";
 
   # Configure jj
   xdg.configFile."jj".source = "${myDotfiles}/jujitsu/.config/jj";
