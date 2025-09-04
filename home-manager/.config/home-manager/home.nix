@@ -78,6 +78,8 @@ in
   programs.lazygit.enable = true;
   programs.lazydocker.enable = true;
   programs.uv.enable = true;
+  programs.eza.enable = true;
+  programs.lsd.enable = true;
 
   # (Optional) basic neovim shim (AstroNvim will provide the config)
   programs.neovim = {
