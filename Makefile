@@ -24,7 +24,7 @@
 #. I need to be able to source shell setup. Therefore, I must change the
 # default shell.
 
-SHELL := /bin/bash
+SHELL := /bin/sh
 
 #. == Primary Targets
 
