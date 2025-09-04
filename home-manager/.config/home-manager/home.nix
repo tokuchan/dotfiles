@@ -117,27 +117,6 @@ in
     ".spacemacs.d".source = "${myDotfiles}/spacemacs";
   };
 
-  # ------------------------------------------------------------
-  # AstroNvim from TEMPLATE + backups like official instructions
-  # ------------------------------------------------------------
-  #
-  # 1) Backup existing ~/.config/nvim BEFORE HM links files
-  # 2) Backup ~/.local/{share,state,cache}/nvim (optional but recommended)
-  #
-  #home.activation.backupOldNvim = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
-  #  if [ -e "${config.xdg.configHome}/nvim" ] && [ ! -L "${config.xdg.configHome}/nvim" ]; then
-  #    echo "Backing up existing nvim config to ${config.xdg.configHome}/nvim.bak-${timestamp}"
-  #    mv "${config.xdg.configHome}/nvim" "${config.xdg.configHome}/nvim.bak-${timestamp}"
-  #  fi
-
-  #  for d in "${config.xdg.dataHome}/nvim" "${config.xdg.stateHome}/nvim" "${config.home.homeDirectory}/.cache/nvim"; do
-  #    if [ -e "$d" ]; then
-  #      echo "Backing up $d to ${d}.bak-${timestamp}"
-  #      mv "$d" "${d}.bak-${timestamp}"
-  #    fi
-  #  done
-  #'';
-
   # Declare AstroNvim (template) as your Neovim config.
   # fetchGit produces a clean tree (no .git), so no need to rm -rf .git.
   xdg.enable = true;
@@ -172,16 +151,6 @@ in
   home.sessionVariables = {
     EDITOR = "nvim";
   };
-
-  # ------------------------------------------------------------
-  # Make Nushell the default login shell
-  # ------------------------------------------------------------
-  home.activation.setNushellAsDefault = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    if [ "$SHELL" != "${pkgs.nushell}/bin/nu" ]; then
-      echo "Setting login shell to nushell for ${config.home.username}"
-      /run/wrappers/bin/chsh -s ${pkgs.nushell}/bin/nu ${config.home.username} || true
-    fi
-  '';
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
