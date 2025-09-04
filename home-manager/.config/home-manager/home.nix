@@ -64,7 +64,10 @@ in
 
   programs.bash.enable = true;
   programs.fish.enable = true;
-  programs.nushell.enable = true;
+  programs.nushell = {
+    enable = true;
+    settings.default = true;
+  };
   programs.neovide.enable = true;
   programs.emacs.enable = true;
   programs.jujutsu = {
