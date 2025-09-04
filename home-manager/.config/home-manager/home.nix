@@ -70,13 +70,7 @@ in
   };
   programs.neovide.enable = true;
   programs.emacs.enable = true;
-  programs.jujutsu = {
-    enable = true;
-    settings = {
-      user.name = "Sean R. Spillane";
-      user.email = "sean@spillane.us";
-    };
-  };
+  programs.jujutsu.enable = true;
   programs.git.enable = true;
   programs.bat.enable = true;
   programs.btop.enable = true;
@@ -155,6 +149,9 @@ in
 
   # Load fish functions
   xdg.configFile."fish".source = "${myDotfiles}/fish/.config/fish";
+
+  # Configure jj
+  xdg.configFile."jj".source = "${myDotfiles}/jujitsu/.config/jj";
 
   # Home Manager can also manage your environment variables through
   # 'home.sessionVariables'. These will be explicitly sourced when using a
