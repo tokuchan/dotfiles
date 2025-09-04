@@ -4,7 +4,7 @@ set -gx PATH ~/.nix-profile/bin/ $PATH
 set -gx MANPATH $MANPATH ~/.local/man:
 
 # Tell subprograms to use bash
-set -x SHELL /bin/bash
+set -x SHELL bash
 
 # Set up pyenv
 #set -gx PYENV_ROOT "$HOME/.pyenv"
