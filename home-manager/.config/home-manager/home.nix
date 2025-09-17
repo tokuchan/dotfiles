@@ -71,6 +71,7 @@ in
     pkgs.stow
     pkgs.obsidian
     pkgs.spotify
+    pkgs.xclip
   ];
 
   programs.bash.enable = true;
