@@ -1,5 +1,23 @@
 { config, pkgs, lib, ... }:
 
+# Contents
+# (Search for the boxed numbers to find the unique TOC entry)
+#
+# [7] Personal Repo Setup
+# [34] Basic Settings
+# [50] Install Proprietary Software
+# [59] Enable fontconfig
+# [62] Unmanaged Packages
+# [93] Managed Packages
+# [119] Managed Packages with Customizations
+# [142] Dotfile Specifications
+# [166] XDG Config File Specifications
+
+
+# #######################
+# [7] Personal Repo Setup
+# #######################
+
 let
   # --- Your personal repos (edit these) ---
   myDotfiles = builtins.fetchGit {
@@ -25,6 +43,10 @@ let
 
 in
 {
+  # ###################
+  # [34] Basic Settings
+  # ###################
+
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "seans";
@@ -39,7 +61,7 @@ in
   # release notes.
   home.stateVersion = "25.05"; # Please read the comment before changing.
 
-  # Install proprietary software.
+  # [50] Install Proprietary Software
   nixpkgs.config = {
     allowUnfree = true;
     allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
@@ -47,6 +69,16 @@ in
       "spotify"
     ];
   };
+
+  # ######################
+  # [59] Enable fontconfig
+  # ######################
+
+  fonts.fontconfig.enable = true;
+
+  # #######################
+  # [62] Unmanaged Packages
+  # #######################
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
@@ -72,17 +104,22 @@ in
     pkgs.obsidian
     pkgs.spotify
     pkgs.xclip
+    pkgs.nerd-fonts.fira-code
+    pkgs.nerd-fonts.jetbrains-mono
+    pkgs.jujutsu
   ];
 
+  # #####################
+  # [93] Managed Packages
+  # #####################
+
+  # Note that these include embedded configurations, and also refer to the XDG
+  # configurations given later.
+
   programs.bash.enable = true;
-  programs.fish.enable = true;
-  programs.nushell = {
-    enable = true;
-    settings.default = true;
-  };
   programs.neovide.enable = true;
   programs.emacs.enable = true;
-  programs.jujutsu.enable = true;
+  programs.jujutsu.enable = false;
   programs.git.enable = true;
   programs.bat.enable = true;
   programs.btop.enable = true;
@@ -90,14 +127,35 @@ in
   programs.lazygit.enable = true;
   programs.lazydocker.enable = true;
   programs.uv.enable = true;
-  programs.eza.enable = true;
   programs.lsd.enable = true;
-  programs.zoxide.enableBashIntegration = true;
-  programs.zoxide.enableFishIntegration = true;
-  programs.zoxide.enableNushellIntegration = true;
-  programs.zoxide.options = [ "--cmd cd" ];
 
-  # (Optional) basic neovim shim (AstroNvim will provide the config)
+  # ##########################################
+  # [119] Managed Packages with Customizations
+  # ##########################################
+
+  programs.fish = {
+    enable = true;
+    #interactiveShellInit = "${myDotfiles}/fish/.config/fish/config.fish";
+  };
+
+  programs.nushell = {
+    enable = true;
+    settings.default = true;
+  };
+
+  programs.eza = {
+    enable = true;
+    icons = "auto";
+  };
+  
+  programs.zoxide = {
+    enable = true;
+    enableBashIntegration = true;
+    enableFishIntegration = true;
+    enableNushellIntegration = true;
+    options = [ "--cmd cd" ];
+  };
+
   programs.neovim = {
     enable = true;
     viAlias = true;
@@ -112,6 +170,10 @@ in
     defaultCacheTtl = 86400;
     enableSshSupport = true;
   };
+
+  # ############################
+  # [142] Dotfile Specifications
+  # ############################
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
@@ -135,6 +197,10 @@ in
     ".spacemacs.d".source = "${myDotfiles}/spacemacs";
   };
 
+  # ####################################
+  # [166] XDG Config File Specifications
+  # ####################################
+
   # Declare AstroNvim (template) as your Neovim config.
   # fetchGit produces a clean tree (no .git), so no need to rm -rf .git.
   xdg.enable = true;
@@ -152,7 +218,7 @@ in
   xdg.configFile."git/config".source = "${myDotfiles}/git-config/.config/git/config";
 
   # Configure jj
-  xdg.configFile."jj".source = "${myDotfiles}/jujitsu/.config/jj";
+  xdg.configFile."jj/config.toml".source = "${myDotfiles}/jujitsu/.config/jj/config.toml";
 
   # Home Manager can also manage your environment variables through
   # 'home.sessionVariables'. These will be explicitly sourced when using a
