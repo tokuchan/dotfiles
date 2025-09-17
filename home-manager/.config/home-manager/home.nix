@@ -44,6 +44,7 @@ in
     allowUnfree = true;
     allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
       "obsidian"
+      "spotify"
     ];
   };
 
@@ -69,6 +70,7 @@ in
 
     pkgs.stow
     pkgs.obsidian
+    pkgs.spotify
   ];
 
   programs.bash.enable = true;
