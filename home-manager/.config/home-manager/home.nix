@@ -148,6 +148,9 @@ in
   xdg.configFile."fish/functions".source = config.lib.file.mkOutOfStoreSymlink "${myDotfiles}/fish/.config/fish/functions";
   #xdg.configFile."fish/config.fish".source = config.lib.file.mkOutOfStoreSymlink "${myDotfiles}/fish/.config/fish/config.fish";
 
+  # Configure git
+  xdg.configFile."git/config".source = "${myDotfiles}/git-config/.config/git/config";
+
   # Configure jj
   xdg.configFile."jj".source = "${myDotfiles}/jujitsu/.config/jj";
 
