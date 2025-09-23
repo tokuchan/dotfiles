@@ -117,43 +117,30 @@ in
   # configurations given later.
 
   programs.bash.enable = true;
-  programs.neovide.enable = true;
-  programs.emacs.enable = true;
-  programs.jujutsu.enable = false;
-  programs.git.enable = true;
   programs.bat.enable = true;
   programs.btop.enable = true;
-  programs.ripgrep.enable = true;
-  programs.lazygit.enable = true;
+  programs.emacs.enable = true;
+  programs.git.enable = true;
+  programs.jujutsu.enable = false;
   programs.lazydocker.enable = true;
-  programs.uv.enable = true;
+  programs.lazygit.enable = true;
   programs.lsd.enable = true;
+  programs.neovide.enable = true;
+  programs.ripgrep.enable = true;
+  programs.uv.enable = true;
 
   # ##########################################
   # [119] Managed Packages with Customizations
   # ##########################################
 
-  programs.fish = {
-    enable = true;
-    #interactiveShellInit = "${myDotfiles}/fish/.config/fish/config.fish";
-  };
-
-  programs.nushell = {
-    enable = true;
-    settings.default = true;
-  };
-
   programs.eza = {
     enable = true;
     icons = "auto";
   };
-  
-  programs.zoxide = {
+
+  programs.fish = {
     enable = true;
-    enableBashIntegration = true;
-    enableFishIntegration = true;
-    enableNushellIntegration = true;
-    options = [ "--cmd cd" ];
+    #interactiveShellInit = "${myDotfiles}/fish/.config/fish/config.fish";
   };
 
   programs.neovim = {
@@ -163,6 +150,19 @@ in
     withPython3 = true;
     withNodeJs = false;
     withRuby = false;
+  };
+
+  programs.nushell = {
+    enable = true;
+    settings.default = true;
+  };
+  
+  programs.zoxide = {
+    enable = true;
+    enableBashIntegration = true;
+    enableFishIntegration = true;
+    enableNushellIntegration = true;
+    options = [ "--cmd cd" ];
   };
 
   services.gpg-agent = {
