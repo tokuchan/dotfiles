@@ -28,3 +28,6 @@ set-up-openport
 
 
 thefuck --alias | source
+
+# Set up zoxide
+zoxide init --cmd 'cd' fish | source
