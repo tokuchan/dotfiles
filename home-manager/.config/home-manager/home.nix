@@ -5,7 +5,7 @@
 #
 # [7] Personal Repo Setup
 # [34] Basic Settings
-# [50] Install Proprietary Software
+# [50] Allow Proprietary Software
 # [59] Enable fontconfig
 # [62] Unmanaged Packages
 # [93] Managed Packages
@@ -61,7 +61,7 @@ in
   # release notes.
   home.stateVersion = "25.05"; # Please read the comment before changing.
 
-  # [50] Install Proprietary Software
+  # [50] Allow Proprietary Software
   nixpkgs.config = {
     allowUnfree = true;
     allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
