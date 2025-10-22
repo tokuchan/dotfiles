@@ -123,6 +123,7 @@ in
     pkgs.groff
     pkgs.inkscape
     pkgs.vlc
+    pkgs.transmission-qt
   ];
   # [62] Unmanaged Packages
 
