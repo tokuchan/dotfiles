@@ -354,9 +354,12 @@ bind d kill-pane
   # ################
 
   services.gpg-agent = {
-    enable = true;
     defaultCacheTtl = 86400;
+    defaultCacheTtlSsh = 86400;
+    enable = true;
     enableSshSupport = true;
+    maxCacheTtl = 86400;
+    pinentry.package = pkgs.pinentry-curses;
   };
 
   # [304] Services #
