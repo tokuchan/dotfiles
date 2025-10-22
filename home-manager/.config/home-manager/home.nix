@@ -91,7 +91,7 @@ in
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
-  home.packages = with pkgs; [
+  home.packages = [
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
     # pkgs.hello
@@ -109,14 +109,14 @@ in
     #   echo "Hello, ${config.home.username}!"
     # '')
 
-    jujutsu
-    meld
-    nerd-fonts.fira-code
-    nerd-fonts.jetbrains-mono
-    obsidian
-    spotify
-    stow
-    xclip
+    pkgs.jujutsu
+    pkgs.meld
+    pkgs.nerd-fonts.fira-code
+    pkgs.nerd-fonts.jetbrains-mono
+    pkgs.obsidian
+    pkgs.spotify
+    pkgs.stow
+    pkgs.xclip
   ];
   # [62] Unmanaged Packages
 
