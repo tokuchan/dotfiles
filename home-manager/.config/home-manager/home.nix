@@ -10,6 +10,8 @@
 # [62] Unmanaged Packages
 # [93] Managed Packages
 # [119] Managed Packages with Customizations
+# [304] Services #
+# [321] Python Packages #
 # [142] Dotfile Specifications
 # [166] XDG Config File Specifications
 
@@ -40,6 +42,7 @@ let
 
   # Helper to timestamp backups
   timestamp = "$(date +%Y%m%d-%H%M%S)";
+# [7] Personal Repo Setup
 
 in
 {
@@ -60,8 +63,12 @@ in
   # want to update the value, then make sure to first check the Home Manager
   # release notes.
   home.stateVersion = "25.05"; # Please read the comment before changing.
+  # [34] Basic Settings
 
-  # [50] Allow Proprietary Software
+  # #################################
+  # [50] Allow Proprietary Software #
+  # #################################
+
   nixpkgs.config = {
     allowUnfree = true;
     allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
@@ -69,12 +76,14 @@ in
       "spotify"
     ];
   };
+  # [50] Allow Proprietary Software #
 
   # ######################
   # [59] Enable fontconfig
   # ######################
 
   fonts.fontconfig.enable = true;
+  # [59] Enable fontconfig
 
   # #######################
   # [62] Unmanaged Packages
@@ -109,6 +118,7 @@ in
     stow
     xclip
   ];
+  # [62] Unmanaged Packages
 
   # #####################
   # [93] Managed Packages
@@ -129,21 +139,39 @@ in
   programs.neovide.enable = true;
   programs.ripgrep.enable = true;
   programs.uv.enable = true;
+  # [93] Managed Packages
 
   # ##########################################
   # [119] Managed Packages with Customizations
   # ##########################################
+  # [158] programs.eza
+  # [167] programs.fish
+  # [176] programs.neovim
+  # [189] programs.nushell
+  # [198] programs.tmux
+  # [336] programs.zoxide
 
+  # ##################
+  # [158] programs.eza
+  # ##################
   programs.eza = {
     enable = true;
     icons = "auto";
   };
+  # [158] programs.eza
 
+  # ###################
+  # [167] programs.fish
+  # ###################
   programs.fish = {
     enable = true;
     #interactiveShellInit = "${myDotfiles}/fish/.config/fish/config.fish";
   };
+  # [167] programs.fish
 
+  # #####################
+  # [176] programs.neovim
+  # #####################
   programs.neovim = {
     enable = true;
     viAlias = true;
@@ -152,12 +180,20 @@ in
     withNodeJs = false;
     withRuby = false;
   };
+  # [176] programs.neovim
 
+  # ######################
+  # [189] programs.nushell
+  # ######################
   programs.nushell = {
     enable = true;
     settings.default = true;
   };
+  # [189] programs.nushell
 
+  # ###################
+  # [198] programs.tmux
+  # ###################
   programs.tmux = {
     enable = true;
     shell = "${pkgs.fish}/bin/fish";
@@ -291,7 +327,11 @@ unbind d
 bind d kill-pane
     '';
   };
+  # [198] programs.tmux
   
+  # #####################
+  # [336] programs.zoxide
+  # #####################
   programs.zoxide = {
     enable = true;
     enableBashIntegration = true;
@@ -299,12 +339,30 @@ bind d kill-pane
     enableNushellIntegration = true;
     options = [ "--cmd cd" ];
   };
+  # [336] programs.zoxide
+  # [119] Managed Packages with Customizations
+
+  # ################
+  # [304] Services #
+  # ################
 
   services.gpg-agent = {
     enable = true;
     defaultCacheTtl = 86400;
     enableSshSupport = true;
   };
+
+  # [304] Services #
+
+  # #######################
+  # [321] Python Packages #
+  # #######################
+
+  # Python is a tricky bird, but there are a lot of useful programs and apps
+  # written in it. Therefore, I want to centralize management of those. My plan
+  # is to use UV to install and manage any package that is not already in Nix
+  # packages or whose version is too old.
+  # [321] Python Packages #
 
   # ############################
   # [142] Dotfile Specifications
@@ -331,10 +389,14 @@ bind d kill-pane
     ".emacs.d".source = spacemacsFramework;
     ".spacemacs.d".source = "${myDotfiles}/spacemacs";
   };
+  # [142] Dotfile Specifications
 
   # ####################################
   # [166] XDG Config File Specifications
   # ####################################
+  # [471] fish/functions
+  # [479] git/config
+  # [490] jj/config.toml
 
   # Declare AstroNvim (template) as your Neovim config.
   # fetchGit produces a clean tree (no .git), so no need to rm -rf .git.
@@ -344,16 +406,330 @@ bind d kill-pane
     recursive = true;
     force = true;  # replace any prior directory/symlink
   };
-
-  # Load fish functions
+  # ####################
+  # [471] fish/functions
+  # ####################
   xdg.configFile."fish/functions".source = config.lib.file.mkOutOfStoreSymlink "${myDotfiles}/fish/.config/fish/functions";
   #xdg.configFile."fish/config.fish".source = config.lib.file.mkOutOfStoreSymlink "${myDotfiles}/fish/.config/fish/config.fish";
+  # [471] fish/functions
 
-  # Configure git
-  xdg.configFile."git/config".source = "${myDotfiles}/git-config/.config/git/config";
+  # ################
+  # [479] git/config
+  # ################
+  xdg.configFile."git/config" = {
+    text = ''
+      [user]
+      	name = Sean R. Spillane
+      	email = sean@spillane.us
+      	signingkey = /home/seans/.ssh/id_ed25519.pub
+      
+      [color]
+      	diff = auto
+      	status = auto
+      	branch = auto
+      	interactive = auto
+      	ui = true
+      	pager = true
+      
+      [color "branch"]
+      	# current = blue reverse
+      	# local = blue
+      	# remote = green
+      	current = magenta reverse
+      	local = default
+      	remote = yellow reverse
+      	upstream = green reverse
+      	plain = blue
+      
+      [color "diff"]
+      	meta = yellow bold
+      	frag = magenta bold
+      	old = red bold
+      	new = green bold
+      
+      [color "status"]
+      	added = green
+      	changed = magenta
+      	untracked = cyan
+      
+      [color "decorate"]
+      	HEAD = red
+      	branch = cyan
+      	tag = yellow
+      	remoteBranch = magenta
+      
+      [core]
+      	pager = less -FRSX
+      	whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
+      	autocrlf = input
+      	quotepath = false
+      	editor = nvim -O
+      
+      # URL shortcuts
+      [url "git@github.com:tokuchan/"]
+      	insteadOf = "srs:"
+      
+      [url "git@github.com:"]
+      	insteadOf = "gh:"
+      
+      [url "git@github.com:keplercompute/"]
+      	insteadOf = "kepler:"
+      
+      [url "git@github.com:helixcompute/"]
+      	insteadOf = "helix:"
+      
+      [url "ssh://git@github.com"]
+      	insteadOf = https://github.com
+      
+      [status]
+      	branch = true
+      	showStash = true
+      	showUntrackedFiles = all
+      
+      [log]
+      	abbrevCommit = true
+      	graphColors = blue,yellow,cyan,magenta,green,red
+      
+      [branch]
+      	sort = -committerdate
+      
+      [tag]
+      	sort = -taggerdate
+      
+      [pager]
+      	branch = false
+      	tag = false
+      
+      [alias]
+      	aliases = !$HOME/.local/bin/aliases.py
+      	attach = "!f () { git branch --force $1 && git checkout $1; }; f"
+      	branches = branch -a
+      	changes = "log-pretty --no-merges --max-count=15 --graph"
+      	detach = "checkout --detach"
+      	patches = "changes patches...master"
+      	last = "log-pretty --max-count=1"
+      	log-pretty = "!f () { git log --pretty='format:%(trailers:key=Change-Id,valueonly,separator=%x2C) %C(dim green) %<(12,trunc)%ar %C(bold magenta)%h%Creset %C(green)%<(24,trunc)%an %C(italic #ff8800)%s' $@; }; f"
+      	ready = diff --cached
+      	remotes = remote -v
+      	sweep = clean -fdi
+      	tags = tag
+      
+      	do = "!f () { cd $(git rev-parse --show-toplevel); $*; }; f"
+      	fix = "!f() { $EDITOR $(git diff --name-only); }; f"
+      	tree = log --all --graph --decorate --oneline --simplify-by-decoration
+      	unstage = reset HEAD --
+      
+      	a = add
+      	br = branch
+      	c = commit
+      	co = checkout
+      	cp = cherry-pick
+      	df = diff
+      	fo = fetch origin
+      	lg = log
+      	pos = push --set-upstream origin
+      	p = pull
+      	pp = push
+      	rs = restore --staged
+      	st = status
+      	tg = tag
+      	regen-aliases = "!for a in $($HOME/dev/config/aliases.py -f simple -D); do fish -c alias g$a='g $a'; done"
+      	gpush = push gerrit patches:refs/for/master
+      	log-exclude = "!f() { br=$(git branch --show-current); git log \"''${br}\" --not $(git for-each-ref --format='%(refname)' refs/heads/ | grep -v \"refs/heads/''${br}\") $*; }; f"
+      	current-branch = "!f() { test -z \"''${1}\" && git rev-parse --abbrev-ref HEAD || echo $1; }; f"
+      	log-br = "!f() { git log --oneline $(git current-branch $1)...local-master; }; f"
+      	pull-rebase = "!f(){ git switch master && git pull --no-edit && git submodule update --init && git switch patches && git rebase; git status; }; f"
+      	pull-master = "!f(){ b=$(git current-branch); git switch master && git pull --no-edit && git submodule update --init && git switch \"''${b}\"; }; f"
+      	pull-local-master = "!f(){ b=$(git current-branch); git switch local-master && git pull-master && git pull --no-edit && git submodule update --init && git switch \"''${b}\"; }; f"
+      	rebase-patches = "!f(){ b=$(git current-branch); git switch patches && git rebase && git switch \"''${b}\"; }; f"
+      	send = "!f() { br=$(git current-branch); pt=\"''${*:-$(git log --oneline --no-abbrev-commit | head -1 | cut -d' ' -f1)}\"; test \"''${br}\" != patches && git switch patches && (git cherry-pick \"''${pt}\" || git cherry-pick --abort) && git switch \"''${br}\"; git log --oneline patches...master; }; f"
+      	f = fuzzy-fetch
+      	g = "!f() { git branchless switch --interactive $@ || git-goto $@; }; f"
+      	freshen = "!f() { set -x; git clean -xfd && git submodule foreach --recursive git clean -xfd && git reset --hard && git submodule foreach --recursive git reset --hard && git submodule update --init --recursive; set +x; }; f"
+      	md = "log --no-merges master..HEAD --format=\"## %s%n%n%b%n\""
+      
+      [pull]
+      	rebase = false
+      	default = current
+      
+      [push]
+      	autoSetupRemote = true
+      	default = current
+      	followTags = true
+      
+      [rebase]
+      	autoStash = true
+      	missingCommitsCheck = warn
+      
+      [diff]
+      	#tool = vimdiff
+      	context = 3
+      	renames = copies
+      	interHunkContxt = 10
+      
+      [difftool]
+      	prompt = false
+      [difftool "nvimdiff"]
+      	cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
+      [merge]
+      	tool = vimdiff
+      [mergetool]
+      	prompt = true
+      [mergetool "nvimdiff"]
+      	#cmd = "nvim -d \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\""
+      	layout = "LOCAL,BASE,REMOTE / MERGED + BASE,LOCAL + BASE,REMOTE + (LOCAL/BASE/REMOTE),MERGED"
+      [mergetool "vimdiff"]
+      	layout = "LOCAL,BASE,REMOTE / MERGED + BASE,LOCAL + BASE,REMOTE + (LOCAL/BASE/REMOTE),MERGED"
+      [init]
+      	defaultBranch = master
+      [rerere]
+      	enabled = false
+      [status]
+      	submodulesummary = true
+      [guitool "Stage by edit in term"]
+      	cmd = xterm -fa 'fixed' -fs 14 -e git stage -e $FILENAME
+      
+      [diff]
+      	ignoreSubmodules = dirty
+      [advice]
+      	skippedCherryPicks = false
+      
+      [difftool "branchless"]
+      	cmd = git-branchless difftool --read-only --dir-diff $LOCAL $REMOTE
+      
+      [mergetool "branchless"]
+      	cmd = git-branchless difftool $LOCAL $REMOTE --base $BASE --output $MERGED
+      [submodule]
+      	recurse = true
+      [credential]
+      	helper = /mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe
+      [commit]
+      	gpgsign = true
+      	verbose = true
+      [gpg]
+      	format = ssh
+    '';
+    force = true;
+  };
+  # [479] git/config
 
-  # Configure jj
-  xdg.configFile."jj/config.toml".source = "${myDotfiles}/jujitsu/.config/jj/config.toml";
+  # ####################
+  # [490] jj/config.toml
+  # ####################
+  home.activation.removeOldJjDir = lib.hm.dag.entryBefore [ "linkGeneration" ] ''
+    rm -rf "$HOME/.config/jj"
+  '';
+  xdg.configFile."jj/config.toml" = {
+    text = ''
+      "$schema" = "https://jj-vcs.github.io/jj/latest/config-schema.json"
+      
+      [user]
+      name = "Sean R. Spillane"
+      email = "sean@spillane.us"
+      
+      [ui]
+      pager = "less -FRX"
+      default-command = ['util', 'exec', '--', 'bash', '-c', """
+      jj status
+      echo Log:
+      jj log -n 10 -r 'ancestors(@,5)::descendants(@,5)'
+      """, ""]
+      
+      [templates]
+      draft_commit_description = """
+      concat(
+        description,
+        surround(
+          "\nJJ: This commit contains the following changes:\n", "",
+          indent("JJ:     ", diff.summary()),
+        ),
+        surround(
+          "\nJJ: This commit contains the following changes:\n", "",
+          indent("JJ:     ", diff.stat(72)),
+        ),
+        "\n",
+        indent("JJ: ", diff.git()),
+        "JJ: ignore-rest\n",
+      )
+      """
+      
+      [aliases]
+      pullup = [
+        "util", "exec", "--",
+        "bash", "-c", """
+          set -euo pipefail
+          if [ $# -ge 1 ]; then
+            branch=$1
+          else
+            # List the bookmarks on the working-copy commit and take the first
+            names=$(jj log --template 'bookmarks ++ "\n"' --no-graph | grep . | head -1)
+            branch=''${names%%,*}
+          fi
+          # Move that bookmark back one commit
+          echo jj bookmark move --from "$branch" --to @-
+          jj bookmark move --from "$branch" --to @-
+        """,
+        "_"  # placeholder for $0
+      ]
+      aliases = ["util", "exec", "--", "bash", "-c", """
+      #!/bin/bash 
+      set -euo pipefail
+      jj config list aliases | pygmentize -l toml -f 16m -O style=dracula
+      """, ""]
+      
+      up = ["util", "exec", "--", "bash", "-c", """
+      #!/bin/bash
+      set -euo pipefail
+      if [ $# -gt 1 ]; then
+        cat >&2 <<-'EOF'
+        Usage: jj up [n=1]
+      
+        Go forward 1 or more commits.
+      EOF
+        exit 1
+      fi
+      n=''${1:-1}
+      rev=$(
+        jj log \
+          -r "descendants(@,$((n+1))) ~ descendants(@,$n)" \
+          --template 'self.change_id()' \
+          --no-graph
+      )
+      
+      jj edit "$rev"
+      """, ""]
+      
+      down = ["util", "exec", "--", "bash", "-c", """
+      #!/bin/bash
+      set -euo pipefail
+      if [ $# -gt 1 ]; then
+        cat >&2 <<-'EOF'
+        Usage: jj down [n=1]
+      
+        Go back 1 or more commits.
+      EOF
+        exit 1
+      fi
+      n=''${1:-1}
+      rev=$(
+        jj log \
+          -r "ancestors(@,$((n+1))) ~ ancestors(@,$n)" \
+          --template 'self.change_id()' \
+          --no-graph
+      )
+      
+      jj edit "$rev"
+      """, ""]
+    '';
+    force = true;
+  };
+  # [490] jj/config.toml
+
+  # [166] XDG Config File Specifications
+
+  # #############################
+  # [387] Environment Variables #
+  # #############################
 
   # Home Manager can also manage your environment variables through
   # 'home.sessionVariables'. These will be explicitly sourced when using a
@@ -374,7 +750,10 @@ bind d kill-pane
   home.sessionVariables = {
     EDITOR = "nvim";
   };
+  # [387] Environment Variables #
 
+  # THIS MUST BE THE LAST LINE
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+  # THIS MUST BE THE LAST LINE
 }
