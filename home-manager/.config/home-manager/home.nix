@@ -406,6 +406,9 @@ bind d kill-pane
   # ####################################
   # [166] XDG Config File Specifications
   # ####################################
+  # [416] qfreplace.lua
+  # [431] telescope.lua
+  # [456] vim-surround.nvim
   # [471] fish/functions
   # [479] git/config
   # [490] jj/config.toml
@@ -419,6 +422,59 @@ bind d kill-pane
     recursive = true;
     force = true;  # replace any prior directory/symlink
   };
+  # ###################
+  # [416] qfreplace.lua
+  # ###################
+  xdg.configFile."nvim/lua/plugins/qfreplace.lua".text = ''
+  return {
+    { 
+      "thinca/vim-qfreplace", 
+      cmd = "Qfreplace",
+      keys = { { "<leader>xr", "<cmd>Qfreplace<cr>", desc = "Edit Quickfix" } },
+      opts = {},
+    },
+  }
+  '';
+  # [416] qfreplace.lua
+
+  # ###################
+  # [431] telescope.lua
+  # ###################
+  xdg.configFile."nvim/lua/plugins/telescope.lua".text = ''
+  return {
+    {
+      "nvim-telescope/telescope.nvim",
+      dependencies = { "nvim-lua/plenary.nvim" },
+      cmd = "Telescope",
+      keys = {
+        { "<leader>fG", function() require( "telescope.builtin" ).live_grep() end, desc = "Live Grep" },
+      },
+      opts = function( _, opts )
+        local v = require( "telescope.config" ).values
+        opts = opts or {}
+        opts.defaults = opts.defaults or {}
+        opts.defaults.vimgrep_arguments = v.vimgrep_arguments
+        return opts
+      end,
+    },
+  }
+  '';
+  # [431] telescope.lua
+
+  # #######################
+  # [456] vim-surround.nvim
+  # #######################
+  xdg.configFile."nvim/lua/plugins/vim-surround.nvim".text = ''
+    return {
+      {
+        "kylechui/nvim-surround",
+        cmd = "Vsurround",
+        opts = {},
+      }
+    }
+  '';
+  # [456] vim-surround.nvim
+
   # ####################
   # [471] fish/functions
   # ####################
