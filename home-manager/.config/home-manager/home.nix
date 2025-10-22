@@ -160,6 +160,7 @@ in
   # [189] programs.nushell
   # [198] programs.tmux
   # [336] programs.zoxide
+  # [348] programs.onedrive
 
   # ##################
   # [158] programs.eza
@@ -350,6 +351,17 @@ bind d kill-pane
     options = [ "--cmd cd" ];
   };
   # [336] programs.zoxide
+
+  # #######################
+  # [348] programs.onedrive
+  # #######################
+  programs.onedrive = {
+    enable = true;
+    settings = {
+      sync_dir = "%h/Cloud/onedrive";
+    };
+  };
+  # [348] programs.onedrive
   # [119] Managed Packages with Customizations
 
   # ################
@@ -364,7 +376,6 @@ bind d kill-pane
     maxCacheTtl = 86400;
     pinentry.package = pkgs.pinentry-curses;
   };
-
   # [304] Services #
 
   # #######################
