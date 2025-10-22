@@ -145,6 +145,7 @@ in
   programs.uv.enable = true;
   programs.info.enable = true;
   programs.man.enable = true;
+  programs.gpg.enable = true;
   # [93] Managed Packages
 
   # ##########################################
