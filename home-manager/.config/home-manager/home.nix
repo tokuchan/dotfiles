@@ -117,6 +117,8 @@ in
     pkgs.spotify
     pkgs.stow
     pkgs.xclip
+    pkgs.maestral
+    pkgs.maestral-gui
   ];
   # [62] Unmanaged Packages
 
@@ -397,6 +399,7 @@ bind d kill-pane
   # [471] fish/functions
   # [479] git/config
   # [490] jj/config.toml
+  # [499] maestral.desktop
 
   # Declare AstroNvim (template) as your Neovim config.
   # fetchGit produces a clean tree (no .git), so no need to rm -rf .git.
@@ -725,6 +728,33 @@ bind d kill-pane
   };
   # [490] jj/config.toml
 
+  # ######################
+  # [499] maestral.desktop
+  # ######################
+  xdg.desktopEntries.maestral = {
+    name = "Maestral";
+    genericName = "Dropbox Client";
+    exec = "${pkgs.maestral-gui}/bin/maestral_qt";
+    terminal = false;
+    categories = [ "Network" "FileTransfer" ];
+  };
+  xdg.configFile."autostart/maestral.desktop".text = ''
+    [Desktop Entry]
+    Type=Application
+    Name=Maestral
+    Comment=Dropbox Client
+    Exec=${pkgs.maestral-gui}/bin/maestral_qt
+    Terminal=false
+    X-GNOME-Autostart-enabled=true
+  '';
+  xdg.configFile."maestral/default.ini".text = ''
+    # Example keys; Maestral writes most of this itself after first run.
+    # See docs for available settings.
+    # https://www.maestral.app/docs/configfile
+    # notification_level = "FILECHANGE"
+    # reindex_interval = 3600
+  '';
+  # [499] maestral.desktop
   # [166] XDG Config File Specifications
 
   # #############################
