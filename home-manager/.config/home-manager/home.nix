@@ -121,6 +121,8 @@ in
     pkgs.maestral
     pkgs.maestral-gui
     pkgs.groff
+    pkgs.inkscape
+    pkgs.vlc
   ];
   # [62] Unmanaged Packages
 
