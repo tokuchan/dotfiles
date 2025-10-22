@@ -117,8 +117,10 @@ in
     pkgs.spotify
     pkgs.stow
     pkgs.xclip
+    (builtins.getFlake "github:bgreenwell/doxx").packages.${pkgs.system}.default
     pkgs.maestral
     pkgs.maestral-gui
+    pkgs.groff
   ];
   # [62] Unmanaged Packages
 
@@ -141,6 +143,8 @@ in
   programs.neovide.enable = true;
   programs.ripgrep.enable = true;
   programs.uv.enable = true;
+  programs.info.enable = true;
+  programs.man.enable = true;
   # [93] Managed Packages
 
   # ##########################################
