@@ -3,7 +3,6 @@
 # Contents
 # (Search for the boxed numbers to find the unique TOC entry)
 #
-# [7] Personal Repo Setup
 # [34] Basic Settings
 # [50] Allow Proprietary Software
 # [59] Enable fontconfig
@@ -14,13 +13,20 @@
 # [321] Python Packages #
 # [142] Dotfile Specifications
 # [166] XDG Config File Specifications
+# [387] Environment Variables #
 
 
-# #######################
+# ###################
+# [34] Basic Settings
+# ###################
 # [7] Personal Repo Setup
-# #######################
+# [47] Add unstable packages
 
 let
+  # #######################
+  # [7] Personal Repo Setup
+  # #######################
+
   # --- Your personal repos (edit these) ---
   myDotfiles = builtins.fetchGit {
     # e.g. "git@github.com:you/spacemacs.d.git" or "https://github.com/you/spacemacs.d.git"
@@ -44,12 +50,12 @@ let
   timestamp = "$(date +%Y%m%d-%H%M%S)";
 # [7] Personal Repo Setup
 
+# ######################################################################
+# [47] Add unstable packages (so I can live at head for certain things).
+# ######################################################################
+# [47] Add unstable packages
 in
 {
-  # ###################
-  # [34] Basic Settings
-  # ###################
-
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "seans";
