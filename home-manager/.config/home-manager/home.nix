@@ -21,6 +21,7 @@
 # ###################
 # [7] Personal Repo Setup
 # [47] Add unstable packages
+# [66] Define codex setup
 
 let
   # #######################
@@ -56,6 +57,32 @@ let
 
   unstable = import <nixpkgs-unstable> {};
 # [47] Add unstable packages
+
+# #######################
+# [66] Define codex setup
+# #######################
+  toml = pkgs.formats.toml { };
+  codexConfig = {
+    # Base Settings
+    model = "gpt-5.1-codex";
+    approval_policy = "on-request";
+    sandbox_mode = "workspace-write";
+
+    #model_reasoning_effort = "medium";
+    #model_provider = "openai";
+
+    #model_providers = {
+    #  openai = {
+    #    name = "OpenAI";
+    #    base_url = "https://api.openai.com/v1";
+    #    env_key = "OPENAI_API_KEY";
+    #    wire_api = "responses";
+    #  };
+    #};
+  };
+  codexConfigFile = toml.generate "codex-config.toml" codexConfig;
+# [66] Define codex setup
+
 in
 {
   # Home Manager needs a bit of information about you and the paths it should
@@ -132,6 +159,7 @@ in
     pkgs.inkscape
     pkgs.vlc
     pkgs.transmission-qt
+    pkgs.codex
   ];
   # [62] Unmanaged Packages
 
@@ -429,6 +457,12 @@ bind d kill-pane
     #
     ".emacs.d".source = spacemacsFramework;
     ".spacemacs.d".source = "${myDotfiles}/spacemacs";
+    ".codex/config.toml".source = codexConfigFile;
+    ".codex/AGENTS.md".text = ''
+      - You are my terminal coding agent. 
+      - Prefer Nix, C++, and Python3 examples. 
+      - Assume I use git, jujutsu, NixOS, Neovim, and home-manager.
+    '';
   };
   # [142] Dotfile Specifications
 
