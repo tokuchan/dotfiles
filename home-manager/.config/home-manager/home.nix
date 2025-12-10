@@ -161,6 +161,7 @@ in
   # [198] programs.tmux
   # [336] programs.zoxide
   # [348] programs.onedrive
+  # [217] programs.direnv
 
   # ##################
   # [158] programs.eza
@@ -362,6 +363,14 @@ bind d kill-pane
     };
   };
   # [348] programs.onedrive
+
+  # #####################
+  # [217] programs.direnv
+  # #####################
+  programs.direnv = {
+    enable = true;
+  };
+  # [217] programs.direnv
   # [119] Managed Packages with Customizations
 
   # ################

@@ -31,3 +31,6 @@ thefuck --alias | source
 
 # Set up zoxide
 zoxide init --cmd 'cd' fish | source
+
+# Set up direnv
+direnv hook fish | source
