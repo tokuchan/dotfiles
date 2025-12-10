@@ -174,6 +174,7 @@ in
     pkgs.texliveFull
     pkgs.postgresql
     pkgs.codex
+    pkgs.libreoffice
   ];
   # [62] Unmanaged Packages
 
