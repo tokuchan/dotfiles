@@ -170,6 +170,7 @@ in
     pkgs.tex-gyre.pagella # Palatino clone
     pkgs.eb-garamond
     #pkgs.cormorant # Decorative garamond
+    pkgs.fossil
     pkgs.lyx
     pkgs.texliveFull
     pkgs.postgresql
