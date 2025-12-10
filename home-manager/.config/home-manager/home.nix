@@ -171,6 +171,8 @@ in
     pkgs.eb-garamond
     #pkgs.cormorant # Decorative garamond
     pkgs.fossil
+    pkgs.tcl-9_0
+    pkgs.tk-9_0
     pkgs.lyx
     pkgs.texliveFull
     pkgs.postgresql
