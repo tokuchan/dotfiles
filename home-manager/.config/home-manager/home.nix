@@ -928,7 +928,12 @@ bind d kill-pane
     EDITOR = "nvim";
     PGDATA = pgDataDir;
     PGPORT = "5432";
+    #NPM_CONFIG_PREFIX = "${config.xdg.dataHome}/npm";
   };
+
+  home.sessionPath = [
+    "${config.xdg.dataHome}/npm/bin"
+  ];
   # [387] Environment Variables #
 
   # THIS MUST BE THE LAST LINE
