@@ -167,6 +167,11 @@ in
     pkgs.inkscape
     pkgs.vlc
     pkgs.transmission_3-qt
+    pkgs.tex-gyre.pagella # Palatino clone
+    pkgs.eb-garamond
+    #pkgs.cormorant # Decorative garamond
+    pkgs.lyx
+    pkgs.texliveFull
     pkgs.postgresql
     pkgs.codex
   ];
