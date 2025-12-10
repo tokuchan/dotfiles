@@ -21,6 +21,7 @@
 # ###################
 # [7] Personal Repo Setup
 # [47] Add unstable packages
+# [55] Define variables for postgres  
 # [66] Define codex setup
 
 let
@@ -57,6 +58,13 @@ let
 
   unstable = import <nixpkgs-unstable> {};
 # [47] Add unstable packages
+
+# ##################################  
+# [55] Define variables for postgres  
+# ##################################  
+postgres = pkgs.postgresql_17;
+pgDataDir = "${config.home.homeDirectory}/.local/share/postgres";
+# [55] Define variables for postgres  
 
 # #######################
 # [66] Define codex setup
@@ -159,6 +167,7 @@ in
     pkgs.inkscape
     pkgs.vlc
     pkgs.transmission-qt
+    pkgs.postgresql
     pkgs.codex
   ];
   # [62] Unmanaged Packages
@@ -908,6 +917,8 @@ bind d kill-pane
   #
   home.sessionVariables = {
     EDITOR = "nvim";
+    PGDATA = pgDataDir;
+    PGPORT = "5432";
   };
   # [387] Environment Variables #
 
