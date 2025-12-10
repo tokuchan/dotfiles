@@ -166,7 +166,7 @@ in
     pkgs.groff
     pkgs.inkscape
     pkgs.vlc
-    pkgs.transmission-qt
+    pkgs.transmission_3-qt
     pkgs.postgresql
     pkgs.codex
   ];
