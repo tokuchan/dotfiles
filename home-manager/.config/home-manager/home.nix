@@ -53,6 +53,8 @@ let
 # ######################################################################
 # [47] Add unstable packages (so I can live at head for certain things).
 # ######################################################################
+
+  unstable = import <nixpkgs-unstable> {};
 # [47] Add unstable packages
 in
 {
@@ -115,7 +117,7 @@ in
     #   echo "Hello, ${config.home.username}!"
     # '')
 
-    pkgs.jujutsu
+    unstable.jujutsu
     pkgs.meld
     pkgs.nerd-fonts.fira-code
     pkgs.nerd-fonts.jetbrains-mono
